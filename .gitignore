@@ -1,0 +1,3 @@
+# C binary and object files.
+/bin/
+/src/*.o

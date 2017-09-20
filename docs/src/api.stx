@@ -1,0 +1,212 @@
+---
+title: API
+---
+
+:insert toc
+
+---
+
+To use Cops in your C application add the `cops.c` and `cops.h` files to your source folder and include the header file:
+
+::: c
+
+    #include "cops.h"
+
+The header exports an `ArgParser` type and a collection of `ap_*` prefixed functions.
+
+Cops is written in portable C99.
+
+
+
+## Basic Usage
+
+Initialize an argument parser, optionally specifying the application's help text and version:
+
+::: c
+
+    ArgParser* ap_new(char *helptext, char *version);
+
+Supplying help text activates an automatic `--help` flag; supplying a version string activates an automatic `--version` flag. (Automatic `-h` and `-v` shortcuts are also activated unless registered by other options.) `NULL` can be passed for either parameter.
+
+You can now register your application's options and commands on the parser using the registration functions described below. Once the required options and commands have been registered, call the `ap_parse()` function to process the application's command line arguments:
+
+::: c
+
+    void ap_parse(ArgParser *parser, int argc, char **argv);
+
+The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
+
+Parsed option values can be retrieved from the parser instance itself.
+
+Call `ap_free()` to free the memory occupied by a parser instance:
+
+::: c
+    void ap_free(ArgParser *parser);
+
+This will free the memory occupied by the parser instance itself and any associated command sub-parsers.
+
+
+
+## Register Options
+
+Cops supports long-form options, `--foo`, with single-character shortcuts, `-f`.
+
+An option can have an unlimited number of long and short-form aliases. Aliases are specified via the `name` parameter which accepts a string of space-separated alternatives, e.g. `"foo f"`.
+
+Option values can be separated on the command line by either a space, `--foo 123`, or an equals symbol, `--foo=123`.
+
+
+||  `void ap_new_flag(ArgParser *parser, char *name)`  ||
+
+    Register a flag (a boolean option) with a default value of `false`. Flag options take no arguments but are either present (`true`) or absent (`false`).
+
+
+||  `void ap_new_double(ArgParser *parser, char *name, double fallback)`  ||
+
+    Register a floating-point option.
+
+
+||  `void ap_new_int(ArgParser *parser, char *name, int fallback)`  ||
+
+    Register an integer option.
+
+
+||  `void ap_new_str(ArgParser *parser, char *name, char* fallback)`  ||
+
+    Register a string option.
+
+
+
+## Retrieve A Single Value
+
+An option's value can be retrieved from the parser instance using any of its registered aliases.
+
+Each option maintains an internal list of values — the value of the option is the final value in the list or the fallback value if the list is empty.
+
+
+||  `bool ap_found(ArgParser *parser, char *name)`  ||
+
+    Returns true if the specified option was found while parsing.
+
+
+||  `bool ap_get_flag(ArgParser *parser, char *name)`  ||
+
+    Returns the value of the specified boolean option.
+
+
+||  `double ap_get_double(ArgParser *parser, char *name)`  ||
+
+    Returns the value of the specified floating-point option.
+
+
+||  `int ap_get_int(ArgParser *parser, char *name)`  ||
+
+    Returns the value of the specified integer option.
+
+
+||  `char* ap_get_str(ArgParser *parser, char *name)`  ||
+
+    Returns the value of the specified string option.
+
+
+
+## Retrieve Multiple Values
+
+An option's internal array of values can be retrieved from the parser instance using any of its registered aliases.
+
+
+||  `double* ap_get_double_list(ArgParser *parser, char *name)`  ||
+
+    Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to `ap_free()`.
+
+
+||  `int* ap_get_int_list(ArgParser *parser, char *name)`  ||
+
+    Returns the specified option's list of values as a freshly-allocated array of integers. The array's memory is not affected by calls to `ap_free()`.
+
+
+||  `char** ap_get_str_list(ArgParser *parser, char *name)`  ||
+
+    Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to `ap_free()`.
+
+
+||  `int ap_len_list(ArgParser *parser, char *name)`  ||
+
+    Returns the length of the specified option's list of values.
+
+
+
+## Retrieve Positional Arguments
+
+
+Options can be preceded, followed, or interspaced with positional arguments.
+
+
+||  `char* ap_get_arg(ArgParser *parser, int index)`  ||
+
+    Returns the positional argument at the specified index.
+
+
+||  `char** ap_get_args(ArgParser *parser)`  ||
+
+    Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to `ap_free()`.
+
+
+||  `double* ap_get_args_as_floats(ArgParser *parser)`  ||
+
+    Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
+
+
+||  `int* ap_get_args_as_ints(ArgParser *parser)`  ||
+
+    Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
+
+
+||  `bool ap_has_args(ArgParser *parser)`  ||
+
+    Returns true if at least one positional argument has been found.
+
+
+||  `int ap_num_args(ArgParser *parser)`  ||
+
+    Returns the number of positional arguments.
+
+
+
+## Commands
+
+Cops supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the `ap_new_cmd()` function:
+
+::: c
+
+    ArgParser* ap_new_cmd(ArgParser *parser, char *name, char *helptext, void (*callback)(ArgParser *parser));
+
+This method returns a new `ArgParser` instance associated with the command. You can register the command's flags and options on this sub-parser using the standard methods listed above. (Note that you never need to call `ap_parse()` on a command parser --- if a command is found, its arguments are parsed automatically.)
+
+* Like options, commands can have an unlimited number of aliases specified via the `name` string.
+
+* Commands support an automatic `--help` flag and an automatic `help <name>` command using the specified help text.
+
+* The specified callback function will be called if the command is found. The callback should accept a pointer to the command's `ArgParser` instance as its sole argument and should return `void`.
+
+The following functions are also available for processing commands manually:
+
+
+||  `char* ap_get_cmd_name(ArgParser *parser)`  ||
+
+    Returns the command name, if the parser has found a command.
+
+
+||  `ArgParser* ap_get_cmd_parser(ArgParser *parser)`  ||
+
+    Returns the command's parser instance, if the parser has found a command.
+
+
+||  `ArgParser* ap_get_parent(ArgParser *parser)`  ||
+
+    Returns a pointer to a command parser's parent parser.
+
+
+||  `bool ap_has_cmd(ArgParser *parser)`  ||
+
+    Returns true if the parser has found a command.

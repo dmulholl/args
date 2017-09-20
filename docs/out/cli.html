@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Command Line Interface</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="pygments.css">
+    
+    
+  </head>
+
+  <body class="node-cli node">
+
+    <header class="masthead">
+      <h1><a href="index.html">Cops</a></h1>
+      
+        <p class="tagline">An argument-parsing library for C.</p>
+      
+      <nav class="menu">
+        <input id="menu-check" type="checkbox"/>
+        <label id="menu-label" for="menu-check" class="unselectable">
+          <span class="icon close-icon">✕</span>
+          <span class="icon open-icon">☰</span>
+          <span class="text">Menu</span>
+        </label>
+        <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="cli.html">CLI</a></li>
+<li><a href="api.html">API</a></li>
+</ul>
+      </nav>
+    </header>
+
+    <article class="main">
+      <header class="title">
+        <h1>Command Line Interface</h1>
+        
+        <hr>
+      </header>
+      <h4 id="options">
+Options
+</h4>
+<p>
+Cops supports four kinds of options: boolean, string, integer, and floating-point.
+</p>
+<ul>
+<li>
+<p>
+Boolean options take no arguments but are either present (<em>true</em>) or absent (<em>false</em>).
+</p>
+</li>
+<li>
+<p>
+String, integer, and floating-point options require arguments of the appropriate type.
+</p>
+</li>
+</ul>
+<p>
+An option can have an unlimited number of long-form aliases and single-character shortcuts: <code>--option</code>, <code>-o</code>.
+</p>
+<p>
+Option values can be separated by either a space, <code>--opt 123</code>, or an equals symbol, <code>--opt=123</code>. Either syntax can be used with shortcuts: <code>-o 123</code>, <code>-o=123</code>.
+</p>
+<p>
+Multiple shortcuts can be condensed into a single block, e.g. <code>-abc foo bar</code>. Trailing arguments are consumed in sequence as required by the options.
+</p>
+<p>
+Options are registered with fallback values which are used if the option is not found. If an option is found multiple times its value is the final value encountered &mdash; i.e. the value of <code>-o 123 -o 456</code> is <code>456</code>.
+</p>
+<h3 id="multivalued-options">
+Multivalued Options
+</h3>
+<p>
+Options can be treated as singular or multivalued as circumstances require. Each option maintains an internal array to which newly parsed values are appended; the (singular) value of the option is the final value in the array, or the fallback value if the array is empty.
+</p>
+<p>
+For example, in the command below:
+</p>
+<pre>
+$ myapp --foo 123 --foo 456
+</pre>
+<p>
+the value of the option <code>foo</code> is <code>456</code> but the array <code>[123, 456]</code> is also available for use if required.
+</p>
+<h3 id="positional-arguments">
+Positional Arguments
+</h3>
+<p>
+Options can be preceded, followed, or interspaced with positional arguments. Cops assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.
+</p>
+<p>
+Cops supports the standard <code>--</code> switch for turning off option-parsing. All arguments following a <code>--</code> will be treated as positional arguments, even if they begin with a single or double dash.
+</p>
+<h3 id="commands">
+Commands
+</h3>
+<p>
+Cops supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic <code>--help</code> flag and an automatic <code>help &lt;cmd&gt;</code> command, i.e. the commands
+</p>
+<pre>
+$ myapp &lt;cmd&gt; --help
+</pre>
+<p>
+and
+</p>
+<pre>
+$ myapp help &lt;cmd&gt;
+</pre>
+<p>
+are functionally identical and will both print the help text registered with the command.
+</p>
+
+    </article>
+
+    
+
+  </body>
+</html>

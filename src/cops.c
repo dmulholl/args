@@ -758,7 +758,7 @@ int* ap_get_int_list(ArgParser *parser, char *name) {
 
 // Returns an option's values as a freshly-allocated array of doubles. The
 // array's memory is not affected by calls to ap_free().
-double* ap_get_float_list(ArgParser *parser, char *name) {
+double* ap_get_double_list(ArgParser *parser, char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_double_list(opt);
 }

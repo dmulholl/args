@@ -3,7 +3,7 @@
 //
 // Author: Darren Mulholland <darren@mulholland.xyz>
 // License: Public Domain
-// Version: 0.0.1
+// Version: 0.1.0
 // -----------------------------------------------------------------------------
 
 #pragma once
@@ -52,13 +52,13 @@ void ap_parse(ArgParser *parser, int argc, char **argv);
 // Register a boolean option.
 void ap_new_flag(ArgParser *parser, char *name);
 
-// Register a string option with a default value.
-void ap_new_str(ArgParser *parser, char *name, char* fallback);
+// Register a string option.
+void ap_new_str(ArgParser *parser, char *name, char *fallback);
 
-// Register an integer option with a default value.
+// Register an integer option.
 void ap_new_int(ArgParser *parser, char *name, int fallback);
 
-// Register a floating-point option with a default value.
+// Register a floating-point option.
 void ap_new_double(ArgParser *parser, char *name, double fallback);
 
 
@@ -136,7 +136,10 @@ double* ap_get_args_as_floats(ArgParser *parser);
 // Register a command with its associated callback and helptext. The callback
 // should accept an ArgParser instance as its sole parameter and return void.
 ArgParser* ap_new_cmd(
-    ArgParser *parser, char *name, char *help, void (*cb)(ArgParser *parser)
+    ArgParser *parser,
+    char *name,
+    char *help,
+    void (*callback)(ArgParser *parser)
 );
 
 // Returns true if the parser has found a command.

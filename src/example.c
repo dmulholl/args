@@ -31,17 +31,16 @@ int main(int argc, char **argv) {
     ap_new_flag(parser, "bool b");
 
     // Register a string option, --string <arg>, with a single-character
-    // alias, -s <arg>. A string option requires a default value, here
-    // 'foobar'.
+    // alias, -s <arg>.
     ap_new_str(parser, "string s", "foobar");
 
-    // Register an integer option, --int <arg>. An integer option requires a
-    // default value, here 123.
-    ap_new_int(parser, "int", 123);
+    // Register an integer option, --int <arg>, with a single-character alias,
+    // -i <arg>.
+    ap_new_int(parser, "int i", 123);
 
-    // Register a float option, --float <arg>. A float option requires a
-    // default value, here 1.0.
-    ap_new_double(parser, "float", 1.0);
+    // Register a floating-point option, --double <arg>, with a single-
+    // character alias, -d <arg>.
+    ap_new_double(parser, "double d", 1.0);
 
     // Register a command 'foo'. We need to supply the command's help text and
     // callback function.
@@ -52,7 +51,7 @@ int main(int argc, char **argv) {
     // options as we like on this sub-parser. Note that the sub-parser can
     // reuse the parent's option names without interference.
     ap_new_flag(cmd, "bool b");
-    ap_new_int(cmd, "int i", 123);
+    ap_new_int(cmd, "int i", 456);
 
     // Once all our options and commands have been registered we can call the
     // ap_parse() function with an array of argument strings. (Note that we

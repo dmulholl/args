@@ -18,7 +18,7 @@
 
 
 // Print a message to stderr and exit with a non-zero error code.
-static void err(char *msg) {
+static void err(const char *msg) {
     fprintf(stderr, "Error: %s.\n", msg);
     exit(1);
 }
@@ -26,7 +26,7 @@ static void err(char *msg) {
 
 // Print to an automatically-allocated string. Returns NULL if an encoding
 // error occurs or if sufficient memory cannot be allocated.
-static char* str(char *fmt, ...) {
+static char* str(const char *fmt, ...) {
     va_list args;
 
     va_start(args, fmt);
@@ -50,7 +50,7 @@ static char* str(char *fmt, ...) {
 
 
 // Duplicate a string, automatically allocating memory for the copy.
-static char* str_dup(char *arg) {
+static char* str_dup(const char *arg) {
     size_t len = strlen(arg) + 1;
     char *copy = malloc(len);
     return copy ? memcpy(copy, arg, len) : NULL;
@@ -58,7 +58,7 @@ static char* str_dup(char *arg) {
 
 
 // Attempt to parse a string as an integer value, exiting on failure.
-static int try_str_to_int(char *arg) {
+static int try_str_to_int(const char *arg) {
     char *endptr;
     errno = 0;
     long result = strtol(arg, &endptr, 0);
@@ -76,7 +76,7 @@ static int try_str_to_int(char *arg) {
 
 
 // Attempt to parse a string as a double value, exiting on failure.
-static double try_str_to_double(char *arg) {
+static double try_str_to_double(const char *arg) {
     char *endptr;
     errno = 0;
     double result = strtod(arg, &endptr);
@@ -170,7 +170,7 @@ static Map* map_new(MapFreeCB callback) {
 
 
 // Add a key-value pair to a map.
-static void map_add(Map *map, char *key, void *value) {
+static void map_add(Map *map, const char *key, void *value) {
 
     // Do we need to increase the map's capacity?
     if (map->len == map->cap) {
@@ -188,7 +188,7 @@ static void map_add(Map *map, char *key, void *value) {
 
 // Split the specified keystring on spaces into multiple keys and add a
 // separate key-value pair to the map for each key.
-static void map_add_splitkey(Map *map, char *keystr, void *value) {
+static void map_add_splitkey(Map *map, const char *keystr, void *value) {
     char *key;
     char *saveptr;
     char *keystr_cpy = str_dup(keystr);
@@ -204,7 +204,7 @@ static void map_add_splitkey(Map *map, char *keystr, void *value) {
 
 
 // Test if a Map instance contains the specified key.
-static bool map_contains(Map *map, char *key) {
+static bool map_contains(Map *map, const char *key) {
     for (int i = 0; i < map->len; i++) {
         if (strcmp(key, map->entries[i].key) == 0) {
             return true;
@@ -215,7 +215,7 @@ static bool map_contains(Map *map, char *key) {
 
 
 // Retrieve a value from a Map instance. Returns NULL if the key is not found.
-static void* map_get(Map *map, char *key) {
+static void* map_get(Map *map, const char *key) {
     for (int i = 0; i < map->len; i++) {
         if (strcmp(key, map->entries[i].key) == 0) {
             return map->entries[i].value;
@@ -297,25 +297,25 @@ static void option_append(Option *opt, OptionValue value) {
 
 
 // Append a value to a boolean option's internal list.
-static void option_set_flag(Option *opt, bool value) {
+static void option_append_bool(Option *opt, bool value) {
     option_append(opt, (OptionValue){.bool_val = value});
 }
 
 
 // Append a value to a string option's internal list.
-static void option_set_str(Option *opt, char *value) {
+static void option_append_str(Option *opt, char *value) {
     option_append(opt, (OptionValue){.str_val = value});
 }
 
 
 // Append a value to an integer option's internal list.
-static void option_set_int(Option *opt, int value) {
+static void option_append_int(Option *opt, int value) {
     option_append(opt, (OptionValue){.int_val = value});
 }
 
 
 // Append a value to a floating-point option's internal list.
-static void option_set_double(Option *opt, double value) {
+static void option_append_double(Option *opt, double value) {
     option_append(opt, (OptionValue){.double_val = value});
 }
 
@@ -324,13 +324,13 @@ static void option_set_double(Option *opt, double value) {
 // an error message on failure.
 static void option_try_set(Option *opt, char *arg) {
     if (opt->type == STRING) {
-        option_set_str(opt, arg);
+        option_append_str(opt, arg);
     }
     else if (opt->type == INTEGER) {
-        option_set_int(opt, try_str_to_int(arg));
+        option_append_int(opt, try_str_to_int(arg));
     }
     else if (opt->type == DOUBLE) {
-        option_set_double(opt, try_str_to_double(arg));
+        option_append_double(opt, try_str_to_double(arg));
     }
 }
 
@@ -458,7 +458,7 @@ static double* option_get_double_list(Option *opt) {
 
 
 // Returns a freshly-allocated string representing an Option instance.
-static char* option_str(Option *opt) {
+static char* option_to_str(Option *opt) {
 
     char *fallback;
     if (opt->type == FLAG) {
@@ -655,28 +655,28 @@ ArgParser* ap_new(char *helptext, char *version) {
 
 
 // Register a boolean option with a default value of false.
-void ap_new_flag(ArgParser *parser, char *name) {
+void ap_new_flag(ArgParser *parser, const char *name) {
     Option *opt = option_new_flag();
     map_add_splitkey(parser->options, name, opt);
 }
 
 
 // Register a string option.
-void ap_new_str(ArgParser *parser, char *name, char* fallback) {
+void ap_new_str(ArgParser *parser, const char *name, char* fallback) {
     Option *opt = option_new_str(fallback);
     map_add_splitkey(parser->options, name, opt);
 }
 
 
 // Register an integer option.
-void ap_new_int(ArgParser *parser, char *name, int fallback) {
+void ap_new_int(ArgParser *parser, const char *name, int fallback) {
     Option *opt = option_new_int(fallback);
     map_add_splitkey(parser->options, name, opt);
 }
 
 
 // Register a float option.
-void ap_new_double(ArgParser *parser, char *name, double fallback) {
+void ap_new_double(ArgParser *parser, const char *name, double fallback) {
     Option *opt = option_new_float(fallback);
     map_add_splitkey(parser->options, name, opt);
 }
@@ -688,7 +688,7 @@ void ap_new_double(ArgParser *parser, char *name, double fallback) {
 
 
 // Retrieve a registered Option instance.
-static Option* ap_get_opt(ArgParser *parser, char *name) {
+static Option* ap_get_opt(ArgParser *parser, const char *name) {
     Option *opt = map_get(parser->options, name);
     if (opt == NULL) {
         fprintf(stderr, "Abort: '%s' is not a registered option.\n", name);
@@ -699,42 +699,42 @@ static Option* ap_get_opt(ArgParser *parser, char *name) {
 
 
 // Returns true if the specified option was found while parsing.
-bool ap_found(ArgParser *parser, char *name) {
+bool ap_found(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return opt->found;
 }
 
 
 // Returns the value of the specified boolean option.
-bool ap_get_flag(ArgParser *parser, char *name) {
+bool ap_get_flag(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_flag(opt);
 }
 
 
 // Returns the value of the specified string option.
-char* ap_get_str(ArgParser *parser, char *name) {
+char* ap_get_str(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_str(opt);
 }
 
 
 // Returns the value of the specified integer option.
-int ap_get_int(ArgParser *parser, char *name) {
+int ap_get_int(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_int(opt);
 }
 
 
 // Returns the value of the specified floating-point option.
-double ap_get_double(ArgParser *parser, char *name) {
+double ap_get_double(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_double(opt);
 }
 
 
 // Returns the length of the specified option's internal list of values.
-int ap_len_list(ArgParser *parser, char *name) {
+int ap_len_list(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return opt->len;
 }
@@ -742,7 +742,7 @@ int ap_len_list(ArgParser *parser, char *name) {
 
 // Returns an option's values as a freshly-allocated array of string pointers.
 // The array's memory is not affected by calls to ap_free().
-char** ap_get_str_list(ArgParser *parser, char *name) {
+char** ap_get_str_list(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_str_list(opt);
 }
@@ -750,7 +750,7 @@ char** ap_get_str_list(ArgParser *parser, char *name) {
 
 // Returns an option's values as a freshly-allocated array of integers. The
 // array's memory is not affected by calls to ap_free().
-int* ap_get_int_list(ArgParser *parser, char *name) {
+int* ap_get_int_list(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_int_list(opt);
 }
@@ -758,7 +758,7 @@ int* ap_get_int_list(ArgParser *parser, char *name) {
 
 // Returns an option's values as a freshly-allocated array of doubles. The
 // array's memory is not affected by calls to ap_free().
-double* ap_get_double_list(ArgParser *parser, char *name) {
+double* ap_get_double_list(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return option_get_double_list(opt);
 }
@@ -920,7 +920,7 @@ static void ap_parse_long_opt(ArgParser *parser, char *arg, ArgStream *stream) {
         Option *opt = map_get(parser->options, arg);
         opt->found = true;
         if (opt->type == FLAG) {
-            option_set_flag(opt, true);
+            option_append_bool(opt, true);
         } else if (argstream_has_next(stream)) {
             option_try_set(opt, argstream_next(stream));
         } else {
@@ -976,7 +976,7 @@ static void ap_parse_short_opt(ArgParser *parser, char *arg, ArgStream *stream)
         }
         opt->found = true;
         if (opt->type == FLAG) {
-            option_set_flag(opt, true);
+            option_append_bool(opt, true);
         } else if (argstream_has_next(stream)) {
             option_try_set(opt, argstream_next(stream));
         } else {
@@ -1087,7 +1087,7 @@ void ap_print(ArgParser *parser) {
         for (int i = 0; i < parser->options->len; i++) {
             char *name = map_key_at_index(parser->options, i);
             Option *opt = map_value_at_index(parser->options, i);
-            char *optstr = option_str(opt);
+            char *optstr = option_to_str(opt);
             printf("  %s: %s\n", name, optstr);
             free(optstr);
         }

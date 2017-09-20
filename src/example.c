@@ -31,20 +31,20 @@ int main(int argc, char **argv) {
     ap_new_flag(parser, "bool b");
 
     // Register a string option, --string <arg>, with a single-character
-    // alias, -s <arg>.
+    // alias, -s <arg>, and fallback value "foobar".
     ap_new_str(parser, "string s", "foobar");
 
     // Register an integer option, --int <arg>, with a single-character alias,
-    // -i <arg>.
+    // -i <arg>, and fallback value 123.
     ap_new_int(parser, "int i", 123);
 
     // Register a floating-point option, --double <arg>, with a single-
-    // character alias, -d <arg>.
+    // character alias, -d <arg>, and fallback value 1.0.
     ap_new_double(parser, "double d", 1.0);
 
     // Register a command 'foo'. We need to supply the command's help text and
     // callback function.
-    ArgParser *cmd = ap_new_cmd(parser, "foo", "Command!", callback);
+    ArgParser *cmd = ap_new_cmd(parser, "foo", "Foo!", callback);
 
     // Registering a command returns a new ArgParser instance dedicated to
     // parsing the command's arguments. We can register as many flags and

@@ -374,7 +374,7 @@ static Option* option_new_int(int fallback) {
 
 
 // Initialize a floating-point option with a fallback value.
-static Option* option_new_float(double fallback) {
+static Option* option_new_double(double fallback) {
     Option *opt = option_new();
     opt->type = DOUBLE;
     opt->fallback = (OptionValue){.double_val = fallback};
@@ -677,7 +677,7 @@ void ap_new_int(ArgParser *parser, const char *name, int fallback) {
 
 // Register a float option.
 void ap_new_double(ArgParser *parser, const char *name, double fallback) {
-    Option *opt = option_new_float(fallback);
+    Option *opt = option_new_double(fallback);
     map_add_splitkey(parser->options, name, opt);
 }
 

@@ -14,6 +14,7 @@
 // Types.
 // -----------------------------------------------------------------------------
 
+
 // An ArgParser instance is responsible for storing registered options and
 // commands. Note that every registered command recursively receives an
 // ArgParser instance of its own.
@@ -102,6 +103,7 @@ double* ap_get_double_list(ArgParser *parser, char *name);
 // Retrieving positional arguments.
 // -----------------------------------------------------------------------------
 
+
 // Returns true if the parser has found one or more positional arguments.
 bool ap_has_args(ArgParser *parser);
 
@@ -133,6 +135,7 @@ double* ap_get_args_as_floats(ArgParser *parser);
 // Commands.
 // -----------------------------------------------------------------------------
 
+
 // Register a command with its associated callback and helptext. The callback
 // should accept an ArgParser instance as its sole parameter and return void.
 ArgParser* ap_new_cmd(
@@ -158,6 +161,7 @@ ArgParser* ap_get_parent(ArgParser *parser);
 // -----------------------------------------------------------------------------
 // Utilities.
 // -----------------------------------------------------------------------------
+
 
 // Print a parser instance to stdout.
 void ap_print(ArgParser *parser);

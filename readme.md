@@ -1,6 +1,6 @@
 # Cops
 
-Cops is a minimalist argument-parsing library for C.
+Cops is a C library for parsing command line arguments.
 
 
 #### Features

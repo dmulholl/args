@@ -25,5 +25,5 @@ Cops is a C library for parsing command line arguments.
 * [Sample Application][sample]
 
 
-[docs]: https://mulholland.xyz/docs/cops/
+[docs]: https://darrenmulholland.com/docs/cops/
 [sample]: https://github.com/dmulholland/cops/blob/master/src/example.c

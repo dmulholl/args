@@ -1,11 +1,11 @@
 ---
 title: Home
-meta title: Cops &mdash; an argument-parsing library for C
+meta title: Janus &mdash; an argument-parsing library for C
 meta description: >
-    Cops is a minimalist argument-parsing library designed for building elegant command-line interfaces.
+    Janus is an argument-parsing library designed for building elegant command-line interfaces.
 ---
 
-Cops is an argument-parsing library designed for building elegant command-line interfaces.
+Janus is an argument-parsing library designed for building elegant command-line interfaces.
 
 
 
@@ -30,12 +30,10 @@ Cops is an argument-parsing library designed for building elegant command-line i
 
 * [Github Homepage][github]
 * [Sample Application][sample]
-* [Online Documentation][docs]
 
 
-[github]: https://github.com/dmulholland/cops
-[docs]: https://darrenmulholland.com/docs/cops/
-[sample]: https://github.com/dmulholland/cops/blob/master/src/example.c
+[github]: https://github.com/dmulholland/janus-c
+[sample]: https://github.com/dmulholland/janus-c/blob/master/src/example.c
 
 
 

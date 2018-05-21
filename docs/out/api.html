@@ -14,7 +14,7 @@
   <body class="node-api node">
 
     <header class="masthead">
-      <h1><a href="index.html">Cops</a></h1>
+      <h1><a href="index.html">Janus</a></h1>
       
         <p class="tagline">An argument-parsing library for C.</p>
       
@@ -29,7 +29,7 @@
 <li><a href="index.html">Home</a></li>
 <li><a href="cli.html">CLI</a></li>
 <li><a href="api.html">API</a></li>
-<li><a href="https://github.com/dmulholland/cops">Source</a></li>
+<li><a href="https://github.com/dmulholland/janus-c">Source</a></li>
 </ul>
       </nav>
     </header>
@@ -62,16 +62,16 @@
 </ul>
 <hr>
 <p>
-To use Cops in your C application add the <code>cops.c</code> and <code>cops.h</code> files to your source folder and include the header file:
+To use Janus in your C application add the <code>janus.c</code> and <code>janus.h</code> files to your source folder and include the header file:
 </p>
 <pre class="lang-c pygments" data-lang="c">
-<span class="cp">#include</span> <span class="cpf">&quot;cops.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;janus.h&quot;</span><span class="cp"></span>
 </pre>
 <p>
 The header exports an <code>ArgParser</code> type and a collection of <code>ap_*</code> prefixed functions.
 </p>
 <p>
-Cops is written in portable C99.
+Janus is written in portable C99.
 </p>
 <h2 id="basic-usage">
 Basic Usage
@@ -110,7 +110,7 @@ This will free the memory occupied by the parser instance itself and any associa
 Register Options
 </h2>
 <p>
-Cops supports long-form options, <code>--foo</code>, with single-character shortcuts, <code>-f</code>.
+Janus supports long-form options, <code>--foo</code>, with single-character shortcuts, <code>-f</code>.
 </p>
 <p>
 An option can have an unlimited number of long and short-form aliases. Aliases are specified via the <code>name</code> parameter which accepts a string of space-separated alternatives, e.g. <code>&quot;foo f&quot;</code>.
@@ -303,7 +303,7 @@ Returns the number of positional arguments.
 Commands
 </h2>
 <p>
-Cops supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the <code>ap_new_cmd()</code> function:
+Janus supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the <code>ap_new_cmd()</code> function:
 </p>
 <pre class="lang-c pygments" data-lang="c">
 <span class="n">ArgParser</span><span class="o">*</span> <span class="nf">ap_new_cmd</span><span class="p">(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">helptext</span><span class="p">,</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">));</span>

@@ -1,20 +1,20 @@
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Make variables.
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 CFLAGS = -Wall -Wextra --std=c99 --pedantic
 
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Targets.
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-example: src/example.c src/cops.c src/cops.h
+example: src/example.c src/janus.c src/janus.h
 	@mkdir -p bin
-	$(CC) $(CFLAGS) -o bin/example src/example.c src/cops.c
+	$(CC) $(CFLAGS) -o bin/example src/example.c src/janus.c
 
-unittests: src/tests.c src/cops.c src/cops.h
+unittests: src/tests.c src/janus.c src/janus.h
 	@mkdir -p bin
-	$(CC) $(CFLAGS) -Wno-unused-parameter -o bin/unittests src/tests.c src/cops.c
+	$(CC) $(CFLAGS) -Wno-unused-parameter -o bin/unittests src/tests.c src/janus.c
 
 check:
 	@make unittests

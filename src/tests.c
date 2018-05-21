@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// Unit tests for the Cops library.
+// Unit tests for the library.
 // -----------------------------------------------------------------------------
 
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <string.h>
-#include "cops.h"
+#include "janus.h"
 
 
 // -----------------------------------------------------------------------------

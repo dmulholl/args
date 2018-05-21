@@ -14,7 +14,7 @@
   <body class="node-cli node">
 
     <header class="masthead">
-      <h1><a href="index.html">Cops</a></h1>
+      <h1><a href="index.html">Janus</a></h1>
       
         <p class="tagline">An argument-parsing library for C.</p>
       
@@ -29,7 +29,7 @@
 <li><a href="index.html">Home</a></li>
 <li><a href="cli.html">CLI</a></li>
 <li><a href="api.html">API</a></li>
-<li><a href="https://github.com/dmulholland/cops">Source</a></li>
+<li><a href="https://github.com/dmulholland/janus-c">Source</a></li>
 </ul>
       </nav>
     </header>
@@ -44,7 +44,7 @@
 Options
 </h4>
 <p>
-Cops supports four kinds of options: boolean, string, integer, and floating-point.
+Janus supports four kinds of options: boolean, string, integer, and floating-point.
 </p>
 <ul>
 <li>
@@ -89,16 +89,16 @@ the value of the option <code>foo</code> is <code>456</code> but the array <code
 Positional Arguments
 </h3>
 <p>
-Options can be preceded, followed, or interspaced with positional arguments. Cops assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.
+Options can be preceded, followed, or interspaced with positional arguments. Janus assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.
 </p>
 <p>
-Cops supports the standard <code>--</code> switch for turning off option-parsing. All arguments following a <code>--</code> will be treated as positional arguments, even if they begin with a single or double dash.
+Janus supports the standard <code>--</code> switch for turning off option-parsing. All arguments following a <code>--</code> will be treated as positional arguments, even if they begin with a single or double dash.
 </p>
 <h3 id="commands">
 Commands
 </h3>
 <p>
-Cops supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic <code>--help</code> flag and an automatic <code>help &lt;cmd&gt;</code> command, i.e. the commands
+Janus supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic <code>--help</code> flag and an automatic <code>help &lt;cmd&gt;</code> command, i.e. the commands
 </p>
 <pre>
 $ myapp &lt;cmd&gt; --help

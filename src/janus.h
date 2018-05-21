@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
-// Cops: a minimalist argument-parsing library written in portable C99.
+// Janus: an argument-parsing library written in portable C99.
 //
 // Author: Darren Mulholland <darren@mulholland.xyz>
 // License: Public Domain
-// Version: 0.1.0
+// Version: 0.2.0
 // -----------------------------------------------------------------------------
 
 #pragma once

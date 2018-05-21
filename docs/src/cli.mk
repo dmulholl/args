@@ -4,7 +4,7 @@ title: Command Line Interface
 
 #### Options
 
-Cops supports four kinds of options: boolean, string, integer, and floating-point.
+Janus supports four kinds of options: boolean, string, integer, and floating-point.
 
 * Boolean options take no arguments but are either present (*true*) or absent (*false*).
 
@@ -35,15 +35,15 @@ the value of the option `foo` is `456` but the array `[123, 456]` is also availa
 
 ### Positional Arguments
 
-Options can be preceded, followed, or interspaced with positional arguments. Cops assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.
+Options can be preceded, followed, or interspaced with positional arguments. Janus assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.
 
-Cops supports the standard `--` switch for turning off option-parsing. All arguments following a `--` will be treated as positional arguments, even if they begin with a single or double dash.
+Janus supports the standard `--` switch for turning off option-parsing. All arguments following a `--` will be treated as positional arguments, even if they begin with a single or double dash.
 
 
 
 ### Commands
 
-Cops supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic `--help` flag and an automatic `help <cmd>` command, i.e. the commands
+Janus supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic `--help` flag and an automatic `help <cmd>` command, i.e. the commands
 
     $ myapp <cmd> --help
 

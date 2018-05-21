@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
-// A simple application demonstrating Cops in action.
+// A simple application demonstrating the library in action.
 // -----------------------------------------------------------------------------
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "cops.h"
+#include "janus.h"
 
 
 // Callback function for the 'foo' command. The function receives a pointer

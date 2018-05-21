@@ -6,15 +6,15 @@ title: API
 
 ---
 
-To use Cops in your C application add the `cops.c` and `cops.h` files to your source folder and include the header file:
+To use Janus in your C application add the `janus.c` and `janus.h` files to your source folder and include the header file:
 
 ::: c
 
-    #include "cops.h"
+    #include "janus.h"
 
 The header exports an `ArgParser` type and a collection of `ap_*` prefixed functions.
 
-Cops is written in portable C99.
+Janus is written in portable C99.
 
 
 
@@ -49,7 +49,7 @@ This will free the memory occupied by the parser instance itself and any associa
 
 ## Register Options
 
-Cops supports long-form options, `--foo`, with single-character shortcuts, `-f`.
+Janus supports long-form options, `--foo`, with single-character shortcuts, `-f`.
 
 An option can have an unlimited number of long and short-form aliases. Aliases are specified via the `name` parameter which accepts a string of space-separated alternatives, e.g. `"foo f"`.
 
@@ -175,7 +175,7 @@ Options can be preceded, followed, or interspaced with positional arguments.
 
 ## Commands
 
-Cops supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the `ap_new_cmd()` function:
+Janus supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the `ap_new_cmd()` function:
 
 ::: c
 

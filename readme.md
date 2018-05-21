@@ -1,6 +1,6 @@
-# Cops
+# Janus
 
-Cops is a C library for parsing command line arguments.
+Janus is a C library for parsing command line arguments.
 
 
 #### Features
@@ -25,5 +25,5 @@ Cops is a C library for parsing command line arguments.
 * [Sample Application][sample]
 
 
-[docs]: https://darrenmulholland.com/docs/cops/
-[sample]: https://github.com/dmulholland/cops/blob/master/src/example.c
+[docs]: https://darrenmulholland.com/docs/janus-c/
+[sample]: https://github.com/dmulholland/janus-c/blob/master/src/example.c

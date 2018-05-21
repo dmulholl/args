@@ -1,6 +1,6 @@
 # Janus
 
-Janus is a C library for parsing command line arguments.
+A C library for parsing command line arguments.
 
 
 #### Features

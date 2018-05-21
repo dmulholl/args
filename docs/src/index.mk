@@ -34,7 +34,7 @@ Cops is an argument-parsing library designed for building elegant command-line i
 
 
 [github]: https://github.com/dmulholland/cops
-[docs]: http://mulholland.xyz/docs/cops/
+[docs]: https://darrenmulholland.com/docs/cops/
 [sample]: https://github.com/dmulholland/cops/blob/master/src/example.c
 
 

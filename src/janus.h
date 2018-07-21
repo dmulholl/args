@@ -3,10 +3,12 @@
 //
 // Author: Darren Mulholland <darren@mulholland.xyz>
 // License: Public Domain
-// Version: 0.2.0
+// Version: 0.2.1
 // -----------------------------------------------------------------------------
 
-#pragma once
+#ifndef janus_h
+#define janus_h
+
 #include <stdbool.h>
 
 
@@ -165,3 +167,5 @@ ArgParser* ap_get_parent(ArgParser *parser);
 
 // Print a parser instance to stdout.
 void ap_print(ArgParser *parser);
+
+#endif

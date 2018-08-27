@@ -1,4 +1,4 @@
-# Janus
+# Janus for C
 
 A C library for parsing command line arguments.
 

@@ -32,7 +32,6 @@ the value of the option `foo` is `456` but the array `[123, 456]` is also availa
 
 
 
-
 ### Positional Arguments
 
 Options can be preceded, followed, or interspaced with positional arguments. Janus assembles all positional arguments together into a single, undifferentiated array of strings. Convenience functions are supplied for parsing these strings as integers or doubles.

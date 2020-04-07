@@ -6,9 +6,9 @@ title: Command Line Interface
 
 Janus supports four kinds of options: boolean, string, integer, and floating-point.
 
-* Boolean options take no arguments but are either present (*true*) or absent (*false*).
+(*) Boolean options take no arguments but are either present (*true*) or absent (*false*).
 
-* String, integer, and floating-point options require arguments of the appropriate type.
+(*) String, integer, and floating-point options require arguments of the appropriate type.
 
 An option can have an unlimited number of long-form aliases and single-character shortcuts: `--option`, `-o`.
 

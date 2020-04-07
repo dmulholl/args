@@ -5,7 +5,7 @@
     <title>API</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="graphite.css">
     <link rel="stylesheet" href="pygments.css">
     
     
@@ -120,6 +120,7 @@ An option can have an unlimited number of long and short-form aliases. Aliases a
 Option values can be separated on the command line by either a space, <code>--foo 123</code>, or an equals symbol, <code>--foo=123</code>.
 </p>
 <dl>
+<div>
 <dt>
 <code>void ap_new_flag(ArgParser *parser, char *name)</code>
 </dt>
@@ -128,6 +129,8 @@ Option values can be separated on the command line by either a space, <code>--fo
 Register a flag (a boolean option) with a default value of <code>false</code>. Flag options take no arguments but are either present (<code>true</code>) or absent (<code>false</code>).
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>void ap_new_double(ArgParser *parser, char *name, double fallback)</code>
 </dt>
@@ -136,6 +139,8 @@ Register a flag (a boolean option) with a default value of <code>false</code>. F
 Register a floating-point option.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>void ap_new_int(ArgParser *parser, char *name, int fallback)</code>
 </dt>
@@ -144,6 +149,8 @@ Register a floating-point option.
 Register an integer option.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>void ap_new_str(ArgParser *parser, char *name, char* fallback)</code>
 </dt>
@@ -152,6 +159,7 @@ Register an integer option.
 Register a string option.
 </p>
 </dd>
+</div>
 </dl>
 <h2 id="retrieve-a-single-value">
 Retrieve A Single Value
@@ -163,6 +171,7 @@ An option's value can be retrieved from the parser instance using any of its reg
 Each option maintains an internal list of values — the value of the option is the final value in the list or the fallback value if the list is empty.
 </p>
 <dl>
+<div>
 <dt>
 <code>bool ap_found(ArgParser *parser, char *name)</code>
 </dt>
@@ -171,6 +180,8 @@ Each option maintains an internal list of values — the value of the option is 
 Returns true if the specified option was found while parsing.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>bool ap_get_flag(ArgParser *parser, char *name)</code>
 </dt>
@@ -179,6 +190,8 @@ Returns true if the specified option was found while parsing.
 Returns the value of the specified boolean option.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>double ap_get_double(ArgParser *parser, char *name)</code>
 </dt>
@@ -187,6 +200,8 @@ Returns the value of the specified boolean option.
 Returns the value of the specified floating-point option.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>int ap_get_int(ArgParser *parser, char *name)</code>
 </dt>
@@ -195,6 +210,8 @@ Returns the value of the specified floating-point option.
 Returns the value of the specified integer option.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>char* ap_get_str(ArgParser *parser, char *name)</code>
 </dt>
@@ -203,6 +220,7 @@ Returns the value of the specified integer option.
 Returns the value of the specified string option.
 </p>
 </dd>
+</div>
 </dl>
 <h2 id="retrieve-multiple-values">
 Retrieve Multiple Values
@@ -211,6 +229,7 @@ Retrieve Multiple Values
 An option's internal array of values can be retrieved from the parser instance using any of its registered aliases.
 </p>
 <dl>
+<div>
 <dt>
 <code>double* ap_get_double_list(ArgParser *parser, char *name)</code>
 </dt>
@@ -219,6 +238,8 @@ An option's internal array of values can be retrieved from the parser instance u
 Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>int* ap_get_int_list(ArgParser *parser, char *name)</code>
 </dt>
@@ -227,6 +248,8 @@ Returns the specified option's list of values as a freshly-allocated array of do
 Returns the specified option's list of values as a freshly-allocated array of integers. The array's memory is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>char** ap_get_str_list(ArgParser *parser, char *name)</code>
 </dt>
@@ -235,6 +258,8 @@ Returns the specified option's list of values as a freshly-allocated array of in
 Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>int ap_len_list(ArgParser *parser, char *name)</code>
 </dt>
@@ -243,6 +268,7 @@ Returns the specified option's list of values as a freshly-allocated array of st
 Returns the length of the specified option's list of values.
 </p>
 </dd>
+</div>
 </dl>
 <h2 id="retrieve-positional-arguments">
 Retrieve Positional Arguments
@@ -251,6 +277,7 @@ Retrieve Positional Arguments
 Options can be preceded, followed, or interspaced with positional arguments.
 </p>
 <dl>
+<div>
 <dt>
 <code>char* ap_get_arg(ArgParser *parser, int index)</code>
 </dt>
@@ -259,6 +286,8 @@ Options can be preceded, followed, or interspaced with positional arguments.
 Returns the positional argument at the specified index.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>char** ap_get_args(ArgParser *parser)</code>
 </dt>
@@ -267,6 +296,8 @@ Returns the positional argument at the specified index.
 Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>double* ap_get_args_as_floats(ArgParser *parser)</code>
 </dt>
@@ -275,6 +306,8 @@ Returns the positional arguments as a freshly-allocated array of string pointers
 Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>int* ap_get_args_as_ints(ArgParser *parser)</code>
 </dt>
@@ -283,6 +316,8 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>bool ap_has_args(ArgParser *parser)</code>
 </dt>
@@ -291,6 +326,8 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 Returns true if at least one positional argument has been found.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>int ap_num_args(ArgParser *parser)</code>
 </dt>
@@ -299,6 +336,7 @@ Returns true if at least one positional argument has been found.
 Returns the number of positional arguments.
 </p>
 </dd>
+</div>
 </dl>
 <h2 id="commands">
 Commands
@@ -333,6 +371,7 @@ The specified callback function will be called if the command is found. The call
 The following functions are also available for processing commands manually:
 </p>
 <dl>
+<div>
 <dt>
 <code>char* ap_get_cmd_name(ArgParser *parser)</code>
 </dt>
@@ -341,6 +380,8 @@ The following functions are also available for processing commands manually:
 Returns the command name, if the parser has found a command.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>ArgParser* ap_get_cmd_parser(ArgParser *parser)</code>
 </dt>
@@ -349,6 +390,8 @@ Returns the command name, if the parser has found a command.
 Returns the command's parser instance, if the parser has found a command.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>ArgParser* ap_get_parent(ArgParser *parser)</code>
 </dt>
@@ -357,6 +400,8 @@ Returns the command's parser instance, if the parser has found a command.
 Returns a pointer to a command parser's parent parser.
 </p>
 </dd>
+</div>
+<div>
 <dt>
 <code>bool ap_has_cmd(ArgParser *parser)</code>
 </dt>
@@ -365,6 +410,7 @@ Returns a pointer to a command parser's parent parser.
 Returns true if the parser has found a command.
 </p>
 </dd>
+</div>
 </dl>
 
     </article>

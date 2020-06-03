@@ -3,5 +3,4 @@
 # ------------------------------------------------------------------------------
 
 title = "Janus"
-
 tagline = "An argument-parsing library for C."

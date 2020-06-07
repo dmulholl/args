@@ -9,7 +9,6 @@ title: API
 To use Janus in your C application add the `janus.c` and `janus.h` files to your source folder and include the header file:
 
 ::: code c
-
     #include "janus.h"
 
 The header exports an `ArgParser` type and a collection of `ap_*` prefixed functions.
@@ -23,7 +22,6 @@ Janus is written in portable C99.
 Initialize an argument parser, optionally specifying the application's help text and version:
 
 ::: code c
-
     ArgParser* ap_new(char *helptext, char *version);
 
 Supplying help text activates an automatic `--help` flag; supplying a version string activates an automatic `--version` flag. (Automatic `-h` and `-v` shortcuts are also activated unless registered by other options.) `NULL` can be passed for either parameter.
@@ -31,7 +29,6 @@ Supplying help text activates an automatic `--help` flag; supplying a version st
 You can now register your application's options and commands on the parser using the registration functions described below. Once the required options and commands have been registered, call the `ap_parse()` function to process the application's command line arguments:
 
 ::: code c
-
     void ap_parse(ArgParser *parser, int argc, char **argv);
 
 The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
@@ -84,9 +81,14 @@ An option's value can be retrieved from the parser instance using any of its reg
 Each option maintains an internal list of values — the value of the option is the final value in the list or the fallback value if the list is empty.
 
 
+[[  `int ap_count(ArgParser *parser, char *name)`  ]]
+
+    Returns the number of times the specified option was found.
+
+
 [[  `bool ap_found(ArgParser *parser, char *name)`  ]]
 
-    Returns true if the specified option was found while parsing.
+    Returns true if the specified option was found.
 
 
 [[  `bool ap_get_flag(ArgParser *parser, char *name)`  ]]
@@ -112,7 +114,7 @@ Each option maintains an internal list of values — the value of the option is 
 
 ## Retrieve Multiple Values
 
-An option's internal array of values can be retrieved from the parser instance using any of its registered aliases.
+A copy of an option's internal array of values can be retrieved from the parser instance using any of its registered aliases. The length of this array is given by `ap_count()`.
 
 
 [[  `double* ap_get_double_list(ArgParser *parser, char *name)`  ]]
@@ -128,11 +130,6 @@ An option's internal array of values can be retrieved from the parser instance u
 [[  `char** ap_get_str_list(ArgParser *parser, char *name)`  ]]
 
     Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to `ap_free()`.
-
-
-[[  `int ap_len_list(ArgParser *parser, char *name)`  ]]
-
-    Returns the length of the specified option's list of values.
 
 
 

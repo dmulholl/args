@@ -173,11 +173,21 @@ Each option maintains an internal list of values — the value of the option is 
 <dl>
 <div>
 <dt>
+<code>int ap_count(ArgParser *parser, char *name)</code>
+</dt>
+<dd>
+<p>
+Returns the number of times the specified option was found.
+</p>
+</dd>
+</div>
+<div>
+<dt>
 <code>bool ap_found(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns true if the specified option was found while parsing.
+Returns true if the specified option was found.
 </p>
 </dd>
 </div>
@@ -226,7 +236,7 @@ Returns the value of the specified string option.
 Retrieve Multiple Values
 </h2>
 <p>
-An option's internal array of values can be retrieved from the parser instance using any of its registered aliases.
+A copy of an option's internal array of values can be retrieved from the parser instance using any of its registered aliases. The length of this array is given by <code>ap_count()</code>.
 </p>
 <dl>
 <div>
@@ -256,16 +266,6 @@ Returns the specified option's list of values as a freshly-allocated array of in
 <dd>
 <p>
 Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>.
-</p>
-</dd>
-</div>
-<div>
-<dt>
-<code>int ap_len_list(ArgParser *parser, char *name)</code>
-</dt>
-<dd>
-<p>
-Returns the length of the specified option's list of values.
 </p>
 </dd>
 </div>
@@ -412,7 +412,6 @@ Returns true if the parser has found a command.
 </dd>
 </div>
 </dl>
-
     </article>
 
     

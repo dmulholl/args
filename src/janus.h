@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // Janus: an argument-parsing library written in portable C99.
 //
-// Author: Darren Mulholland <darren@mulholland.xyz>
+// Author: Darren Mulholland <dmulholl@tcd.ie>
 // License: Public Domain
-// Version: 0.2.1
+// Version: 0.3.0
 // -----------------------------------------------------------------------------
 
 #ifndef janus_h
@@ -70,6 +70,9 @@ void ap_new_double(ArgParser *parser, char *name, double fallback);
 // -----------------------------------------------------------------------------
 
 
+// Returns the number of times the specified option was found.
+int ap_count(ArgParser *parser, char *name);
+
 // Returns true if the specified option was found while parsing.
 bool ap_found(ArgParser *parser, char *name);
 
@@ -85,7 +88,7 @@ int ap_get_int(ArgParser *parser, char *name);
 // Returns the value of a floating-point option.
 double ap_get_double(ArgParser *parser, char *name);
 
-// Returns the length of a list-option's list of values.
+// Deprecated, equivalent to ap_count().
 int ap_len_list(ArgParser *parser, char *name);
 
 // Returns a list-option's values as a freshly-allocated array of string

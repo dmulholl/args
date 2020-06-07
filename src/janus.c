@@ -734,6 +734,13 @@ double ap_get_double(ArgParser *parser, const char *name) {
 
 
 // Returns the length of the specified option's internal list of values.
+int ap_count(ArgParser *parser, const char *name) {
+    Option *opt = ap_get_opt(parser, name);
+    return opt->len;
+}
+
+
+// Deprecated: equivalent to ap_count().
 int ap_len_list(ArgParser *parser, const char *name) {
     Option *opt = ap_get_opt(parser, name);
     return opt->len;

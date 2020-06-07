@@ -59,7 +59,7 @@ void test_bool_list_empty() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_flag(parser, "bool");
     ap_parse(parser, 1, (char *[]){""});
-    assert(ap_len_list(parser, "bool") == 0);
+    assert(ap_count(parser, "bool") == 0);
     ap_free(parser);
     printf(".");
 }
@@ -69,7 +69,7 @@ void test_bool_list_longform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_flag(parser, "bool");
     ap_parse(parser, 4, (char *[]){"", "--bool", "--bool", "--bool"});
-    assert(ap_len_list(parser, "bool") == 3);
+    assert(ap_count(parser, "bool") == 3);
     ap_free(parser);
     printf(".");
 }
@@ -79,7 +79,7 @@ void test_bool_list_shortform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_flag(parser, "bool");
     ap_parse(parser, 3, (char *[]){"", "-b", "-bb"});
-    assert(ap_len_list(parser, "bool") == 3);
+    assert(ap_count(parser, "bool") == 3);
     ap_free(parser);
     printf(".");
 }
@@ -130,7 +130,7 @@ void test_string_list_empty() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_str(parser, "str", "default");
     ap_parse(parser, 1, (char *[]){""});
-    assert(ap_len_list(parser, "str") == 0);
+    assert(ap_count(parser, "str") == 0);
     printf(".");
 }
 
@@ -139,7 +139,7 @@ void test_string_list_longform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_str(parser, "str", "default");
     ap_parse(parser, 6, (char *[]){"", "--str", "a", "b", "--str", "c"});
-    assert(ap_len_list(parser, "str") == 2);
+    assert(ap_count(parser, "str") == 2);
     assert(strcmp(ap_get_str_list(parser, "str")[0], "a") == 0);
     assert(strcmp(ap_get_str_list(parser, "str")[1], "c") == 0);
     printf(".");
@@ -150,7 +150,7 @@ void test_string_list_shortform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_str(parser, "str s", "default");
     ap_parse(parser, 6, (char *[]){"", "-s", "a", "b", "-s", "c"});
-    assert(ap_len_list(parser, "str") == 2);
+    assert(ap_count(parser, "str") == 2);
     assert(strcmp(ap_get_str_list(parser, "str")[0], "a") == 0);
     assert(strcmp(ap_get_str_list(parser, "str")[1], "c") == 0);
     printf(".");
@@ -202,7 +202,7 @@ void test_int_list_empty() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_int(parser, "int", 101);
     ap_parse(parser, 1, (char *[]){""});
-    assert(ap_len_list(parser, "int") == 0);
+    assert(ap_count(parser, "int") == 0);
     printf(".");
 }
 
@@ -211,7 +211,7 @@ void test_int_list_longform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_int(parser, "int", 101);
     ap_parse(parser, 6, (char *[]){"", "--int", "1", "2", "--int", "3"});
-    assert(ap_len_list(parser, "int") == 2);
+    assert(ap_count(parser, "int") == 2);
     assert(ap_get_int_list(parser, "int")[0] == 1);
     assert(ap_get_int_list(parser, "int")[1] == 3);
     printf(".");
@@ -222,7 +222,7 @@ void test_int_list_shortform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_int(parser, "int i", 101);
     ap_parse(parser, 6, (char *[]){"", "-i", "1", "2", "-i", "3"});
-    assert(ap_len_list(parser, "int") == 2);
+    assert(ap_count(parser, "int") == 2);
     assert(ap_get_int_list(parser, "int")[0] == 1);
     assert(ap_get_int_list(parser, "int")[1] == 3);
     printf(".");
@@ -274,7 +274,7 @@ void test_double_list_empty() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_double(parser, "float", 1.1);
     ap_parse(parser, 1, (char *[]){""});
-    assert(ap_len_list(parser, "float") == 0);
+    assert(ap_count(parser, "float") == 0);
     printf(".");
 }
 
@@ -283,7 +283,7 @@ void test_double_list_longform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_double(parser, "flt", 1.1);
     ap_parse(parser, 6, (char *[]){"", "--flt", "1", "2", "--flt", "3"});
-    assert(ap_len_list(parser, "flt") == 2);
+    assert(ap_count(parser, "flt") == 2);
     assert(ap_get_double_list(parser, "flt")[0] == 1.0);
     assert(ap_get_double_list(parser, "flt")[1] == 3.0);
     printf(".");
@@ -294,7 +294,7 @@ void test_double_list_shortform() {
     ArgParser *parser = ap_new(NULL, NULL);
     ap_new_double(parser, "flt f", 1.1);
     ap_parse(parser, 6, (char *[]){"", "-f", "1", "2", "-f", "3"});
-    assert(ap_len_list(parser, "flt") == 2);
+    assert(ap_count(parser, "flt") == 2);
     assert(ap_get_double_list(parser, "flt")[0] == 1.0);
     assert(ap_get_double_list(parser, "flt")[1] == 3.0);
     printf(".");

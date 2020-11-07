@@ -3,7 +3,7 @@
 //
 // Author: Darren Mulholland <dmulholl@tcd.ie>
 // License: Public Domain
-// Version: 0.3.0
+// Version: 1.0.0
 // -----------------------------------------------------------------------------
 
 #ifndef janus_h

@@ -1,0 +1,55 @@
+---
+title: Quickstart Tutorial
+---
+
+Imagine we're building a utility for joining MP3 files, something like [MP3cat](https://github.com/dmulholl/mp3cat).
+We want the user to supply the file names as a list of command line arguments.
+We also want to support an `--out/-o` option so the user can specify an output filename and a `--quiet/-q` flag for turning down the program's verbosity.
+
+First we need to create an `ArgParser` instance:
+
+::: code c
+    #include "args.h"
+
+    ArgParser *parser = ap_new();
+    ap_helptext(parser, "Usage: mp3cat...");
+    ap_version(parser, "1.0");
+
+Supplying a helptext string for the parser activates an automatic `--help/-h` flag; similarly, supplying a version string activates an automatic `--version/-v` flag.
+
+Now we can register our options and flags:
+
+::: code c
+    ap_str_opt(parser, "out o", "default.mp3");
+    ap_flag(parser, "quiet q");
+
+That's it, we're done specifying our interface. Now we can parse the program's command line arguments, passing in `argc` and `argv` as supplied to `main()`:
+
+::: code c
+    ap_parse(parser, argc, argv);
+
+This will exit with a suitable error message for the user if anything goes wrong. Now we can check if the `--quiet` flag was found:
+
+::: code c
+    if (ap_found(parser, "quiet")) {
+        do_stuff();
+    }
+
+And determine our output filepath:
+
+::: code c
+    char *outpath = ap_str_value(parser, "out");
+
+The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways:
+
+::: code c
+    for (int i = 0; i < ap_count_args(parser); i++) {
+        char *filename = ap_arg(parser, i);
+        do_stuff();
+    }
+
+When we're finished using it, we can free up the parser's memory:
+
+::: code c
+    ap_free(parser);
+

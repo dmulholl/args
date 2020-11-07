@@ -1,61 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>API</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="graphite.css">
-    <link rel="stylesheet" href="pygments.css">
-    
-    
-  </head>
-
-  <body class="node-api node">
-
-    <header class="masthead">
-      <h1><a href="index.html">Janus</a></h1>
-      
-        <p class="tagline">An argument-parsing library for C.</p>
-      
-      
-      <nav class="menu">
-        <input id="menu-check" type="checkbox"/>
-        <label id="menu-label" for="menu-check" class="unselectable">
-          <span class="icon close-icon">✕</span>
-          <span class="icon open-icon">☰</span>
-          <span class="text">Menu</span>
-        </label>
-        <ul>
+    <head>
+        <meta charset="utf-8">
+        <title>API Reference</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="assets/fonts.css">
+        <link rel="stylesheet" href="assets/graphite.css">
+        <link rel="stylesheet" href="assets/pygments.css">
+        
+        
+    </head>
+    <body class="node-api node">
+        <header class="masthead">
+            <h1><a href="index.html">Args</a></h1>
+            
+            <p class="tagline">An argument-parsing library for C.</p>
+            
+            
+            <p class="version">Version 0.2.0</p>
+            
+            <nav class="menu">
+                <input id="menu-check" type="checkbox"/>
+                <label id="menu-label" for="menu-check" class="unselectable">
+                    <span class="icon close-icon">✕</span>
+                    <span class="icon open-icon">☰</span>
+                    <span class="text">Menu</span>
+                </label>
+                <ul>
 <li><a href="index.html">Home</a></li>
+<li><a href="quickstart.html">Quickstart</a></li>
 <li><a href="cli.html">CLI</a></li>
 <li><a href="api.html">API</a></li>
-<li><a href="https://github.com/dmulholl/janus-c">Source</a></li>
+<li><a href="license.html">License</a></li>
+<li><a href="https://github.com/dmulholl/args">Github</a></li>
 </ul>
-      </nav>
-    </header>
-
-    <article class="main">
-      <header class="title">
-        <h1>API</h1>
-        
-        <hr>
-      </header>
-      <ul class="stx-toc">
+            </nav>
+        </header>
+        <article class="main">
+            <header class="title">
+                <h1>API Reference</h1>
+                
+                <hr>
+            </header>
+            <ul class="stx-toc">
 <li>
-<a href="#basic-usage">Basic Usage</a>
+<a href="#setup">Setup</a>
 </li>
 <li>
-<a href="#register-options">Register Options</a>
+<a href="#flags-and-options">Flags and Options</a>
 </li>
 <li>
-<a href="#retrieve-a-single-value">Retrieve A Single Value</a>
+<a href="#retreiving-values">Retreiving Values</a>
 </li>
 <li>
-<a href="#retrieve-multiple-values">Retrieve Multiple Values</a>
-</li>
-<li>
-<a href="#retrieve-positional-arguments">Retrieve Positional Arguments</a>
+<a href="#positional-arguments">Positional Arguments</a>
 </li>
 <li>
 <a href="#commands">Commands</a>
@@ -63,195 +61,168 @@
 </ul>
 <hr>
 <p>
-To use Janus in your C application add the <code>janus.c</code> and <code>janus.h</code> files to your source folder and include the header file:
+This library is written in portable C99. The header exports an <code>ArgParser</code> type and a collection of <code>ap_*</code> prefixed functions.
 </p>
-<pre class="lang-c pygments" data-lang="c">
-<span class="cp">#include</span> <span class="cpf">&quot;janus.h&quot;</span><span class="cp"></span>
-</pre>
-<p>
-The header exports an <code>ArgParser</code> type and a collection of <code>ap_*</code> prefixed functions.
-</p>
-<p>
-Janus is written in portable C99.
-</p>
-<h2 id="basic-usage">
-Basic Usage
-</h2>
-<p>
-Initialize an argument parser, optionally specifying the application's help text and version:
-</p>
-<pre class="lang-c pygments" data-lang="c">
-<span class="n">ArgParser</span><span class="o">*</span> <span class="nf">ap_new</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">helptext</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">version</span><span class="p">);</span>
-</pre>
-<p>
-Supplying help text activates an automatic <code>--help</code> flag; supplying a version string activates an automatic <code>--version</code> flag. (Automatic <code>-h</code> and <code>-v</code> shortcuts are also activated unless registered by other options.) <code>NULL</code> can be passed for either parameter.
-</p>
-<p>
-You can now register your application's options and commands on the parser using the registration functions described below. Once the required options and commands have been registered, call the <code>ap_parse()</code> function to process the application's command line arguments:
-</p>
-<pre class="lang-c pygments" data-lang="c">
-<span class="kt">void</span> <span class="nf">ap_parse</span><span class="p">(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">);</span>
-</pre>
-<p>
-The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>.
-</p>
-<p>
-Parsed option values can be retrieved from the parser instance itself.
-</p>
-<p>
-Call <code>ap_free()</code> to free the memory occupied by a parser instance:
-</p>
-<pre class="lang-c pygments" data-lang="c">
-<span class="kt">void</span> <span class="nf">ap_free</span><span class="p">(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">);</span>
-</pre>
-<p>
-This will free the memory occupied by the parser instance itself and any associated command sub-parsers.
-</p>
-<h2 id="register-options">
-Register Options
-</h2>
-<p>
-Janus supports long-form options, <code>--foo</code>, with single-character shortcuts, <code>-f</code>.
-</p>
-<p>
-An option can have an unlimited number of long and short-form aliases. Aliases are specified via the <code>name</code> parameter which accepts a string of space-separated alternatives, e.g. <code>&quot;foo f&quot;</code>.
-</p>
-<p>
-Option values can be separated on the command line by either a space, <code>--foo 123</code>, or an equals symbol, <code>--foo=123</code>.
-</p>
+<h3 id="setup">
+Setup
+</h3>
 <dl>
 <div>
 <dt>
-<code>void ap_new_flag(ArgParser *parser, char *name)</code>
+<code>ArgParser* ap_new()</code>
 </dt>
 <dd>
 <p>
-Register a flag (a boolean option) with a default value of <code>false</code>. Flag options take no arguments but are either present (<code>true</code>) or absent (<code>false</code>).
+Initializes a new ArgParser instance.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>void ap_new_double(ArgParser *parser, char *name, double fallback)</code>
+<code>void ap_helptext(ArgParser *parser, char *helptext)</code>
 </dt>
 <dd>
 <p>
-Register a floating-point option.
+Supplies a helptext string for the parser; this activates an automatic <code>--help</code> flag, also a <code>-h</code> shortcut if not registered by another option.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>void ap_new_int(ArgParser *parser, char *name, int fallback)</code>
+<code>void ap_version(ArgParser *parser, char *version)</code>
 </dt>
 <dd>
 <p>
-Register an integer option.
+Supplies a version string for the parser; this activates an automatic <code>--version</code> flag, also a <code>-v</code> shortcut if not registered by another option.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>void ap_new_str(ArgParser *parser, char *name, char* fallback)</code>
+<code>void ap_parse(ArgParser *parser, int argc, char **argv)</code>
 </dt>
 <dd>
 <p>
-Register a string option.
+Parses the program's command line arguments. The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_free(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Frees the memory occupied by the parser and any associated command sub-parsers.
 </p>
 </dd>
 </div>
 </dl>
-<h2 id="retrieve-a-single-value">
-Retrieve A Single Value
-</h2>
-<p>
-An option's value can be retrieved from the parser instance using any of its registered aliases.
-</p>
-<p>
-Each option maintains an internal list of values — the value of the option is the final value in the list or the fallback value if the list is empty.
-</p>
+<h3 id="flags-and-options">
+Flags and Options
+</h3>
 <dl>
 <div>
 <dt>
-<code>int ap_count(ArgParser *parser, char *name)</code>
+<code>void ap_flag(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the number of times the specified option was found.
+Registers a new flag. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 </p>
 </dd>
 </div>
+<div>
+<dt>
+<code>void ap_str_opt(ArgParser *parser, char *name, char* fallback)</code>
+</dt>
+<dd>
+<p>
+Registers a new string-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_int_opt(ArgParser *parser, char *name, int fallback)</code>
+</dt>
+<dd>
+<p>
+Registers a new integer-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_dbl_opt(ArgParser *parser, char *name, double fallback)</code>
+</dt>
+<dd>
+<p>
+Registers a new double-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+</p>
+</dd>
+</div>
+</dl>
+<h3 id="retreiving-values">
+Retreiving Values
+</h3>
+<p>
+Any of an option's registered aliases or shortcuts can be used for the <code>name</code> parameter in the functions below.
+</p>
+<dl>
 <div>
 <dt>
 <code>bool ap_found(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns true if the specified option was found.
+Returns true if the specified flag or option was found.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>bool ap_get_flag(ArgParser *parser, char *name)</code>
+<code>int ap_count(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the value of the specified boolean option.
+Returns the number of times the specified flag or option was found.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>double ap_get_double(ArgParser *parser, char *name)</code>
+<code>char* ap_str_value(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the value of the specified floating-point option.
+Returns the value of the specified string-valued option. (The pointer points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>int ap_get_int(ArgParser *parser, char *name)</code>
+<code>char** ap_str_values(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the value of the specified integer option.
+Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>char* ap_get_str(ArgParser *parser, char *name)</code>
+<code>int ap_int_value(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the value of the specified string option.
-</p>
-</dd>
-</div>
-</dl>
-<h2 id="retrieve-multiple-values">
-Retrieve Multiple Values
-</h2>
-<p>
-A copy of an option's internal array of values can be retrieved from the parser instance using any of its registered aliases. The length of this array is given by <code>ap_count()</code>.
-</p>
-<dl>
-<div>
-<dt>
-<code>double* ap_get_double_list(ArgParser *parser, char *name)</code>
-</dt>
-<dd>
-<p>
-Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to <code>ap_free()</code>.
+Returns the value of the specified integer-valued option.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>int* ap_get_int_list(ArgParser *parser, char *name)</code>
+<code>int* ap_int_values(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
@@ -261,62 +232,29 @@ Returns the specified option's list of values as a freshly-allocated array of in
 </div>
 <div>
 <dt>
-<code>char** ap_get_str_list(ArgParser *parser, char *name)</code>
+<code>double ap_dbl_value(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>.
+Returns the value of the specified double-valued option.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>double* ap_dbl_values(ArgParser *parser, char *name)</code>
+</dt>
+<dd>
+<p>
+Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to <code>ap_free()</code>.
 </p>
 </dd>
 </div>
 </dl>
-<h2 id="retrieve-positional-arguments">
-Retrieve Positional Arguments
-</h2>
-<p>
-Options can be preceded, followed, or interspaced with positional arguments.
-</p>
+<h3 id="positional-arguments">
+Positional Arguments
+</h3>
 <dl>
-<div>
-<dt>
-<code>char* ap_get_arg(ArgParser *parser, int index)</code>
-</dt>
-<dd>
-<p>
-Returns the positional argument at the specified index.
-</p>
-</dd>
-</div>
-<div>
-<dt>
-<code>char** ap_get_args(ArgParser *parser)</code>
-</dt>
-<dd>
-<p>
-Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
-</p>
-</dd>
-</div>
-<div>
-<dt>
-<code>double* ap_get_args_as_floats(ArgParser *parser)</code>
-</dt>
-<dd>
-<p>
-Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
-</p>
-</dd>
-</div>
-<div>
-<dt>
-<code>int* ap_get_args_as_ints(ArgParser *parser)</code>
-</dt>
-<dd>
-<p>
-Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
-</p>
-</dd>
-</div>
 <div>
 <dt>
 <code>bool ap_has_args(ArgParser *parser)</code>
@@ -329,7 +267,7 @@ Returns true if at least one positional argument has been found.
 </div>
 <div>
 <dt>
-<code>int ap_num_args(ArgParser *parser)</code>
+<code>int ap_count_args(ArgParser *parser)</code>
 </dt>
 <dd>
 <p>
@@ -337,67 +275,78 @@ Returns the number of positional arguments.
 </p>
 </dd>
 </div>
+<div>
+<dt>
+<code>char* ap_arg(ArgParser *parser, int index)</code>
+</dt>
+<dd>
+<p>
+Returns the positional argument at the specified index. (The pointer points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>char** ap_args(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>int* ap_args_as_ints(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>double* ap_args_as_doubles(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
+</p>
+</dd>
+</div>
 </dl>
-<h2 id="commands">
+<h3 id="commands">
 Commands
-</h2>
-<p>
-Janus supports git-style command interfaces with arbitrarily-nested commands. Register a command on a parser instance using the <code>ap_new_cmd()</code> function:
-</p>
-<pre class="lang-c pygments" data-lang="c">
-<span class="n">ArgParser</span><span class="o">*</span> <span class="nf">ap_new_cmd</span><span class="p">(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">helptext</span><span class="p">,</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="n">ArgParser</span> <span class="o">*</span><span class="n">parser</span><span class="p">));</span>
-</pre>
-<p>
-This method returns a new <code>ArgParser</code> instance associated with the command. You can register the command's flags and options on this sub-parser using the standard methods listed above. (Note that you never need to call <code>ap_parse()</code> on a command parser &mdash; if a command is found, its arguments are parsed automatically.)
-</p>
-<ul>
-<li>
-<p>
-Like options, commands can have an unlimited number of aliases specified via the <code>name</code> string.
-</p>
-</li>
-<li>
-<p>
-Commands support an automatic <code>--help</code> flag and an automatic <code>help &lt;name&gt;</code> command using the specified help text.
-</p>
-</li>
-<li>
-<p>
-The specified callback function will be called if the command is found. The callback should accept a pointer to the command's <code>ArgParser</code> instance as its sole argument and should return <code>void</code>.
-</p>
-</li>
-</ul>
-<p>
-The following functions are also available for processing commands manually:
-</p>
+</h3>
 <dl>
 <div>
 <dt>
-<code>char* ap_get_cmd_name(ArgParser *parser)</code>
+<code>typedef void (*callback_t)(char*, ArgParser*)</code>
 </dt>
 <dd>
 <p>
-Returns the command name, if the parser has found a command.
+A callback function for a command should accept two arguments &mdash; the command's name and the command's parser instance. It should return <code>void</code>. (Note that this typedef is only used here to illustrate the function signature &mdash; it isn't actually present in the library.)
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_get_cmd_parser(ArgParser *parser)</code>
+<code>ArgParser* ap_cmd(ArgParser *parser, char *name)</code>
 </dt>
 <dd>
 <p>
-Returns the command's parser instance, if the parser has found a command.
+Registers a new command. Returns the <code>ArgParser</code> instance for the command. The <code>name</code> parameter accepts an unlimited number of space-separated aliases for the command.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_get_parent(ArgParser *parser)</code>
+<code>void ap_callback(ArgParser *parser, callback_t callback)</code>
 </dt>
 <dd>
 <p>
-Returns a pointer to a command parser's parent parser.
+Registers an optional callback function on a command parser. If the command is found, the function will be called and passed the command's name and parser instance.
 </p>
 </dd>
 </div>
@@ -411,10 +360,39 @@ Returns true if the parser has found a command.
 </p>
 </dd>
 </div>
+<div>
+<dt>
+<code>char* ap_cmd_name(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Returns the command name if the parser has found a command, otherwise <code>NULL</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>ArgParser* ap_cmd_parser(ArgParser *parser)</code>
+</dt>
+<dd>
+<p>
+Returns the command's parser instance if the parser has found a command, otherwise <code>NULL</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_cmd_help(ArgParser *parser, bool enable)</code>
+</dt>
+<dd>
+<p>
+Boolean switch; toggles support for an automatic <code>help</code> command which prints subcommand helptext.
+(Defaults to <code>false</code>; gets toggled automatically to <code>true</code> when a command is registered.)
+</p>
+</dd>
+</div>
 </dl>
-    </article>
-
-    
-
-  </body>
+        </article>
+        
+    </body>
 </html>

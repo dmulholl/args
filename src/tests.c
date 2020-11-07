@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// Unit tests for the library.
+// Unit test suite.
 // -----------------------------------------------------------------------------
 
 #include <stdlib.h>
@@ -7,528 +7,279 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <string.h>
-#include "janus.h"
-
+#include "args.h"
 
 // -----------------------------------------------------------------------------
-// Boolean options.
+// 1. Flags.
 // -----------------------------------------------------------------------------
 
-
-void test_bool_option_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
+void test_flag_empty() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
     ap_parse(parser, 1, (char *[]){""});
-    assert(ap_get_flag(parser, "bool") == false);
+    assert(ap_found(parser, "foo") == false);
+    assert(ap_count(parser, "foo") == 0);
     ap_free(parser);
     printf(".");
 }
 
-
-void test_bool_option_missing() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
-    ap_parse(parser, 3, (char *[]){"", "foo", "bar"});
-    assert(ap_get_flag(parser, "bool") == false);
+void test_flag_missing() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
+    ap_parse(parser, 3, (char *[]){"", "abc", "def"});
+    assert(ap_found(parser, "foo") == false);
+    assert(ap_count(parser, "foo") == 0);
     ap_free(parser);
     printf(".");
 }
 
-
-void test_bool_option_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
-    ap_parse(parser, 2, (char *[]){"", "--bool"});
-    assert(ap_get_flag(parser, "bool") == true);
+void test_flag_long() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
+    ap_parse(parser, 2, (char *[]){"", "--foo"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
     ap_free(parser);
     printf(".");
 }
 
-
-void test_bool_option_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool b");
-    ap_parse(parser, 2, (char *[]){"", "-b"});
-    assert(ap_get_flag(parser, "bool") == true);
+void test_flag_short() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
+    ap_parse(parser, 2, (char *[]){"", "-f"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
     ap_free(parser);
     printf(".");
 }
 
-
-void test_bool_list_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_count(parser, "bool") == 0);
+void test_flag_condensed() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
+    ap_parse(parser, 2, (char *[]){"", "-fff"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 3);
     ap_free(parser);
     printf(".");
 }
 
-
-void test_bool_list_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
-    ap_parse(parser, 4, (char *[]){"", "--bool", "--bool", "--bool"});
-    assert(ap_count(parser, "bool") == 3);
+void test_flag_multi() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "foo f");
+    ap_parse(parser, 4, (char *[]){"", "-fff", "--foo", "-f"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 5);
     ap_free(parser);
     printf(".");
 }
 
+// -----------------------------------------------------------------------------
+// 2. String-valued options.
+// -----------------------------------------------------------------------------
 
-void test_bool_list_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool");
-    ap_parse(parser, 3, (char *[]){"", "-b", "-bb"});
-    assert(ap_count(parser, "bool") == 3);
+void test_str_opt_default() {
+    ArgParser *parser = ap_new();
+    ap_str_opt(parser, "foo f", "default");
+    ap_parse(parser, 3, (char *[]){"", "abc", "def"});
+    assert(ap_found(parser, "foo") == false);
+    assert(ap_count(parser, "foo") == 0);
+    assert(strcmp(ap_str_value(parser, "foo"), "default") == 0);
     ap_free(parser);
     printf(".");
 }
 
+void test_str_opt_long() {
+    ArgParser *parser = ap_new();
+    ap_str_opt(parser, "foo f", "default");
+    ap_parse(parser, 3, (char *[]){"", "--foo", "bar"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(strcmp(ap_str_value(parser, "foo"), "bar") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_str_opt_short() {
+    ArgParser *parser = ap_new();
+    ap_str_opt(parser, "foo f", "default");
+    ap_parse(parser, 3, (char *[]){"", "-f", "bar"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(strcmp(ap_str_value(parser, "foo"), "bar") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_str_opt_condensed() {
+    ArgParser *parser = ap_new();
+    ap_str_opt(parser, "foo f", "default");
+    ap_parse(parser, 4, (char *[]){"", "-ff", "bar", "baz"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 2);
+    assert(strcmp(ap_str_value(parser, "foo"), "baz") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_str_opt_multi() {
+    ArgParser *parser = ap_new();
+    ap_str_opt(parser, "foo f", "default");
+    ap_parse(parser, 6, (char *[]){"", "-ff", "bar", "baz", "--foo", "bam"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 3);
+    assert(strcmp(ap_str_value(parser, "foo"), "bam") == 0);
+    ap_free(parser);
+    printf(".");
+}
 
 // -----------------------------------------------------------------------------
-// String options.
+// 3. Integer-valued options.
 // -----------------------------------------------------------------------------
 
-
-void test_string_option_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "string", "default");
-    ap_parse(parser, 1, (char *[]){""});
-    assert(strcmp(ap_get_str(parser, "string"), "default") == 0);
+void test_int_opt_default() {
+    ArgParser *parser = ap_new();
+    ap_int_opt(parser, "foo f", 123);
+    ap_parse(parser, 3, (char *[]){"", "abc", "def"});
+    assert(ap_found(parser, "foo") == false);
+    assert(ap_count(parser, "foo") == 0);
+    assert(ap_int_value(parser, "foo") == 123);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_string_option_missing() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "string", "default");
-    ap_parse(parser, 3, (char *[]){"", "foo", "bar"});
-    assert(strcmp(ap_get_str(parser, "string"), "default") == 0);
+void test_int_opt_long() {
+    ArgParser *parser = ap_new();
+    ap_int_opt(parser, "foo f", 123);
+    ap_parse(parser, 3, (char *[]){"", "--foo", "456"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(ap_int_value(parser, "foo") == 456);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_string_option_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "string", "default");
-    ap_parse(parser, 3, (char *[]){"", "--string", "value"});
-    assert(strcmp(ap_get_str(parser, "string"), "value") == 0);
+void test_int_opt_short() {
+    ArgParser *parser = ap_new();
+    ap_int_opt(parser, "foo f", 123);
+    ap_parse(parser, 3, (char *[]){"", "-f", "456"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(ap_int_value(parser, "foo") == 456);
+    ap_free(parser);
     printf(".");
 }
-
-
-void test_string_option_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "string s", "default");
-    ap_parse(parser, 3, (char *[]){"", "-s", "value"});
-    assert(strcmp(ap_get_str(parser, "string"), "value") == 0);
-    printf(".");
-}
-
-
-void test_string_list_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "str", "default");
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_count(parser, "str") == 0);
-    printf(".");
-}
-
-
-void test_string_list_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "str", "default");
-    ap_parse(parser, 6, (char *[]){"", "--str", "a", "b", "--str", "c"});
-    assert(ap_count(parser, "str") == 2);
-    assert(strcmp(ap_get_str_list(parser, "str")[0], "a") == 0);
-    assert(strcmp(ap_get_str_list(parser, "str")[1], "c") == 0);
-    printf(".");
-}
-
-
-void test_string_list_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_str(parser, "str s", "default");
-    ap_parse(parser, 6, (char *[]){"", "-s", "a", "b", "-s", "c"});
-    assert(ap_count(parser, "str") == 2);
-    assert(strcmp(ap_get_str_list(parser, "str")[0], "a") == 0);
-    assert(strcmp(ap_get_str_list(parser, "str")[1], "c") == 0);
-    printf(".");
-}
-
 
 // -----------------------------------------------------------------------------
-// Integer options.
+// 4. Double-valued options.
 // -----------------------------------------------------------------------------
 
-
-void test_int_option_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int", 101);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_get_int(parser, "int") == 101);
+void test_dbl_opt_default() {
+    ArgParser *parser = ap_new();
+    ap_dbl_opt(parser, "foo f", 123.0);
+    ap_parse(parser, 3, (char *[]){"", "abc", "def"});
+    assert(ap_found(parser, "foo") == false);
+    assert(ap_count(parser, "foo") == 0);
+    assert(ap_dbl_value(parser, "foo") == 123.0);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_int_option_missing() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int", 101);
-    ap_parse(parser, 3, (char *[]){"", "foo", "bar"});
-    assert(ap_get_int(parser, "int") == 101);
+void test_dbl_opt_long() {
+    ArgParser *parser = ap_new();
+    ap_dbl_opt(parser, "foo f", 123.0);
+    ap_parse(parser, 3, (char *[]){"", "--foo", "456.0"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(ap_dbl_value(parser, "foo") == 456.0);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_int_option_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int", 101);
-    ap_parse(parser, 3, (char *[]){"", "--int", "202"});
-    assert(ap_get_int(parser, "int") == 202);
+void test_dbl_opt_short() {
+    ArgParser *parser = ap_new();
+    ap_dbl_opt(parser, "foo f", 123.0);
+    ap_parse(parser, 3, (char *[]){"", "-f", "456.0"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    assert(ap_dbl_value(parser, "foo") == 456.0);
+    ap_free(parser);
     printf(".");
 }
-
-
-void test_int_option_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int i", 101);
-    ap_parse(parser, 3, (char *[]){"", "-i", "202"});
-    assert(ap_get_int(parser, "int") == 202);
-    printf(".");
-}
-
-
-void test_int_list_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int", 101);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_count(parser, "int") == 0);
-    printf(".");
-}
-
-
-void test_int_list_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int", 101);
-    ap_parse(parser, 6, (char *[]){"", "--int", "1", "2", "--int", "3"});
-    assert(ap_count(parser, "int") == 2);
-    assert(ap_get_int_list(parser, "int")[0] == 1);
-    assert(ap_get_int_list(parser, "int")[1] == 3);
-    printf(".");
-}
-
-
-void test_int_list_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_int(parser, "int i", 101);
-    ap_parse(parser, 6, (char *[]){"", "-i", "1", "2", "-i", "3"});
-    assert(ap_count(parser, "int") == 2);
-    assert(ap_get_int_list(parser, "int")[0] == 1);
-    assert(ap_get_int_list(parser, "int")[1] == 3);
-    printf(".");
-}
-
 
 // -----------------------------------------------------------------------------
-// Floating-point options.
+// 5. Positional arguments.
 // -----------------------------------------------------------------------------
 
-
-void test_double_option_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "float", 1.1);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_get_double(parser, "float") == 1.1);
-    printf(".");
-}
-
-
-void test_double_option_missing() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "float", 1.1);
-    ap_parse(parser, 3, (char *[]){"", "foo", "bar"});
-    assert(ap_get_double(parser, "float") == 1.1);
-    printf(".");
-}
-
-
-void test_double_option_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "float", 1.1);
-    ap_parse(parser, 3, (char *[]){"", "--float", "2.2"});
-    assert(ap_get_double(parser, "float") == 2.2);
-    printf(".");
-}
-
-
-void test_double_option_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "float f", 1.1);
-    ap_parse(parser, 3, (char *[]){"", "-f", "2.2"});
-    assert(ap_get_double(parser, "float") == 2.2);
-    printf(".");
-}
-
-
-void test_double_list_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "float", 1.1);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_count(parser, "float") == 0);
-    printf(".");
-}
-
-
-void test_double_list_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "flt", 1.1);
-    ap_parse(parser, 6, (char *[]){"", "--flt", "1", "2", "--flt", "3"});
-    assert(ap_count(parser, "flt") == 2);
-    assert(ap_get_double_list(parser, "flt")[0] == 1.0);
-    assert(ap_get_double_list(parser, "flt")[1] == 3.0);
-    printf(".");
-}
-
-
-void test_double_list_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_double(parser, "flt f", 1.1);
-    ap_parse(parser, 6, (char *[]){"", "-f", "1", "2", "-f", "3"});
-    assert(ap_count(parser, "flt") == 2);
-    assert(ap_get_double_list(parser, "flt")[0] == 1.0);
-    assert(ap_get_double_list(parser, "flt")[1] == 3.0);
-    printf(".");
-}
-
-
-// -----------------------------------------------------------------------------
-// Multiple options.
-// -----------------------------------------------------------------------------
-
-
-void test_multi_options_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool1");
-    ap_new_flag(parser, "bool2 b");
-    ap_new_str(parser, "string1", "default1");
-    ap_new_str(parser, "string2 s", "default2");
-    ap_new_int(parser, "int1", 101);
-    ap_new_int(parser, "int2 i", 202);
-    ap_new_double(parser, "float1", 1.1);
-    ap_new_double(parser, "float2 f", 2.2);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_get_flag(parser, "bool1") == false);
-    assert(ap_get_flag(parser, "bool2") == false);
-    assert(strcmp(ap_get_str(parser, "string1"), "default1") == 0);
-    assert(strcmp(ap_get_str(parser, "string2"), "default2") == 0);
-    assert(ap_get_int(parser, "int1") == 101);
-    assert(ap_get_int(parser, "int2") == 202);
-    assert(ap_get_double(parser, "float1") == 1.1);
-    assert(ap_get_double(parser, "float2") == 2.2);
-    printf(".");
-}
-
-
-void test_multi_options_longform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool1");
-    ap_new_flag(parser, "bool2 b");
-    ap_new_str(parser, "string1", "default1");
-    ap_new_str(parser, "string2 s", "default2");
-    ap_new_int(parser, "int1", 101);
-    ap_new_int(parser, "int2 i", 202);
-    ap_new_double(parser, "float1", 1.1);
-    ap_new_double(parser, "float2 f", 2.2);
-    ap_parse(parser, 15, (char *[]){
-        "",
-        "--bool1",
-        "--bool2",
-        "--string1", "value1",
-        "--string2", "value2",
-        "--int1", "303",
-        "--int2", "404",
-        "--float1", "3.3",
-        "--float2", "4.4",
-    });
-    assert(ap_get_flag(parser, "bool1") == true);
-    assert(ap_get_flag(parser, "bool2") == true);
-    assert(strcmp(ap_get_str(parser, "string1"), "value1") == 0);
-    assert(strcmp(ap_get_str(parser, "string2"), "value2") == 0);
-    assert(ap_get_int(parser, "int1") == 303);
-    assert(ap_get_int(parser, "int2") == 404);
-    assert(ap_get_double(parser, "float1") == 3.3);
-    assert(ap_get_double(parser, "float2") == 4.4);
-    printf(".");
-}
-
-
-void test_multi_options_shortform() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool1");
-    ap_new_flag(parser, "bool2 b");
-    ap_new_str(parser, "string1", "default1");
-    ap_new_str(parser, "string2 s", "default2");
-    ap_new_int(parser, "int1", 101);
-    ap_new_int(parser, "int2 i", 202);
-    ap_new_double(parser, "float1", 1.1);
-    ap_new_double(parser, "float2 f", 2.2);
-    ap_parse(parser, 15, (char *[]){
-        "",
-        "--bool1",
-        "-b",
-        "--string1", "value1",
-        "-s", "value2",
-        "--int1", "303",
-        "-i", "404",
-        "--float1", "3.3",
-        "-f", "4.4",
-    });
-    assert(ap_get_flag(parser, "bool1") == true);
-    assert(ap_get_flag(parser, "bool2") == true);
-    assert(strcmp(ap_get_str(parser, "string1"), "value1") == 0);
-    assert(strcmp(ap_get_str(parser, "string2"), "value2") == 0);
-    assert(ap_get_int(parser, "int1") == 303);
-    assert(ap_get_int(parser, "int2") == 404);
-    assert(ap_get_double(parser, "float1") == 3.3);
-    assert(ap_get_double(parser, "float2") == 4.4);
-    printf(".");
-}
-
-
-// -----------------------------------------------------------------------------
-// Condensed short-form options.
-// -----------------------------------------------------------------------------
-
-
-void test_condensed_options() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_flag(parser, "bool b");
-    ap_new_str(parser, "string s", "default");
-    ap_new_int(parser, "int i", 101);
-    ap_new_double(parser, "float f", 1.1);
-    ap_parse(parser, 5, (char *[]){"", "-bsif", "value", "202", "2.2"});
-    assert(ap_get_flag(parser, "bool") == true);
-    assert(strcmp(ap_get_str(parser, "string"), "value") == 0);
-    assert(ap_get_int(parser, "int") == 202);
-    assert(ap_get_double(parser, "float") == 2.2);
-    printf(".");
-}
-
-
-// -----------------------------------------------------------------------------
-// Positional arguments.
-// -----------------------------------------------------------------------------
-
-
-void test_positional_args_empty() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_has_args(parser) == false);
-    printf(".");
-}
-
-
-void test_positional_args() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_parse(parser, 3, (char *[]){"", "foo", "bar"});
+void test_pos_args() {
+    ArgParser *parser = ap_new();
+    ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_has_args(parser) == true);
-    assert(ap_num_args(parser) == 2);
-    assert(strcmp(ap_get_args(parser)[0], "foo") == 0);
-    assert(strcmp(ap_get_args(parser)[1], "bar") == 0);
+    assert(ap_count_args(parser) == 2);
+    assert(strcmp(ap_arg(parser, 0), "abc") == 0);
+    assert(strcmp(ap_arg(parser, 1), "def") == 0);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_positional_args_as_ints() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_parse(parser, 3, (char *[]){"", "1", "11"});
-    assert(ap_get_args_as_ints(parser)[0] == 1);
-    assert(ap_get_args_as_ints(parser)[1] == 11);
+void test_pos_args_as_ints() {
+    ArgParser *parser = ap_new();
+    ap_parse(parser, 3, (char *[]){"", "123", "456"});
+    assert(ap_args_as_ints(parser)[0] == 123);
+    assert(ap_args_as_ints(parser)[1] == 456);
+    ap_free(parser);
     printf(".");
 }
 
-
-void test_positional_args_as_floats() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_parse(parser, 3, (char *[]){"", "1.1", "11.1"});
-    assert(ap_get_args_as_floats(parser)[0] == 1.1);
-    assert(ap_get_args_as_floats(parser)[1] == 11.1);
+void test_pos_args_as_doubles() {
+    ArgParser *parser = ap_new();
+    ap_parse(parser, 3, (char *[]){"", "123", "456"});
+    assert(ap_args_as_doubles(parser)[0] == 123.0);
+    assert(ap_args_as_doubles(parser)[1] == 456.0);
+    ap_free(parser);
     printf(".");
 }
-
 
 // -----------------------------------------------------------------------------
-// Option parsing switch.
+// 6. Option parsing switch.
 // -----------------------------------------------------------------------------
-
 
 void test_option_parsing_switch() {
-    ArgParser *parser = ap_new(NULL, NULL);
+    ArgParser *parser = ap_new();
     ap_parse(parser, 5, (char *[]){"", "foo", "--", "--bar", "--baz"});
-    assert(ap_num_args(parser) == 3);
+    assert(ap_count_args(parser) == 3);
+    ap_free(parser);
     printf(".");
 }
-
 
 // -----------------------------------------------------------------------------
-// Commands.
+// 7. Commands.
 // -----------------------------------------------------------------------------
 
-
-void callback(ArgParser *parser) {}
-
-
-void test_command_absent() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ap_new_cmd(parser, "cmd", "helptext", callback);
-    ap_parse(parser, 1, (char *[]){""});
-    assert(ap_has_cmd(parser) == false);
-    printf(".");
-}
-
-
-void test_command_present() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ArgParser *cmd_parser = ap_new_cmd(parser, "cmd", "helptext", callback);
-    ap_parse(parser, 2, (char *[]){"", "cmd"});
-    assert(ap_has_cmd(parser) == true);
-    assert(strcmp(ap_get_cmd_name(parser), "cmd") == 0);
-    assert(ap_get_cmd_parser(parser) == cmd_parser);
-    printf(".");
-}
-
-
-void test_command_with_options() {
-    ArgParser *parser = ap_new(NULL, NULL);
-    ArgParser *cmd_parser = ap_new_cmd(parser, "cmd", "helptext", callback);
-    ap_new_flag(cmd_parser, "bool");
-    ap_new_str(cmd_parser, "string", "default");
-    ap_new_int(cmd_parser, "int", 101);
-    ap_new_double(cmd_parser, "float", 1.1);
-    ap_parse(parser, 10, (char *[]){
+void test_command() {
+    ArgParser *parser = ap_new();
+    ArgParser *cmd_parser = ap_cmd(parser, "cmd");
+    ap_flag(cmd_parser, "foo");
+    ap_int_opt(cmd_parser, "bar", 123);
+    ap_parse(parser, 7, (char *[]){
         "",
         "cmd",
-        "foo", "bar",
-        "--string", "value",
-        "--int", "202",
-        "--float", "2.2",
+        "abc", "def",
+        "--foo",
+        "--bar", "456",
     });
     assert(ap_has_cmd(parser) == true);
-    assert(strcmp(ap_get_cmd_name(parser), "cmd") == 0);
-    assert(ap_get_cmd_parser(parser) == cmd_parser);
+    assert(strcmp(ap_cmd_name(parser), "cmd") == 0);
+    assert(ap_cmd_parser(parser) == cmd_parser);
     assert(ap_has_args(cmd_parser) == true);
-    assert(ap_num_args(cmd_parser) == 2);
-    assert(strcmp(ap_get_str(cmd_parser, "string"), "value") == 0);
-    assert(ap_get_int(cmd_parser, "int") == 202);
-    assert(ap_get_double(cmd_parser, "float") == 2.2);
+    assert(ap_count_args(cmd_parser) == 2);
+    assert(ap_found(cmd_parser, "foo") == true);
+    assert(ap_int_value(cmd_parser, "bar") == 456);
     printf(".");
 }
-
 
 // -----------------------------------------------------------------------------
 // Test runner.
 // -----------------------------------------------------------------------------
-
 
 void line() {
     for (int i = 0; i < 80; i++) {
@@ -537,61 +288,45 @@ void line() {
     printf("\n");
 }
 
-
 int main() {
     setbuf(stdout, NULL);
-
     line();
-    printf("Tests: ");
 
-    test_bool_option_empty();
-    test_bool_option_missing();
-    test_bool_option_longform();
-    test_bool_option_shortform();
-    test_bool_list_empty();
-    test_bool_list_longform();
-    test_bool_option_shortform();
+    printf("Tests: 1 ");
+    test_flag_empty();
+    test_flag_missing();
+    test_flag_long();
+    test_flag_short();
+    test_flag_condensed();
+    test_flag_multi();
 
-    test_string_option_empty();
-    test_string_option_missing();
-    test_string_option_longform();
-    test_string_option_shortform();
-    test_string_list_empty();
-    test_string_list_longform();
-    test_string_list_shortform();
+    printf(" 2 ");
+    test_str_opt_default();
+    test_str_opt_long();
+    test_str_opt_short();
+    test_str_opt_condensed();
+    test_str_opt_multi();
 
-    test_int_option_empty();
-    test_int_option_missing();
-    test_int_option_longform();
-    test_int_option_shortform();
-    test_int_list_empty();
-    test_int_list_longform();
-    test_int_list_shortform();
+    printf(" 3 ");
+    test_int_opt_default();
+    test_int_opt_long();
+    test_int_opt_short();
 
-    test_double_option_empty();
-    test_double_option_missing();
-    test_double_option_longform();
-    test_double_option_shortform();
-    test_double_list_empty();
-    test_double_list_longform();
-    test_double_list_shortform();
+    printf(" 4 ");
+    test_dbl_opt_default();
+    test_dbl_opt_long();
+    test_dbl_opt_short();
 
-    test_multi_options_empty();
-    test_multi_options_longform();
-    test_multi_options_shortform();
+    printf(" 5 ");
+    test_pos_args();
+    test_pos_args_as_ints();
+    test_pos_args_as_doubles();
 
-    test_condensed_options();
-
-    test_positional_args_empty();
-    test_positional_args();
-    test_positional_args_as_ints();
-    test_positional_args_as_floats();
-
+    printf(" 6 ");
     test_option_parsing_switch();
 
-    test_command_absent();
-    test_command_present();
-    test_command_with_options();
+    printf(" 7 ");
+    test_command();
 
     printf(" [ok]\n");
     line();

@@ -1,9 +1,8 @@
-# Janus
+# Args
 
-A simple argument-parsing library for C.
+An argument-parsing library for C.
 
-* [Documentation](http://www.dmulholl.com/docs/janus-c/)
-* [Sample Application](https://github.com/dmulholl/janus-c/blob/master/src/example.c)
-
-This project has a successor, [Args](https://github.com/dmulholl/args), with an improved interface.
+* [Documentation](http://www.dmulholl.com/docs/args/dev/)
+* [Basic Example](https://github.com/dmulholl/args/blob/master/src/example1.c)
+* [Command Example](https://github.com/dmulholl/args/blob/master/src/example2.c)
 

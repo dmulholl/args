@@ -1,12 +1,7 @@
 ---
 title: Home
-meta title: Janus &mdash; an argument-parsing library for C
-meta description: >
-    Janus is an argument-parsing library designed for building elegant command-line interfaces.
+meta title: Args &mdash; an argument-parsing library for C
 ---
-
-Janus is an argument-parsing library designed for building elegant command-line interfaces.
-
 
 
 ### Features
@@ -28,12 +23,9 @@ Janus is an argument-parsing library designed for building elegant command-line 
 
 ### Links
 
-* [Github Homepage][github]
-* [Sample Application][sample]
-
-
-[github]: https://github.com/dmulholl/janus-c
-[sample]: https://github.com/dmulholl/janus-c/blob/master/src/example.c
+* [Github](https://github.com/dmulholl/args)
+* [Basic Example](https://github.com/dmulholl/args/blob/master/src/example1.c)
+* [Command Example](https://github.com/dmulholl/args/blob/master/src/example2.c)
 
 
 

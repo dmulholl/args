@@ -1,4 +1,6 @@
 * [Home](@root/)
+* [Quickstart](@root/quickstart//)
 * [CLI](@root/cli//)
 * [API](@root/api//)
-* [Source](https://github.com/dmulholl/janus-c)
+* [License](@root/license//)
+* [Github](https://github.com/dmulholl/args)

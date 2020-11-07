@@ -53,7 +53,7 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 
 
-### Retreiving Values
+### Retrieving Values
 
 Any of an option's registered aliases or shortcuts can be used for the `name` parameter in the functions below.
 

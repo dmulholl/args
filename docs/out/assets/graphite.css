@@ -48,6 +48,7 @@ body {
     color: black;
     font-family: 'Crimson Text', Georgia, serif;
     line-height: 1.75;
+    overflow-wrap: break-word;
 }
 
 h1, h2 {

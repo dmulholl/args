@@ -184,14 +184,12 @@ static MapEntry* map_find(Map* map, const char* key, uint32_t key_hash) {
 
     for (;;) {
         MapEntry* entry = &map->entries[index];
-
         if (entry->key == NULL) {
             return entry;
         } else if (key_hash == entry->key_hash && strcmp(key, entry->key) == 0) {
             return entry;
         }
-
-        index = (index + 1) % map->capacity;
+        index = (index + 1) & (map->capacity - 1);
     }
 }
 

@@ -1,8 +1,8 @@
 #include "args.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     // Instantiate a new ArgParser instance.
-    ArgParser *parser = ap_new();
+    ArgParser* parser = ap_new();
     ap_helptext(parser, "Usage: example...");
     ap_version(parser, "1.0");
 

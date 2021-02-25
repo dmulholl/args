@@ -139,6 +139,8 @@ static void vec_add(Vec* vec, void* entry) {
 /* ------------------------------------------------------------------- */
 
 
+// The map automatically grows to keep count/capacity < MAP_MAX_LOAD.
+// This data structure performs optimally when it's less than half-full.
 #define MAP_MAX_LOAD 0.5
 
 
@@ -256,8 +258,8 @@ static void map_set(Map* map, const char* key, void* value) {
 }
 
 
-// Splits the keys string into space-separated keywords and adds an entry to
-// to the map for each.
+// Convenience wrapper for map_set(). This splits the keystring into space-
+// separated words and adds a separate entry to the map for each word.
 static void map_set_splitkey(Map *map, const char* keys, void* value) {
     char *key;
     char *saveptr;

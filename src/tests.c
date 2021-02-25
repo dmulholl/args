@@ -278,6 +278,49 @@ void test_command() {
 }
 
 // -----------------------------------------------------------------------------
+// 8. Miscellanea.
+// -----------------------------------------------------------------------------
+
+void test_container_resizing() {
+    ArgParser *parser = ap_new();
+    ap_flag(parser, "a alpha");
+    ap_flag(parser, "b beta");
+    ap_flag(parser, "c");
+    ap_flag(parser, "d delta");
+    ap_flag(parser, "e epsilon");
+    ap_flag(parser, "f phi");
+    ap_flag(parser, "g gamma");
+    ap_flag(parser, "h");
+    ap_flag(parser, "i iota");
+    ap_flag(parser, "j");
+    ap_flag(parser, "k kappa");
+    ap_flag(parser, "l lambda");
+    ap_flag(parser, "m mu");
+    ap_flag(parser, "n nu");
+    ap_flag(parser, "o omega");
+    ap_flag(parser, "p pi");
+    ap_flag(parser, "q");
+    ap_flag(parser, "r rho");
+    ap_flag(parser, "s sigma");
+    ap_flag(parser, "t tau");
+    ap_parse(parser, 5, (char *[]){"", "-a", "-b", "-s", "-t"});
+    assert(ap_found(parser, "a") == true);
+    assert(ap_found(parser, "alpha") == true);
+    assert(ap_found(parser, "b") == true);
+    assert(ap_found(parser, "beta") == true);
+    assert(ap_found(parser, "d") == false);
+    assert(ap_found(parser, "delta") == false);
+    assert(ap_found(parser, "e") == false);
+    assert(ap_found(parser, "epsilon") == false);
+    assert(ap_found(parser, "s") == true);
+    assert(ap_found(parser, "sigma") == true);
+    assert(ap_found(parser, "t") == true);
+    assert(ap_found(parser, "tau") == true);
+    ap_free(parser);
+    printf(".");
+}
+
+// -----------------------------------------------------------------------------
 // Test runner.
 // -----------------------------------------------------------------------------
 
@@ -327,6 +370,9 @@ int main() {
 
     printf(" 7 ");
     test_command();
+
+    printf(" 8 ");
+    test_container_resizing();
 
     printf(" [ok]\n");
     line();

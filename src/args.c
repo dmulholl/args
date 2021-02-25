@@ -7,7 +7,6 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdint.h>
-
 #include "args.h"
 
 
@@ -16,7 +15,7 @@
 /* ------------------ */
 
 
-// Prints a message to stderr and exit with a non-zero error code.
+// Prints a message to stderr and exits with a non-zero error code.
 static void err(const char* msg) {
     fprintf(stderr, "Error: %s.\n", msg);
     exit(1);

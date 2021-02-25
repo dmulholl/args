@@ -280,7 +280,7 @@ static void map_set_splitkey(Map *map, const char* keys, void* value) {
 /* -------- */
 
 
-typedef enum OptionType {
+typedef enum {
     OPT_FLAG,
     OPT_STR,
     OPT_INT,
@@ -288,14 +288,14 @@ typedef enum OptionType {
 } OptionType;
 
 
-typedef union OptionValue {
+typedef union {
     const char* str_val;
     int int_val;
     double dbl_val;
 } OptionValue;
 
 
-typedef struct Option {
+typedef struct {
     OptionType type;
     int count;
     int capacity;

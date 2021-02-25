@@ -15,19 +15,19 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
     Initializes a new ArgParser instance.
 
-[[ `void ap_helptext(ArgParser *parser, char *helptext)` ]]
+[[ `void ap_helptext(ArgParser* parser, char* helptext)` ]]
 
     Supplies a helptext string for the parser; this activates an automatic `--help` flag, also a `-h` shortcut if not registered by another option.
 
-[[ `void ap_version(ArgParser *parser, char *version)` ]]
+[[ `void ap_version(ArgParser* parser, char* version)` ]]
 
     Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not registered by another option.
 
-[[ `void ap_parse(ArgParser *parser, int argc, char **argv)` ]]
+[[ `void ap_parse(ArgParser* parser, int argc, char** argv)` ]]
 
     Parses the program's command line arguments. The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
 
-[[ `void ap_free(ArgParser *parser)` ]]
+[[ `void ap_free(ArgParser* parser)` ]]
 
     Frees the memory occupied by the parser and any associated command sub-parsers.
 
@@ -35,19 +35,19 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 ### Flags and Options
 
-[[ `void ap_flag(ArgParser *parser, char *name)` ]]
+[[ `void ap_flag(ArgParser* parser, char* name)` ]]
 
     Registers a new flag. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
-[[ `void ap_str_opt(ArgParser *parser, char *name, char* fallback)` ]]
+[[ `void ap_str_opt(ArgParser* parser, char* name, char* fallback)` ]]
 
     Registers a new string-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
-[[ `void ap_int_opt(ArgParser *parser, char *name, int fallback)` ]]
+[[ `void ap_int_opt(ArgParser* parser, char* name, int fallback)` ]]
 
     Registers a new integer-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
-[[ `void ap_dbl_opt(ArgParser *parser, char *name, double fallback)` ]]
+[[ `void ap_dbl_opt(ArgParser* parser, char* name, double fallback)` ]]
 
     Registers a new double-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
@@ -57,35 +57,35 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 Any of an option's registered aliases or shortcuts can be used for the `name` parameter in the functions below.
 
-[[ `bool ap_found(ArgParser *parser, char *name)` ]]
+[[ `bool ap_found(ArgParser* parser, char* name)` ]]
 
     Returns true if the specified flag or option was found.
 
-[[ `int ap_count(ArgParser *parser, char *name)` ]]
+[[ `int ap_count(ArgParser* parser, char* name)` ]]
 
     Returns the number of times the specified flag or option was found.
 
-[[ `char* ap_str_value(ArgParser *parser, char *name)` ]]
+[[ `char* ap_str_value(ArgParser* parser, char* name)` ]]
 
-    Returns the value of the specified string-valued option. (The pointer points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
+    Returns the value of the specified string-valued option. (The pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function or to the `fallback` string specified when registering the option.)
 
-[[ `char** ap_str_values(ArgParser *parser, char *name)` ]]
+[[ `char** ap_str_values(ArgParser* parser, char* name)` ]]
 
-    Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to `ap_free()`. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
+    Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to `ap_free()`. (Each pointer in the array points to the appropriate value in the array of strings supplied to the `ap_parse()` function.)
 
-[[ `int ap_int_value(ArgParser *parser, char *name)` ]]
+[[ `int ap_int_value(ArgParser* parser, char* name)` ]]
 
     Returns the value of the specified integer-valued option.
 
-[[ `int* ap_int_values(ArgParser *parser, char *name)` ]]
+[[ `int* ap_int_values(ArgParser* parser, char* name)` ]]
 
     Returns the specified option's list of values as a freshly-allocated array of integers. The array's memory is not affected by calls to `ap_free()`.
 
-[[ `double ap_dbl_value(ArgParser *parser, char *name)` ]]
+[[ `double ap_dbl_value(ArgParser* parser, char* name)` ]]
 
     Returns the value of the specified double-valued option.
 
-[[ `double* ap_dbl_values(ArgParser *parser, char *name)` ]]
+[[ `double* ap_dbl_values(ArgParser* parser, char* name)` ]]
 
     Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to `ap_free()`.
 
@@ -93,27 +93,27 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 ### Positional Arguments
 
-[[ `bool ap_has_args(ArgParser *parser)` ]]
+[[ `bool ap_has_args(ArgParser* parser)` ]]
 
     Returns true if at least one positional argument has been found.
 
-[[ `int ap_count_args(ArgParser *parser)` ]]
+[[ `int ap_count_args(ArgParser* parser)` ]]
 
     Returns the number of positional arguments.
 
-[[ `char* ap_arg(ArgParser *parser, int index)` ]]
+[[ `char* ap_arg(ArgParser* parser, int index)` ]]
 
     Returns the positional argument at the specified index. (The pointer points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
 
-[[ `char** ap_args(ArgParser *parser)` ]]
+[[ `char** ap_args(ArgParser* parser)` ]]
 
     Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to `ap_free()`. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
 
-[[ `int* ap_args_as_ints(ArgParser *parser)` ]]
+[[ `int* ap_args_as_ints(ArgParser* parser)` ]]
 
     Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
 
-[[ `double* ap_args_as_doubles(ArgParser *parser)` ]]
+[[ `double* ap_args_as_doubles(ArgParser* parser)` ]]
 
     Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
 
@@ -125,27 +125,27 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
     A callback function for a command should accept two arguments --- the command's name and the command's parser instance. It should return `void`. (Note that this typedef is only used here to illustrate the function signature --- it isn't actually present in the library.)
 
-[[ `ArgParser* ap_cmd(ArgParser *parser, char *name)` ]]
+[[ `ArgParser* ap_cmd(ArgParser* parser, char* name)` ]]
 
     Registers a new command. Returns the `ArgParser` instance for the command. The `name` parameter accepts an unlimited number of space-separated aliases for the command.
 
-[[ `void ap_callback(ArgParser *parser, callback_t callback)` ]]
+[[ `void ap_callback(ArgParser* parser, callback_t callback)` ]]
 
     Registers an optional callback function on a command parser. If the command is found, the function will be called and passed the command's name and parser instance.
 
-[[ `bool ap_has_cmd(ArgParser *parser)` ]]
+[[ `bool ap_has_cmd(ArgParser* parser)` ]]
 
     Returns true if the parser has found a command.
 
-[[ `char* ap_cmd_name(ArgParser *parser)` ]]
+[[ `char* ap_cmd_name(ArgParser* parser)` ]]
 
     Returns the command name if the parser has found a command, otherwise `NULL`.
 
-[[ `ArgParser* ap_cmd_parser(ArgParser *parser)` ]]
+[[ `ArgParser* ap_cmd_parser(ArgParser* parser)` ]]
 
     Returns the command's parser instance if the parser has found a command, otherwise `NULL`.
 
-[[ `void ap_cmd_help(ArgParser *parser, bool enable)` ]]
+[[ `void ap_cmd_help(ArgParser* parser, bool enable)` ]]
 
     Boolean switch; toggles support for an automatic `help` command which prints subcommand helptext.
     (Defaults to `false`; gets toggled automatically to `true` when a command is registered.)

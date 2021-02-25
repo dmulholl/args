@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>API Reference</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>API Reference</title>
         <link rel="stylesheet" href="assets/fonts.css">
         <link rel="stylesheet" href="assets/graphite.css">
         <link rel="stylesheet" href="assets/pygments.css">
@@ -14,10 +14,10 @@
         <header class="masthead">
             <h1><a href="index.html">Args</a></h1>
             
-            <p class="tagline">An argument-parsing library for C.</p>
+                <p class="tagline">An argument-parsing library for C.</p>
             
             
-            <p class="version">Version 2.0.0</p>
+                <p class="version">Version 2.1.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -79,7 +79,7 @@ Initializes a new ArgParser instance.
 </div>
 <div>
 <dt>
-<code>void ap_helptext(ArgParser *parser, char *helptext)</code>
+<code>void ap_helptext(ArgParser* parser, char* helptext)</code>
 </dt>
 <dd>
 <p>
@@ -89,7 +89,7 @@ Supplies a helptext string for the parser; this activates an automatic <code>--h
 </div>
 <div>
 <dt>
-<code>void ap_version(ArgParser *parser, char *version)</code>
+<code>void ap_version(ArgParser* parser, char* version)</code>
 </dt>
 <dd>
 <p>
@@ -99,7 +99,7 @@ Supplies a version string for the parser; this activates an automatic <code>--ve
 </div>
 <div>
 <dt>
-<code>void ap_parse(ArgParser *parser, int argc, char **argv)</code>
+<code>void ap_parse(ArgParser* parser, int argc, char** argv)</code>
 </dt>
 <dd>
 <p>
@@ -109,7 +109,7 @@ Parses the program's command line arguments. The arguments are assumed to be <co
 </div>
 <div>
 <dt>
-<code>void ap_free(ArgParser *parser)</code>
+<code>void ap_free(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -124,7 +124,7 @@ Flags and Options
 <dl>
 <div>
 <dt>
-<code>void ap_flag(ArgParser *parser, char *name)</code>
+<code>void ap_flag(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -134,7 +134,7 @@ Registers a new flag. The <code>name</code> parameter accepts an unlimited numbe
 </div>
 <div>
 <dt>
-<code>void ap_str_opt(ArgParser *parser, char *name, char* fallback)</code>
+<code>void ap_str_opt(ArgParser* parser, char* name, char* fallback)</code>
 </dt>
 <dd>
 <p>
@@ -144,7 +144,7 @@ Registers a new string-valued option. The <code>name</code> parameter accepts an
 </div>
 <div>
 <dt>
-<code>void ap_int_opt(ArgParser *parser, char *name, int fallback)</code>
+<code>void ap_int_opt(ArgParser* parser, char* name, int fallback)</code>
 </dt>
 <dd>
 <p>
@@ -154,7 +154,7 @@ Registers a new integer-valued option. The <code>name</code> parameter accepts a
 </div>
 <div>
 <dt>
-<code>void ap_dbl_opt(ArgParser *parser, char *name, double fallback)</code>
+<code>void ap_dbl_opt(ArgParser* parser, char* name, double fallback)</code>
 </dt>
 <dd>
 <p>
@@ -172,7 +172,7 @@ Any of an option's registered aliases or shortcuts can be used for the <code>nam
 <dl>
 <div>
 <dt>
-<code>bool ap_found(ArgParser *parser, char *name)</code>
+<code>bool ap_found(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -182,7 +182,7 @@ Returns true if the specified flag or option was found.
 </div>
 <div>
 <dt>
-<code>int ap_count(ArgParser *parser, char *name)</code>
+<code>int ap_count(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -192,27 +192,27 @@ Returns the number of times the specified flag or option was found.
 </div>
 <div>
 <dt>
-<code>char* ap_str_value(ArgParser *parser, char *name)</code>
+<code>char* ap_str_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
-Returns the value of the specified string-valued option. (The pointer points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+Returns the value of the specified string-valued option. (The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function or to the <code>fallback</code> string specified when registering the option.)
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>char** ap_str_values(ArgParser *parser, char *name)</code>
+<code>char** ap_str_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
-Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.)
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>int ap_int_value(ArgParser *parser, char *name)</code>
+<code>int ap_int_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -222,7 +222,7 @@ Returns the value of the specified integer-valued option.
 </div>
 <div>
 <dt>
-<code>int* ap_int_values(ArgParser *parser, char *name)</code>
+<code>int* ap_int_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -232,7 +232,7 @@ Returns the specified option's list of values as a freshly-allocated array of in
 </div>
 <div>
 <dt>
-<code>double ap_dbl_value(ArgParser *parser, char *name)</code>
+<code>double ap_dbl_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -242,7 +242,7 @@ Returns the value of the specified double-valued option.
 </div>
 <div>
 <dt>
-<code>double* ap_dbl_values(ArgParser *parser, char *name)</code>
+<code>double* ap_dbl_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -257,7 +257,7 @@ Positional Arguments
 <dl>
 <div>
 <dt>
-<code>bool ap_has_args(ArgParser *parser)</code>
+<code>bool ap_has_args(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -267,7 +267,7 @@ Returns true if at least one positional argument has been found.
 </div>
 <div>
 <dt>
-<code>int ap_count_args(ArgParser *parser)</code>
+<code>int ap_count_args(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -277,7 +277,7 @@ Returns the number of positional arguments.
 </div>
 <div>
 <dt>
-<code>char* ap_arg(ArgParser *parser, int index)</code>
+<code>char* ap_arg(ArgParser* parser, int index)</code>
 </dt>
 <dd>
 <p>
@@ -287,7 +287,7 @@ Returns the positional argument at the specified index. (The pointer points to t
 </div>
 <div>
 <dt>
-<code>char** ap_args(ArgParser *parser)</code>
+<code>char** ap_args(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -297,7 +297,7 @@ Returns the positional arguments as a freshly-allocated array of string pointers
 </div>
 <div>
 <dt>
-<code>int* ap_args_as_ints(ArgParser *parser)</code>
+<code>int* ap_args_as_ints(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -307,7 +307,7 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 </div>
 <div>
 <dt>
-<code>double* ap_args_as_doubles(ArgParser *parser)</code>
+<code>double* ap_args_as_doubles(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -332,7 +332,7 @@ A callback function for a command should accept two arguments &mdash; the comman
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_cmd(ArgParser *parser, char *name)</code>
+<code>ArgParser* ap_cmd(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -342,7 +342,7 @@ Registers a new command. Returns the <code>ArgParser</code> instance for the com
 </div>
 <div>
 <dt>
-<code>void ap_callback(ArgParser *parser, callback_t callback)</code>
+<code>void ap_callback(ArgParser* parser, callback_t callback)</code>
 </dt>
 <dd>
 <p>
@@ -352,7 +352,7 @@ Registers an optional callback function on a command parser. If the command is f
 </div>
 <div>
 <dt>
-<code>bool ap_has_cmd(ArgParser *parser)</code>
+<code>bool ap_has_cmd(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -362,7 +362,7 @@ Returns true if the parser has found a command.
 </div>
 <div>
 <dt>
-<code>char* ap_cmd_name(ArgParser *parser)</code>
+<code>char* ap_cmd_name(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -372,7 +372,7 @@ Returns the command name if the parser has found a command, otherwise <code>NULL
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_cmd_parser(ArgParser *parser)</code>
+<code>ArgParser* ap_cmd_parser(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -382,7 +382,7 @@ Returns the command's parser instance if the parser has found a command, otherwi
 </div>
 <div>
 <dt>
-<code>void ap_cmd_help(ArgParser *parser, bool enable)</code>
+<code>void ap_cmd_help(ArgParser* parser, bool enable)</code>
 </dt>
 <dd>
 <p>

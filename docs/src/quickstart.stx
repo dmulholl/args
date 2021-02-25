@@ -11,7 +11,7 @@ First we need to create an `ArgParser` instance:
 ::: code c
     #include "args.h"
 
-    ArgParser *parser = ap_new();
+    ArgParser* parser = ap_new();
     ap_helptext(parser, "Usage: mp3cat...");
     ap_version(parser, "1.0");
 
@@ -38,13 +38,13 @@ This will exit with a suitable error message for the user if anything goes wrong
 And determine our output filepath:
 
 ::: code c
-    char *outpath = ap_str_value(parser, "out");
+    char* outpath = ap_str_value(parser, "out");
 
 The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways:
 
 ::: code c
     for (int i = 0; i < ap_count_args(parser); i++) {
-        char *filename = ap_arg(parser, i);
+        char* filename = ap_arg(parser, i);
         do_stuff();
     }
 

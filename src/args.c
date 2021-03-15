@@ -180,7 +180,7 @@ static void map_free(Map* map) {
 
 
 static MapEntry* map_find(Map* map, const char* key, uint32_t key_hash) {
-    // Capacity is always a power of 2 so we can use bitwise-and as a fast
+    // Capacity is always a power of 2 so we can use bitwise-AND as a fast
     // modulo operator, i.e. this is equivalent to: index = key_hash % capacity.
     size_t index = key_hash & (map->capacity - 1);
 

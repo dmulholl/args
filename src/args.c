@@ -154,6 +154,7 @@ typedef struct {
 typedef struct {
     int count;
     int capacity;
+    int max_load_threshold;
     MapEntry* entries;
 } Map;
 
@@ -162,6 +163,7 @@ static Map* map_new() {
     Map* map = malloc(sizeof(Map));
     map->count = 0;
     map->capacity = 0;
+    map->max_load_threshold = 0;
     map->entries = NULL;
     return map;
 }
@@ -208,6 +210,7 @@ static void map_grow(Map* map) {
 
     map->count = 0;
     map->capacity = new_capacity;
+    map->max_load_threshold = new_capacity * MAP_MAX_LOAD;
     map->entries = new_entries;
 
     for (int i = 0; i < old_capacity; i++) {
@@ -241,7 +244,7 @@ static bool map_get(Map* map, const char* key, void** value) {
 // Adds a new entry to the map or updates the value of an existing entry.
 // (Note that the map stores its own internal copy of the key string.)
 static void map_set(Map* map, const char* key, void* value) {
-    if (map->count + 1 > map->capacity * MAP_MAX_LOAD) {
+    if (map->count == map->max_load_threshold) {
         map_grow(map);
     }
 

@@ -29,7 +29,7 @@ static char* str(const char* fmtstr, ...) {
 
     va_start(args, fmtstr);
     int len = vsnprintf(NULL, 0, fmtstr, args);
-    if (len < 1) {
+    if (len < 0) {
         return NULL;
     }
     va_end(args);

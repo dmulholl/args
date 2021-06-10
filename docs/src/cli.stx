@@ -47,7 +47,7 @@ You can use the standard `--` switch for turning off option-parsing. All argumen
 
 ### Commands
 
-Argslib supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic `--help` flag and an automatic `help <cmd>` command, i.e. the commands
+This library supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic `--help` flag and an automatic `help <cmd>` command, i.e. the commands
 
     $ myapp <cmd> --help
 

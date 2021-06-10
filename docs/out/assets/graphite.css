@@ -48,7 +48,6 @@ body {
     color: black;
     font-family: 'Crimson Text', Georgia, serif;
     line-height: 1.75;
-    overflow-wrap: break-word;
 }
 
 h1, h2 {
@@ -80,6 +79,7 @@ h3, h4, h5, h6 {
 p {
     margin: 25px 0;
     padding: 0;
+    overflow-wrap: break-word;
 }
 
 blockquote {

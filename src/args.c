@@ -824,7 +824,7 @@ static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const ch
     }
 
     if (strlen(value) == 0) {
-        err(str("missing value for the %s%s option", prefix, name));
+        err(str("missing argument for %s%s", prefix, name));
     }
 
     option_try_set(option, value);
@@ -841,7 +841,7 @@ static void ap_handle_long_opt(ArgParser* parser, const char* arg, ArgStream* st
         } else if (argstream_has_next(stream)) {
             option_try_set(option, argstream_next(stream));
         } else {
-            err(str("missing argument for the --%s option", arg));
+            err(str("missing argument for --%s", arg));
         }
     } else if (strcmp(arg, "help") == 0 && parser->helptext != NULL) {
         puts(parser->helptext);
@@ -878,9 +878,9 @@ static void ap_handle_short_opt(ArgParser* parser, const char* arg, ArgStream* s
         } else if (argstream_has_next(stream)) {
             option_try_set(option, argstream_next(stream));
         } else if (strlen(arg) > 1) {
-            err(str("missing argument for the '%c' option in -%s", arg[i], arg));
+            err(str("missing argument for '%c' in -%s", arg[i], arg));
         } else {
-            err(str("missing argument for the -%s option", arg));
+            err(str("missing argument for -%s", arg));
         }
     }
 }

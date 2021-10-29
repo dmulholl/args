@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.1.4
+// Version: 2.2.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -14,6 +14,10 @@
 
 // An ArgParser instance stores registered flags, options and commands.
 typedef struct ArgParser ArgParser;
+
+// A command callback function should accept two arguments: the command's name
+// and the command's ArgParser instance.
+typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser);
 
 // -----------------------------------------------------------------------------
 // Initialization, parsing, teardown.
@@ -117,13 +121,9 @@ double* ap_args_as_doubles(ArgParser* parser);
 // Registers a new command. Returns the ArgParser instance for the command.
 ArgParser* ap_cmd(ArgParser* parser, const char* name);
 
-// Registers a callback function for a command. The callback is registered on
-// the command's ArgParser instance. The callback should accept two arguments:
-// the command's name and the command's ArgParser instance.
-void ap_callback(
-    ArgParser* parser,
-    void (*callback)(char* cmd_name, ArgParser* cmd_parser)
-);
+// Registers a callback function on a command parser. The function will be
+// called if the command is found.
+void ap_callback(ArgParser* parser, ap_callback_t function);
 
 // Returns true if the parser has found a command.
 bool ap_has_cmd(ArgParser* parser);

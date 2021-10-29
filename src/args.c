@@ -263,7 +263,7 @@ static void map_set(Map* map, const char* key, void* value) {
 
 // Convenience wrapper for map_set(). This splits the keystring into space-
 // separated words and adds a separate entry to the map for each word.
-static void map_set_splitkey(Map *map, const char* keys, void* value) {
+static void map_set_splitkey(Map* map, const char* keys, void* value) {
     char *key;
     char *saveptr;
     char *keys_copy = str_dup(keys);
@@ -354,7 +354,7 @@ static Option* option_new_flag() {
 }
 
 
-static Option* option_new_str(const char *fallback) {
+static Option* option_new_str(const char* fallback) {
     Option *opt = option_new();
     opt->type = OPT_STR;
     opt->fallback = (OptionValue){.str_val = fallback};
@@ -378,7 +378,7 @@ static Option* option_new_double(double fallback) {
 }
 
 
-static const char* option_get_str(Option *opt) {
+static const char* option_get_str(Option* opt) {
     if (opt->count > 0) {
         return opt->values[opt->count - 1].str_val;
     }
@@ -386,7 +386,7 @@ static const char* option_get_str(Option *opt) {
 }
 
 
-static int option_get_int(Option *opt) {
+static int option_get_int(Option* opt) {
     if (opt->count > 0) {
         return opt->values[opt->count - 1].int_val;
     }
@@ -394,7 +394,7 @@ static int option_get_int(Option *opt) {
 }
 
 
-static double option_get_double(Option *opt) {
+static double option_get_double(Option* opt) {
     if (opt->count > 0) {
         return opt->values[opt->count - 1].dbl_val;
     }
@@ -403,7 +403,7 @@ static double option_get_double(Option *opt) {
 
 
 // Returns the option's values as a freshly-allocated array of string pointers.
-static const char** option_get_str_list(Option *opt) {
+static const char** option_get_str_list(Option* opt) {
     if (opt->count == 0) {
         return NULL;
     }
@@ -416,7 +416,7 @@ static const char** option_get_str_list(Option *opt) {
 
 
 // Returns the option's values as a freshly-allocated array of integers.
-static int* option_get_int_list(Option *opt) {
+static int* option_get_int_list(Option* opt) {
     if (opt->count == 0) {
         return NULL;
     }
@@ -429,7 +429,7 @@ static int* option_get_int_list(Option *opt) {
 
 
 // Returns the option's values as a freshly-allocated array of doubles.
-static double* option_get_double_list(Option *opt) {
+static double* option_get_double_list(Option* opt) {
     if (opt->count  == 0) {
         return NULL;
     }
@@ -442,7 +442,7 @@ static double* option_get_double_list(Option *opt) {
 
 
 // Returns a freshly-allocated state-string for debugging.
-static char* option_to_str(Option *opt) {
+static char* option_to_str(Option* opt) {
     if (opt->type == OPT_FLAG) {
         return str("%i", opt->count);
     }
@@ -533,7 +533,7 @@ struct ArgParser {
     Vec* command_vec;
     Map* command_map;
     Vec* positional_args;
-    void (*callback)(char *cmd_name, struct ArgParser *cmd_parser);
+    ap_callback_t callback;
     char* cmd_name;
     struct ArgParser* cmd_parser;
     bool cmd_help;
@@ -776,8 +776,8 @@ ArgParser* ap_cmd(ArgParser* parser, const char* name) {
 
 
 // Register a callback function for a command.
-void ap_callback(ArgParser* parser, void (*callback)(char*, ArgParser*)) {
-    parser->callback = callback;
+void ap_callback(ArgParser* parser, ap_callback_t function) {
+    parser->callback = function;
 }
 
 

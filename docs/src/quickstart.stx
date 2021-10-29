@@ -1,5 +1,6 @@
 ---
 title: Quickstart Tutorial
+meta_title: Args &mdash; Quickstart Tutorial
 ---
 
 Imagine we're building a utility for joining MP3 files, something like [MP3cat](https://github.com/dmulholl/mp3cat).

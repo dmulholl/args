@@ -1,5 +1,6 @@
 ---
 title: API Reference
+meta_title: Args &mdash; API Reference
 ---
 
 ::: insert toc
@@ -13,15 +14,17 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 [[ `ArgParser* ap_new()` ]]
 
-    Initializes a new ArgParser instance.
+    Initializes a new `ArgParser` instance. The memory occupied by the parser can be freed using the `ap_free()` function.
 
 [[ `void ap_helptext(ArgParser* parser, char* helptext)` ]]
 
     Supplies a helptext string for the parser; this activates an automatic `--help` flag, also a `-h` shortcut if not registered by another option.
+    (The parser stores a pointer to the helptext string so this string should outlive the parser instance.)
 
 [[ `void ap_version(ArgParser* parser, char* version)` ]]
 
     Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not registered by another option.
+    (The parser stores a pointer to the version string so this string should outlive the parser instance.)
 
 [[ `void ap_parse(ArgParser* parser, int argc, char** argv)` ]]
 
@@ -29,7 +32,8 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 [[ `void ap_free(ArgParser* parser)` ]]
 
-    Frees the memory occupied by the parser and any associated command sub-parsers.
+    Frees the memory occupied by an `ArgParser` instance.
+    (This function should only be called on the root parser instance --- it will automatically free the memory occupied by any associated command parsers.)
 
 
 
@@ -37,19 +41,26 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 [[ `void ap_flag(ArgParser* parser, char* name)` ]]
 
-    Registers a new flag. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    Registers a new flag.
+    The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
 [[ `void ap_str_opt(ArgParser* parser, char* name, char* fallback)` ]]
 
-    Registers a new string-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    Registers a new string-valued option.
+    The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    The `fallback` parameter specifies the option's default value.
 
 [[ `void ap_int_opt(ArgParser* parser, char* name, int fallback)` ]]
 
-    Registers a new integer-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    Registers a new integer-valued option.
+    The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    The `fallback` parameter specifies the option's default value.
 
 [[ `void ap_dbl_opt(ArgParser* parser, char* name, double fallback)` ]]
 
-    Registers a new double-valued option. The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    Registers a new double-valued option.
+    The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+    The `fallback` parameter specifies the option's default value.
 
 
 
@@ -67,11 +78,15 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `char* ap_str_value(ArgParser* parser, char* name)` ]]
 
-    Returns the value of the specified string-valued option. (The pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function or to the `fallback` string specified when registering the option.)
+    Returns the value of the specified string-valued option.
+    The pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function or to the `fallback` string specified when registering the option.
 
 [[ `char** ap_str_values(ArgParser* parser, char* name)` ]]
 
-    Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to `ap_free()`. (Each pointer in the array points to the appropriate value in the array of strings supplied to the `ap_parse()` function.)
+    Returns the specified option's list of values as a freshly-allocated array of string pointers.
+    This array's memory is not affected by calls to `ap_free()`.
+    Each pointer in the array points to the appropriate value in the array of strings supplied to the `ap_parse()` function.
+    The size of the array is given by `ap_count()`.
 
 [[ `int ap_int_value(ArgParser* parser, char* name)` ]]
 
@@ -79,7 +94,9 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `int* ap_int_values(ArgParser* parser, char* name)` ]]
 
-    Returns the specified option's list of values as a freshly-allocated array of integers. The array's memory is not affected by calls to `ap_free()`.
+    Returns the specified option's list of values as a freshly-allocated array of integers.
+    This array's memory is not affected by calls to `ap_free()`.
+    The size of the array is given by `ap_count()`.
 
 [[ `double ap_dbl_value(ArgParser* parser, char* name)` ]]
 
@@ -87,7 +104,9 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `double* ap_dbl_values(ArgParser* parser, char* name)` ]]
 
-    Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to `ap_free()`.
+    Returns the specified option's list of values as a freshly-allocated array of doubles.
+    This array's memory is not affected by calls to `ap_free()`.
+    The size of the array is given by `ap_count()`.
 
 
 
@@ -103,35 +122,45 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `char* ap_arg(ArgParser* parser, int index)` ]]
 
-    Returns the positional argument at the specified index. (The pointer points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
+    Returns the positional argument at the specified index.
+    The pointer points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.
 
 [[ `char** ap_args(ArgParser* parser)` ]]
 
-    Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to `ap_free()`. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.)
+    Returns the positional arguments as a freshly-allocated array of string pointers.
+    The memory occupied by this array is not affected by calls to `ap_free()`.
+    Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.
+    The size of the array is given by `ap_count_args()`.
 
 [[ `int* ap_args_as_ints(ArgParser* parser)` ]]
 
-    Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
+    Attempts to parse and return the positional arguments as a freshly-allocated array of integers.
+    Exits with an error message on failure.
+    The memory occupied by this array is not affected by calls to `ap_free()`.
+    The size of the array is given by `ap_count_args()`.
 
 [[ `double* ap_args_as_doubles(ArgParser* parser)` ]]
 
-    Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to `ap_free()`.
+    Attempts to parse and return the positional arguments as a freshly-allocated array of doubles.
+    Exits with an error message on failure.
+    The memory occupied by this array is not affected by calls to `ap_free()`.
+    The size of the array is given by `ap_count_args()`.
 
 
 
 ### Commands
 
-[[ `typedef void (*callback_t)(char*, ArgParser*)` ]]
+[[ `typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser)` ]]
 
-    A callback function for a command should accept two arguments --- the command's name and the command's parser instance. It should return `void`. (Note that this typedef is only used here to illustrate the function signature --- it isn't actually present in the library.)
+    A callback function for a command should accept two arguments --- the command's name and the command's `ArgParser` instance. It should return `void`.
 
 [[ `ArgParser* ap_cmd(ArgParser* parser, char* name)` ]]
 
     Registers a new command. Returns the `ArgParser` instance for the command. The `name` parameter accepts an unlimited number of space-separated aliases for the command.
 
-[[ `void ap_callback(ArgParser* parser, callback_t callback)` ]]
+[[ `void ap_callback(ArgParser* parser, ap_callback_t function)` ]]
 
-    Registers an optional callback function on a command parser. If the command is found, the function will be called and passed the command's name and parser instance.
+    Registers an optional callback function on a command parser. If the command is found, this function will be called and passed the command's name and `ArgParser` instance.
 
 [[ `bool ap_has_cmd(ArgParser* parser)` ]]
 

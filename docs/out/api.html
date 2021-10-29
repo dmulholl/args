@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>API Reference</title>
+        <title>Args &mdash; API Reference</title>
         <link rel="stylesheet" href="assets/fonts.css">
         <link rel="stylesheet" href="assets/graphite.css">
         <link rel="stylesheet" href="assets/pygments.css">
@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.1.0</p>
+                <p class="version">Version 2.2.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -73,7 +73,7 @@ Setup
 </dt>
 <dd>
 <p>
-Initializes a new ArgParser instance.
+Initializes a new <code>ArgParser</code> instance. The memory occupied by the parser can be freed using the <code>ap_free()</code> function.
 </p>
 </dd>
 </div>
@@ -84,6 +84,7 @@ Initializes a new ArgParser instance.
 <dd>
 <p>
 Supplies a helptext string for the parser; this activates an automatic <code>--help</code> flag, also a <code>-h</code> shortcut if not registered by another option.
+(The parser stores a pointer to the helptext string so this string should outlive the parser instance.)
 </p>
 </dd>
 </div>
@@ -94,6 +95,7 @@ Supplies a helptext string for the parser; this activates an automatic <code>--h
 <dd>
 <p>
 Supplies a version string for the parser; this activates an automatic <code>--version</code> flag, also a <code>-v</code> shortcut if not registered by another option.
+(The parser stores a pointer to the version string so this string should outlive the parser instance.)
 </p>
 </dd>
 </div>
@@ -113,7 +115,8 @@ Parses the program's command line arguments. The arguments are assumed to be <co
 </dt>
 <dd>
 <p>
-Frees the memory occupied by the parser and any associated command sub-parsers.
+Frees the memory occupied by an <code>ArgParser</code> instance.
+(This function should only be called on the root parser instance &mdash; it will automatically free the memory occupied by any associated command parsers.)
 </p>
 </dd>
 </div>
@@ -128,7 +131,8 @@ Flags and Options
 </dt>
 <dd>
 <p>
-Registers a new flag. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+Registers a new flag.
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 </p>
 </dd>
 </div>
@@ -138,7 +142,9 @@ Registers a new flag. The <code>name</code> parameter accepts an unlimited numbe
 </dt>
 <dd>
 <p>
-Registers a new string-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+Registers a new string-valued option.
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+The <code>fallback</code> parameter specifies the option's default value.
 </p>
 </dd>
 </div>
@@ -148,7 +154,9 @@ Registers a new string-valued option. The <code>name</code> parameter accepts an
 </dt>
 <dd>
 <p>
-Registers a new integer-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+Registers a new integer-valued option.
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+The <code>fallback</code> parameter specifies the option's default value.
 </p>
 </dd>
 </div>
@@ -158,7 +166,9 @@ Registers a new integer-valued option. The <code>name</code> parameter accepts a
 </dt>
 <dd>
 <p>
-Registers a new double-valued option. The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+Registers a new double-valued option.
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
+The <code>fallback</code> parameter specifies the option's default value.
 </p>
 </dd>
 </div>
@@ -196,7 +206,8 @@ Returns the number of times the specified flag or option was found.
 </dt>
 <dd>
 <p>
-Returns the value of the specified string-valued option. (The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function or to the <code>fallback</code> string specified when registering the option.)
+Returns the value of the specified string-valued option.
+The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function or to the <code>fallback</code> string specified when registering the option.
 </p>
 </dd>
 </div>
@@ -206,7 +217,10 @@ Returns the value of the specified string-valued option. (The pointer points to 
 </dt>
 <dd>
 <p>
-Returns the specified option's list of values as a freshly-allocated array of string pointers. The array's memory is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.)
+Returns the specified option's list of values as a freshly-allocated array of string pointers.
+This array's memory is not affected by calls to <code>ap_free()</code>.
+Each pointer in the array points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
+The size of the array is given by <code>ap_count()</code>.
 </p>
 </dd>
 </div>
@@ -226,7 +240,9 @@ Returns the value of the specified integer-valued option.
 </dt>
 <dd>
 <p>
-Returns the specified option's list of values as a freshly-allocated array of integers. The array's memory is not affected by calls to <code>ap_free()</code>.
+Returns the specified option's list of values as a freshly-allocated array of integers.
+This array's memory is not affected by calls to <code>ap_free()</code>.
+The size of the array is given by <code>ap_count()</code>.
 </p>
 </dd>
 </div>
@@ -246,7 +262,9 @@ Returns the value of the specified double-valued option.
 </dt>
 <dd>
 <p>
-Returns the specified option's list of values as a freshly-allocated array of doubles. The array's memory is not affected by calls to <code>ap_free()</code>.
+Returns the specified option's list of values as a freshly-allocated array of doubles.
+This array's memory is not affected by calls to <code>ap_free()</code>.
+The size of the array is given by <code>ap_count()</code>.
 </p>
 </dd>
 </div>
@@ -281,7 +299,8 @@ Returns the number of positional arguments.
 </dt>
 <dd>
 <p>
-Returns the positional argument at the specified index. (The pointer points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+Returns the positional argument at the specified index.
+The pointer points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.
 </p>
 </dd>
 </div>
@@ -291,7 +310,10 @@ Returns the positional argument at the specified index. (The pointer points to t
 </dt>
 <dd>
 <p>
-Returns the positional arguments as a freshly-allocated array of string pointers. The memory occupied by the array is not affected by calls to <code>ap_free()</code>. (Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.)
+Returns the positional arguments as a freshly-allocated array of string pointers.
+The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
+Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.
+The size of the array is given by <code>ap_count_args()</code>.
 </p>
 </dd>
 </div>
@@ -301,7 +323,10 @@ Returns the positional arguments as a freshly-allocated array of string pointers
 </dt>
 <dd>
 <p>
-Attempts to parse and return the positional arguments as a freshly-allocated array of integers. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
+Attempts to parse and return the positional arguments as a freshly-allocated array of integers.
+Exits with an error message on failure.
+The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
+The size of the array is given by <code>ap_count_args()</code>.
 </p>
 </dd>
 </div>
@@ -311,7 +336,10 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 </dt>
 <dd>
 <p>
-Attempts to parse and return the positional arguments as a freshly-allocated array of doubles. Exits with an error message on failure. The memory occupied by the array is not affected by calls to <code>ap_free()</code>.
+Attempts to parse and return the positional arguments as a freshly-allocated array of doubles.
+Exits with an error message on failure.
+The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
+The size of the array is given by <code>ap_count_args()</code>.
 </p>
 </dd>
 </div>
@@ -322,11 +350,11 @@ Commands
 <dl>
 <div>
 <dt>
-<code>typedef void (*callback_t)(char*, ArgParser*)</code>
+<code>typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser)</code>
 </dt>
 <dd>
 <p>
-A callback function for a command should accept two arguments &mdash; the command's name and the command's parser instance. It should return <code>void</code>. (Note that this typedef is only used here to illustrate the function signature &mdash; it isn't actually present in the library.)
+A callback function for a command should accept two arguments &mdash; the command's name and the command's <code>ArgParser</code> instance. It should return <code>void</code>.
 </p>
 </dd>
 </div>
@@ -342,11 +370,11 @@ Registers a new command. Returns the <code>ArgParser</code> instance for the com
 </div>
 <div>
 <dt>
-<code>void ap_callback(ArgParser* parser, callback_t callback)</code>
+<code>void ap_callback(ArgParser* parser, ap_callback_t function)</code>
 </dt>
 <dd>
 <p>
-Registers an optional callback function on a command parser. If the command is found, the function will be called and passed the command's name and parser instance.
+Registers an optional callback function on a command parser. If the command is found, this function will be called and passed the command's name and <code>ArgParser</code> instance.
 </p>
 </dd>
 </div>

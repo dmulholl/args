@@ -320,6 +320,15 @@ void test_container_resizing() {
     printf(".");
 }
 
+void test_first_arg_ends_options() {
+    ArgParser *parser = ap_new();
+    ap_first_pos_arg_ends_options(parser, true);
+    ap_parse(parser, 4, (char *[]){"", "foo", "--bar", "--baz"});
+    assert(ap_count_args(parser) == 3);
+    ap_free(parser);
+    printf(".");
+}
+
 // -----------------------------------------------------------------------------
 // Test runner.
 // -----------------------------------------------------------------------------
@@ -373,6 +382,7 @@ int main() {
 
     printf(" 8 ");
     test_container_resizing();
+    test_first_arg_ends_options();
 
     printf(" [ok]\n");
     line();

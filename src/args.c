@@ -596,7 +596,6 @@ static bool argstream_has_next(ArgStream* stream) {
 /* ----------------- */
 
 
-// An ArgParser instance stores registered flags, options and commands.
 struct ArgParser {
     const char* helptext;
     const char* version;
@@ -611,10 +610,10 @@ struct ArgParser {
     bool enable_help_command;
     bool had_memory_error;
     struct ArgParser* parent;
+    bool first_positional_arg_ends_options;
 };
 
 
-// Initialize a new ArgParser instance.
 ArgParser* ap_new() {
     ArgParser *parser = malloc(sizeof(ArgParser));
     if (!parser) {
@@ -629,6 +628,7 @@ ArgParser* ap_new() {
     parser->enable_help_command = false;
     parser->had_memory_error = false;
     parser->parent = NULL;
+    parser->first_positional_arg_ends_options = false;
 
     parser->option_vec = vec_new();
     if (!parser->option_vec) {
@@ -659,7 +659,6 @@ ArgParser* ap_new() {
 }
 
 
-// Free the memory associated with an ArgParser instance.
 void ap_free(ArgParser* parser) {
     if (parser) {
         for (int i = 0; i < parser->option_vec->count; i++) {
@@ -678,15 +677,18 @@ void ap_free(ArgParser* parser) {
 }
 
 
-// Sets the parser's helptext string.
 void ap_helptext(ArgParser* parser, const char* helptext) {
     parser->helptext = helptext;
 }
 
 
-// Sets the parser's version string.
 void ap_version(ArgParser* parser, const char* version) {
     parser->version = version;
+}
+
+
+void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable) {
+    parser->first_positional_arg_ends_options = enable;
 }
 
 
@@ -1132,6 +1134,13 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         else {
             if (!vec_add(parser->positional_args, arg)) {
                 parser->had_memory_error = true;
+            }
+            if (parser->first_positional_arg_ends_options) {
+                while (argstream_has_next(stream)) {
+                    if (!vec_add(parser->positional_args, argstream_next(stream))) {
+                        parser->had_memory_error = true;
+                    }
+                }
             }
         }
 

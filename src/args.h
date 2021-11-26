@@ -33,6 +33,10 @@ void ap_helptext(ArgParser* parser, const char* helptext);
 // Supplying a version string activates an automatic --version/-v flag.
 void ap_version(ArgParser* parser, const char* version);
 
+// If toggled to true, the first positional argument ends option parsing; all
+// subsequent arguments are treated as positionals. Defaults to false.
+void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
+
 // Parses the application's command line arguments. The parameters are assumed
 // to be argc and argv as supplied to main(). Returns true if the arguments
 // were successfully parsed. Returns false if parsing failed because of a

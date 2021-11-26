@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "args.h"
 
 void cmd_boo(char* cmd_name, ArgParser* cmd_parser) {
@@ -10,11 +11,21 @@ void cmd_boo(char* cmd_name, ArgParser* cmd_parser) {
 int main(int argc, char** argv) {
     // Instantiate a new ArgParser instance.
     ArgParser* parser = ap_new();
+    if (!parser) {
+        exit(1);
+    }
+
+    // Register the program's helptext and version number.
     ap_helptext(parser, "Usage: example...");
     ap_version(parser, "1.0");
 
-    // Register a command, "boo". The command can have its own helptext, flags, and options.
+    // Register a command, "boo".
     ArgParser* cmd_parser = ap_cmd(parser, "boo");
+    if (!cmd_parser) {
+        exit(1);
+    }
+
+    // The command can have its own helptext, flags, and options.
     ap_helptext(cmd_parser, "Usage: example boo...");
     ap_flag(cmd_parser, "foo f");
     ap_str_opt(cmd_parser, "bar b", "default");
@@ -23,7 +34,13 @@ int main(int argc, char** argv) {
     ap_callback(cmd_parser, cmd_boo);
 
     // Parse the program's arguments.
-    ap_parse(parser, argc, argv);
+    if (!ap_parse(parser, argc, argv)) {
+        exit(1);
+    }
+
+    // This debugging function prints the parser's state.
     ap_print(parser);
+
+    // We only need to call ap_free() on the root parser.
     ap_free(parser);
 }

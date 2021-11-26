@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.2.0</p>
+                <p class="version">Version 2.3.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -73,7 +73,8 @@ Setup
 </dt>
 <dd>
 <p>
-Initializes a new <code>ArgParser</code> instance. The memory occupied by the parser can be freed using the <code>ap_free()</code> function.
+Initializes a new <code>ArgParser</code> instance.
+Returns <code>NULL</code> if memory allocation fails.
 </p>
 </dd>
 </div>
@@ -101,11 +102,14 @@ Supplies a version string for the parser; this activates an automatic <code>--ve
 </div>
 <div>
 <dt>
-<code>void ap_parse(ArgParser* parser, int argc, char** argv)</code>
+<code>bool ap_parse(ArgParser* parser, int argc, char** argv)</code>
 </dt>
 <dd>
 <p>
-Parses the program's command line arguments. The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>.
+Parses the program's command line arguments.
+The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>.
+Returns <code>true</code> if the arguments were parsed successfully,
+or <code>false</code> if parsing failed due to a memory allocation error.
 </p>
 </dd>
 </div>
@@ -221,6 +225,7 @@ Returns the specified option's list of values as a freshly-allocated array of st
 This array's memory is not affected by calls to <code>ap_free()</code>.
 Each pointer in the array points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
 The size of the array is given by <code>ap_count()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -243,6 +248,7 @@ Returns the value of the specified integer-valued option.
 Returns the specified option's list of values as a freshly-allocated array of integers.
 This array's memory is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -265,6 +271,7 @@ Returns the value of the specified double-valued option.
 Returns the specified option's list of values as a freshly-allocated array of doubles.
 This array's memory is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -314,6 +321,7 @@ Returns the positional arguments as a freshly-allocated array of string pointers
 The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.
 The size of the array is given by <code>ap_count_args()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -327,6 +335,7 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 Exits with an error message on failure.
 The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count_args()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -340,6 +349,7 @@ Attempts to parse and return the positional arguments as a freshly-allocated arr
 Exits with an error message on failure.
 The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count_args()</code>.
+Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
 </div>
@@ -365,6 +375,7 @@ A callback function for a command should accept two arguments &mdash; the comman
 <dd>
 <p>
 Registers a new command. Returns the <code>ArgParser</code> instance for the command. The <code>name</code> parameter accepts an unlimited number of space-separated aliases for the command.
+Returns <code>NULL</code> if sufficient memory cannot be allocated for the new parser instance.
 </p>
 </dd>
 </div>
@@ -410,12 +421,14 @@ Returns the command's parser instance if the parser has found a command, otherwi
 </div>
 <div>
 <dt>
-<code>void ap_cmd_help(ArgParser* parser, bool enable)</code>
+<code>void ap_enable_help_command(ArgParser* parser, bool enable)</code>
 </dt>
 <dd>
 <p>
-Boolean switch; toggles support for an automatic <code>help</code> command which prints subcommand helptext.
-(Defaults to <code>false</code>; gets toggled automatically to <code>true</code> when a command is registered.)
+This boolean switch toggles support for an automatic <code>help</code> command which
+prints subcommand helptext. The value defaults to <code>false</code> but gets toggled
+automatically to true whenever a command is registered. You can use this
+function to disable the feature if required.
 </p>
 </dd>
 </div>

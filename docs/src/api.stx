@@ -14,7 +14,8 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 [[ `ArgParser* ap_new()` ]]
 
-    Initializes a new `ArgParser` instance. The memory occupied by the parser can be freed using the `ap_free()` function.
+    Initializes a new `ArgParser` instance.
+    Returns `NULL` if memory allocation fails.
 
 [[ `void ap_helptext(ArgParser* parser, char* helptext)` ]]
 
@@ -26,9 +27,12 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not registered by another option.
     (The parser stores a pointer to the version string so this string should outlive the parser instance.)
 
-[[ `void ap_parse(ArgParser* parser, int argc, char** argv)` ]]
+[[ `bool ap_parse(ArgParser* parser, int argc, char** argv)` ]]
 
-    Parses the program's command line arguments. The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
+    Parses the program's command line arguments.
+    The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
+    Returns `true` if the arguments were parsed successfully,
+    or `false` if parsing failed due to a memory allocation error.
 
 [[ `void ap_free(ArgParser* parser)` ]]
 
@@ -87,6 +91,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     This array's memory is not affected by calls to `ap_free()`.
     Each pointer in the array points to the appropriate value in the array of strings supplied to the `ap_parse()` function.
     The size of the array is given by `ap_count()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `int ap_int_value(ArgParser* parser, char* name)` ]]
 
@@ -97,6 +102,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     Returns the specified option's list of values as a freshly-allocated array of integers.
     This array's memory is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `double ap_dbl_value(ArgParser* parser, char* name)` ]]
 
@@ -107,6 +113,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     Returns the specified option's list of values as a freshly-allocated array of doubles.
     This array's memory is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 
 
@@ -131,6 +138,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     The memory occupied by this array is not affected by calls to `ap_free()`.
     Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.
     The size of the array is given by `ap_count_args()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `int* ap_args_as_ints(ArgParser* parser)` ]]
 
@@ -138,6 +146,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     Exits with an error message on failure.
     The memory occupied by this array is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count_args()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `double* ap_args_as_doubles(ArgParser* parser)` ]]
 
@@ -145,6 +154,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     Exits with an error message on failure.
     The memory occupied by this array is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count_args()`.
+    Returns `NULL` if memory cannot be allocated for the array.
 
 
 
@@ -157,6 +167,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `ArgParser* ap_cmd(ArgParser* parser, char* name)` ]]
 
     Registers a new command. Returns the `ArgParser` instance for the command. The `name` parameter accepts an unlimited number of space-separated aliases for the command.
+    Returns `NULL` if sufficient memory cannot be allocated for the new parser instance.
 
 [[ `void ap_callback(ArgParser* parser, ap_callback_t function)` ]]
 
@@ -174,8 +185,9 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
     Returns the command's parser instance if the parser has found a command, otherwise `NULL`.
 
-[[ `void ap_cmd_help(ArgParser* parser, bool enable)` ]]
+[[ `void ap_enable_help_command(ArgParser* parser, bool enable)` ]]
 
-    Boolean switch; toggles support for an automatic `help` command which prints subcommand helptext.
-    (Defaults to `false`; gets toggled automatically to `true` when a command is registered.)
-
+    This boolean switch toggles support for an automatic `help` command which
+    prints subcommand helptext. The value defaults to `false` but gets toggled
+    automatically to true whenever a command is registered. You can use this
+    function to disable the feature if required.

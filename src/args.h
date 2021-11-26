@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.2.0
+// Version: 2.3.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -23,7 +23,8 @@ typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser);
 // Initialization, parsing, teardown.
 // -----------------------------------------------------------------------------
 
-// Initialize a new ArgParser instance.
+// Initializes a new ArgParser instance. Returns NULL if sufficient memory
+// cannot be allocated for the new parser.
 ArgParser* ap_new();
 
 // Supplying a helptext string activates an automatic --help/-h flag.
@@ -32,27 +33,29 @@ void ap_helptext(ArgParser* parser, const char* helptext);
 // Supplying a version string activates an automatic --version/-v flag.
 void ap_version(ArgParser* parser, const char* version);
 
-// Parse the application's command line arguments. The parameters are assumed
-// to be argc and argv as supplied to main().
-void ap_parse(ArgParser* parser, int argc, char** argv);
+// Parses the application's command line arguments. The parameters are assumed
+// to be argc and argv as supplied to main(). Returns true if the arguments
+// were successfully parsed. Returns false if parsing failed because of a
+// memory allocation error.
+bool ap_parse(ArgParser* parser, int argc, char** argv);
 
-// Free the memory associated with an ArgParser instance.
+// Frees the memory associated with the parser and any subparsers.
 void ap_free(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
 // Register flags and options.
 // -----------------------------------------------------------------------------
 
-// Register a new flag.
+// Registers a new flag.
 void ap_flag(ArgParser* parser, const char* name);
 
-// Register a new string-valued option.
+// Registers a new string-valued option.
 void ap_str_opt(ArgParser* parser, const char* name, const char* fallback);
 
-// Register a new integer-valued option.
+// Registers a new integer-valued option.
 void ap_int_opt(ArgParser* parser, const char* name, int fallback);
 
-// Register a new double-valued option.
+// Registers a new double-valued option.
 void ap_dbl_opt(ArgParser* parser, const char* name, double fallback);
 
 // -----------------------------------------------------------------------------
@@ -76,14 +79,17 @@ double ap_dbl_value(ArgParser* parser, const char* name);
 
 // Returns an option's values as a freshly-allocated array of string
 // pointers. The array's memory is not affected by calls to ap_free().
+// Returns NULL if memory allocation fails.
 char** ap_str_values(ArgParser* parser, const char* name);
 
 // Returns an option's values as a freshly-allocated array of integers.
 // The array's memory is not affected by calls to ap_free().
+// Returns NULL if memory allocation fails.
 int* ap_int_values(ArgParser* parser, const char* name);
 
 // Returns an option's values as a freshly-allocated array of doubles.
 // The array's memory is not affected by calls to ap_free().
+// Returns NULL if memory allocation fails.
 double* ap_dbl_values(ArgParser* parser, const char* name);
 
 // -----------------------------------------------------------------------------
@@ -101,17 +107,19 @@ char* ap_arg(ArgParser* parser, int index);
 
 // Returns the positional arguments as a freshly-allocated array of string
 // pointers. The memory occupied by the returned array is not affected by
-// calls to ap_free().
+// calls to ap_free(). Returns NULL if memory allocation fails.
 char** ap_args(ArgParser* parser);
 
 // Attempts to parse and return the positional arguments as a freshly allocated
 // array of integers. Exits with an error message on failure. The memory
 // occupied by the returned array is not affected by calls to ap_free().
+// Returns NULL if memory allocation fails.
 int* ap_args_as_ints(ArgParser* parser);
 
 // Attempts to parse and return the positional arguments as a freshly allocated
 // array of doubles. Exits with an error message on failure. The memory
 // occupied by the returned array is not affected by calls to ap_free().
+// Returns NULL if memory allocation fails.
 double* ap_args_as_doubles(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
@@ -119,6 +127,7 @@ double* ap_args_as_doubles(ArgParser* parser);
 // -----------------------------------------------------------------------------
 
 // Registers a new command. Returns the ArgParser instance for the command.
+// Returns NULL if sufficient memory cannot be allocated for the new parser.
 ArgParser* ap_cmd(ArgParser* parser, const char* name);
 
 // Registers a callback function on a command parser. The function will be
@@ -134,16 +143,27 @@ char* ap_cmd_name(ArgParser* parser);
 // Returns the command's parser instance, if the parser has found a command.
 ArgParser* ap_cmd_parser(ArgParser* parser);
 
-// Boolean switch; toggles support for an automatic 'help' command which prints
-// subcommand helptext. (Defaults to false; gets toggled automatically to true
-// when a command is registered.)
-void ap_cmd_help(ArgParser* parser, bool enable);
+// This boolean switch toggles support for an automatic 'help' command that
+// prints subcommand helptext. The value defaults to false but gets toggled
+// automatically to true whenever a command is registered. You can use this
+// function to disable the feature if required.
+void ap_enable_help_command(ArgParser* parser, bool enable);
 
 // -----------------------------------------------------------------------------
-// Utilities.
+// Debugging Utilities.
 // -----------------------------------------------------------------------------
 
 // Dump a parser instance for debugging.
 void ap_print(ArgParser* parser);
+
+// True if an attempt to allocate memory failed.
+bool ap_had_memory_error(ArgParser* parser);
+
+// -----------------------------------------------------------------------------
+// Deprecated.
+// -----------------------------------------------------------------------------
+
+// Replaced by ap_enable_help_command().
+void ap_cmd_help(ArgParser* parser, bool enable);
 
 #endif

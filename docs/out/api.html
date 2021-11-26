@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.3.0</p>
+                <p class="version">Version 2.4.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -217,6 +217,18 @@ The pointer points to the appropriate value in the array of strings supplied to 
 </div>
 <div>
 <dt>
+<code>char* ap_str_value_at_index(ArgParser* parser, char* name, int index)</code>
+</dt>
+<dd>
+<p>
+For a string-valued option with multiple values, returns the value at the specified index.
+The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
+The number of values is given by <code>ap_count()</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
 <code>char** ap_str_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
@@ -241,6 +253,17 @@ Returns the value of the specified integer-valued option.
 </div>
 <div>
 <dt>
+<code>int ap_int_value_at_index(ArgParser* parser, char* name, int index)</code>
+</dt>
+<dd>
+<p>
+For an integer-valued option with multiple values, returns the value at the specified index.
+The number of values is given by <code>ap_count()</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
 <code>int* ap_int_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
@@ -259,6 +282,17 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 <dd>
 <p>
 Returns the value of the specified double-valued option.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>double ap_dbl_value_at_index(ArgParser* parser, char* name, int index)</code>
+</dt>
+<dd>
+<p>
+For a double-valued option with multiple values, returns the value at the specified index.
+The number of values is given by <code>ap_count()</code>.
 </p>
 </dd>
 </div>

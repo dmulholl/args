@@ -128,6 +128,9 @@ void test_str_opt_multi() {
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 3);
     assert(strcmp(ap_str_value(parser, "foo"), "bam") == 0);
+    assert(strcmp(ap_str_value_at_index(parser, "foo", 0), "bar") == 0);
+    assert(strcmp(ap_str_value_at_index(parser, "foo", 1), "baz") == 0);
+    assert(strcmp(ap_str_value_at_index(parser, "foo", 2), "bam") == 0);
     ap_free(parser);
     printf(".");
 }
@@ -169,6 +172,20 @@ void test_int_opt_short() {
     printf(".");
 }
 
+void test_int_opt_multi() {
+    ArgParser *parser = ap_new();
+    ap_int_opt(parser, "foo f", 999);
+    ap_parse(parser, 6, (char *[]){"", "-ff", "123", "456", "--foo", "789"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 3);
+    assert(ap_int_value(parser, "foo") == 789);
+    assert(ap_int_value_at_index(parser, "foo", 0) == 123);
+    assert(ap_int_value_at_index(parser, "foo", 1) == 456);
+    assert(ap_int_value_at_index(parser, "foo", 2) == 789);
+    ap_free(parser);
+    printf(".");
+}
+
 // -----------------------------------------------------------------------------
 // 4. Double-valued options.
 // -----------------------------------------------------------------------------
@@ -202,6 +219,20 @@ void test_dbl_opt_short() {
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
     assert(ap_dbl_value(parser, "foo") == 456.0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_dbl_opt_multi() {
+    ArgParser *parser = ap_new();
+    ap_dbl_opt(parser, "foo f", 999.0);
+    ap_parse(parser, 6, (char *[]){"", "-ff", "123.0", "456.0", "--foo", "789.0"});
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 3);
+    assert(ap_dbl_value(parser, "foo") == 789.0);
+    assert(ap_dbl_value_at_index(parser, "foo", 0) == 123.0);
+    assert(ap_dbl_value_at_index(parser, "foo", 1) == 456.0);
+    assert(ap_dbl_value_at_index(parser, "foo", 2) == 789.0);
     ap_free(parser);
     printf(".");
 }
@@ -363,11 +394,13 @@ int main() {
     test_int_opt_default();
     test_int_opt_long();
     test_int_opt_short();
+    test_int_opt_multi();
 
     printf(" 4 ");
     test_dbl_opt_default();
     test_dbl_opt_long();
     test_dbl_opt_short();
+    test_dbl_opt_multi();
 
     printf(" 5 ");
     test_pos_args();

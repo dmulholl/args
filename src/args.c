@@ -783,6 +783,13 @@ char* ap_str_value(ArgParser* parser, const char* name) {
 }
 
 
+// Returns the string value at the specified index.
+char* ap_str_value_at_index(ArgParser* parser, const char* name, int index) {
+    Option* opt = ap_get_opt(parser, name);
+    return opt->values[index].str_val;
+}
+
+
 // Returns the value of the specified integer option.
 int ap_int_value(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
@@ -790,10 +797,24 @@ int ap_int_value(ArgParser* parser, const char* name) {
 }
 
 
+// Returns the integer value at the specified index.
+int ap_int_value_at_index(ArgParser* parser, const char* name, int index) {
+    Option* opt = ap_get_opt(parser, name);
+    return opt->values[index].int_val;
+}
+
+
 // Returns the value of the specified floating-point option.
 double ap_dbl_value(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return option_get_double(opt);
+}
+
+
+// Returns the floating-point value at the specified index.
+double ap_dbl_value_at_index(ArgParser* parser, const char* name, int index) {
+    Option* opt = ap_get_opt(parser, name);
+    return opt->values[index].dbl_val;
 }
 
 

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.3.0
+// Version: 2.4.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -34,7 +34,7 @@ void ap_helptext(ArgParser* parser, const char* helptext);
 void ap_version(ArgParser* parser, const char* version);
 
 // If toggled to true, the first positional argument ends option parsing; all
-// subsequent arguments are treated as positionals. Defaults to false.
+// subsequent arguments will be treated as positionals. Defaults to false.
 void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
 
 // Parses the application's command line arguments. The parameters are assumed
@@ -75,11 +75,20 @@ bool ap_found(ArgParser* parser, const char* name);
 // Returns the value of a string option.
 char* ap_str_value(ArgParser* parser, const char* name);
 
+// Returns the string value at the specified index.
+char* ap_str_value_at_index(ArgParser* parser, const char* name, int index);
+
 // Returns the value of an integer option.
 int ap_int_value(ArgParser* parser, const char* name);
 
+// Returns the integer value at the specified index.
+int ap_int_value_at_index(ArgParser* parser, const char* name, int index);
+
 // Returns the value of a floating-point option.
 double ap_dbl_value(ArgParser* parser, const char* name);
+
+// Returns the floating-point value at the specified index.
+double ap_dbl_value_at_index(ArgParser* parser, const char* name, int index);
 
 // Returns an option's values as a freshly-allocated array of string
 // pointers. The array's memory is not affected by calls to ap_free().

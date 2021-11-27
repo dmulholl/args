@@ -174,6 +174,9 @@ typedef struct {
 
 static Map* map_new() {
     Map* map = malloc(sizeof(Map));
+    if (!map) {
+        return NULL;
+    }
     map->count = 0;
     map->capacity = 0;
     map->max_load_threshold = 0;
@@ -630,28 +633,39 @@ ArgParser* ap_new() {
     parser->parent = NULL;
     parser->first_positional_arg_ends_options = false;
 
+    parser->option_vec = NULL;
+    parser->option_map = NULL;
+    parser->command_vec = NULL;
+    parser->command_map = NULL;
+    parser->positional_args = NULL;
+
     parser->option_vec = vec_new();
     if (!parser->option_vec) {
+        ap_free(parser);
         return NULL;
     }
 
     parser->option_map = map_new();
     if (!parser->option_map) {
+        ap_free(parser);
         return NULL;
     }
 
     parser->command_vec = vec_new();
     if (!parser->command_vec) {
+        ap_free(parser);
         return NULL;
     }
 
     parser->command_map = map_new();
     if (!parser->command_map) {
+        ap_free(parser);
         return NULL;
     }
 
     parser->positional_args = vec_new();
     if (!parser->positional_args) {
+        ap_free(parser);
         return NULL;
     }
 
@@ -660,20 +674,37 @@ ArgParser* ap_new() {
 
 
 void ap_free(ArgParser* parser) {
-    if (parser) {
+    if (!parser) {
+        return;
+    }
+
+    if (parser->option_map) {
+        map_free(parser->option_map);
+    }
+
+    if (parser->option_vec) {
         for (int i = 0; i < parser->option_vec->count; i++) {
             option_free(parser->option_vec->entries[i]);
         }
         vec_free(parser->option_vec);
-        map_free(parser->option_map);
+    }
+
+    if (parser->command_map) {
+        map_free(parser->command_map);
+    }
+
+    if (parser->command_vec) {
         for (int i = 0; i < parser->command_vec->count; i++) {
             ap_free(parser->command_vec->entries[i]);
         }
         vec_free(parser->command_vec);
-        map_free(parser->command_map);
-        vec_free(parser->positional_args);
-        free(parser);
     }
+
+    if (parser->positional_args) {
+        vec_free(parser->positional_args);
+    }
+
+    free(parser);
 }
 
 
@@ -692,29 +723,41 @@ void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable) {
 }
 
 
+static void ap_set_memory_error_flag(ArgParser* parser) {
+    parser->had_memory_error = true;
+
+    ArgParser* parent = parser->parent;
+    while (parent) {
+        parent->had_memory_error = true;
+        parent = parent->parent;
+    }
+}
+
+
 /* -------------------------------------- */
 /* ArgParser: register flags and options. */
 /* -------------------------------------- */
 
 
 static void ap_register_option(ArgParser* parser, const char* name, Option* opt) {
-    if (opt) {
-        if (!vec_add(parser->option_vec, opt)) {
-            parser->had_memory_error = true;
-        }
-        if (!map_set_splitkey(parser->option_map, name, opt)) {
-            parser->had_memory_error = true;
-        }
-    } else {
-        parser->had_memory_error = true;
+    if (!opt) {
+        ap_set_memory_error_flag(parser);
+        return;
     }
 
-    if (parser->had_memory_error) {
-        ArgParser* parent = parser->parent;
-        while (parent) {
-            parent->had_memory_error = true;
-            parent = parent->parent;
+    if (vec_add(parser->option_vec, opt)) {
+        if (map_set_splitkey(parser->option_map, name, opt)) {
+            return;
+        } else {
+            ap_set_memory_error_flag(parser);
+            parser->option_vec->count--;
+            option_free(opt);
+            return;
         }
+    } else {
+        ap_set_memory_error_flag(parser);
+        option_free(opt);
+        return;
     }
 }
 
@@ -754,11 +797,11 @@ void ap_dbl_opt(ArgParser* parser, const char* name, double fallback) {
 
 // Retrieve an Option instance by name.
 static Option* ap_get_opt(ArgParser* parser, const char* name) {
-    void* option;
-    if (!map_get(parser->option_map, name, &option)) {
+    void* opt;
+    if (!map_get(parser->option_map, name, &opt)) {
         err(str("'%s' is not a registered flag or option name", name));
     }
-    return (Option*)option;
+    return (Option*)opt;
 }
 
 
@@ -927,28 +970,23 @@ double* ap_args_as_doubles(ArgParser* parser) {
 // Register a new command.
 ArgParser* ap_cmd(ArgParser* parser, const char* name) {
     ArgParser* cmd_parser = ap_new();
+    if (!cmd_parser) {
+        return NULL;
+    }
 
-    if (cmd_parser) {
-        if (!vec_add(parser->command_vec, cmd_parser)) {
-            parser->had_memory_error = true;
-        }
-        if (!map_set_splitkey(parser->command_map, name, cmd_parser)) {
-            parser->had_memory_error = true;
+    if (vec_add(parser->command_vec, cmd_parser)) {
+        if (map_set_splitkey(parser->command_map, name, cmd_parser)) {
+            parser->enable_help_command = true;
+            return cmd_parser;
+        } else {
+            parser->command_vec--;
+            ap_free(cmd_parser);
+            return NULL;
         }
     } else {
-        parser->had_memory_error = true;
+        ap_free(cmd_parser);
+        return NULL;
     }
-
-    if (parser->had_memory_error) {
-        ArgParser* parent = parser->parent;
-        while (parent) {
-            parent->had_memory_error = true;
-            parent = parent->parent;
-        }
-    }
-
-    parser->enable_help_command = true;
-    return cmd_parser;
 }
 
 
@@ -997,7 +1035,7 @@ void ap_cmd_help(ArgParser* parser, bool enable) {
 static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const char* arg) {
     char* name = str_dup(arg);
     if (!name) {
-        parser->had_memory_error = true;
+        ap_set_memory_error_flag(parser);
         return;
     }
 
@@ -1016,7 +1054,7 @@ static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const ch
     }
 
     if (!option_try_set(option, value)) {
-        parser->had_memory_error = true;
+        ap_set_memory_error_flag(parser);
     }
 
     free(name);
@@ -1031,7 +1069,7 @@ static void ap_handle_long_opt(ArgParser* parser, const char* arg, ArgStream* st
             option->count++;
         } else if (argstream_has_next(stream)) {
             if (!option_try_set(option, argstream_next(stream))) {
-                parser->had_memory_error = true;
+                ap_set_memory_error_flag(parser);
             }
         } else {
             err(str("missing argument for --%s", arg));
@@ -1070,7 +1108,7 @@ static void ap_handle_short_opt(ArgParser* parser, const char* arg, ArgStream* s
             option->count++;
         } else if (argstream_has_next(stream)) {
             if (!option_try_set(option, argstream_next(stream))) {
-                parser->had_memory_error = true;
+                ap_set_memory_error_flag(parser);
             }
         } else if (strlen(arg) > 1) {
             err(str("missing argument for '%c' in -%s", arg[i], arg));
@@ -1097,7 +1135,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         if (strcmp(arg, "--") == 0) {
             while (argstream_has_next(stream)) {
                 if (!vec_add(parser->positional_args, argstream_next(stream))) {
-                    parser->had_memory_error = true;
+                    ap_set_memory_error_flag(parser);
                 }
             }
         }
@@ -1115,7 +1153,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         else if (arg[0] == '-') {
             if (strlen(arg) == 1 || isdigit(arg[1])) {
                 if (!vec_add(parser->positional_args, arg)) {
-                    parser->had_memory_error = true;
+                    ap_set_memory_error_flag(parser);
                 }
             } else if (strstr(arg, "=") != NULL) {
                 ap_handle_equals_opt(parser, "-", arg + 1);
@@ -1154,27 +1192,18 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         // Otherwise add the argument to our list of positionals.
         else {
             if (!vec_add(parser->positional_args, arg)) {
-                parser->had_memory_error = true;
+                ap_set_memory_error_flag(parser);
             }
             if (parser->first_positional_arg_ends_options) {
                 while (argstream_has_next(stream)) {
                     if (!vec_add(parser->positional_args, argstream_next(stream))) {
-                        parser->had_memory_error = true;
+                        ap_set_memory_error_flag(parser);
                     }
                 }
             }
         }
 
         is_first_arg = false;
-    }
-
-    // If we triggered a memory error while parsing, percolate it upwards.
-    if (parser->had_memory_error) {
-        ArgParser* parent = parser->parent;
-        while (parent) {
-            parent->had_memory_error = true;
-            parent = parent->parent;
-        }
     }
 }
 
@@ -1213,7 +1242,6 @@ bool ap_had_memory_error(ArgParser* parser) {
 }
 
 
-// Print a parser instance to stdout.
 void ap_print(ArgParser* parser) {
     puts("Flags/Options:");
     if (parser->option_map->count > 0) {

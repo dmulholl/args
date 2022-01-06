@@ -292,26 +292,41 @@ static bool map_set(Map* map, const char* key, void* value) {
 }
 
 
-// Convenience wrapper for map_set(). This splits the keystring into space-
+// Convenience wrapper for map_set(). This splits the key string into space-
 // separated words and adds a separate entry to the map for each word.
-static bool map_set_splitkey(Map* map, const char* keys, void* value) {
-    char *keys_copy = str_dup(keys);
-    if (!keys_copy) {
+static bool map_set_splitkey(Map* map, const char* key_string, void* value) {
+    char *copy_of_key_string = str_dup(key_string);
+    if (!copy_of_key_string) {
         return false;
     }
 
-    char *key;
-    char *saveptr;
+    char* word_start = copy_of_key_string;
+    char* string_end = word_start + strlen(copy_of_key_string);
 
-    key = strtok_r(keys_copy, " ", &saveptr);
-    while (key != NULL) {
-        if (!map_set(map, key, value)) {
+    while (word_start < string_end) {
+        if (*word_start == ' ') {
+            word_start++;
+            continue;
+        }
+
+        char* word_end = word_start;
+        while (true) {
+            if (*word_end == ' ' || *word_end == '\0') {
+                break;
+            }
+            word_end++;
+        }
+        *word_end = '\0';
+
+        if (!map_set(map, word_start, value)) {
+            free(copy_of_key_string);
             return false;
         }
-        key = strtok_r(NULL, " ", &saveptr);
+
+        word_start = word_end + 1;
     }
 
-    free(keys_copy);
+    free(copy_of_key_string);
     return true;
 }
 

@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.4.0</p>
+                <p class="version">Version 2.5.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -56,6 +56,9 @@
 <a href="#positional-arguments">Positional Arguments</a>
 </li>
 <li>
+<a href="#quoted-values">Quoted Values</a>
+</li>
+<li>
 <a href="#commands">Commands</a>
 </li>
 <li>
@@ -89,7 +92,7 @@ Options can be treated as singular or multivalued as circumstances require. Each
 For example, in the command below:
 </p>
 <pre>
-$ myapp --foo 123 --foo 456
+$ my_app --foo 123 --foo 456
 </pre>
 <p>
 the value of the option <code>foo</code> is <code>456</code> but the list <code>[123, 456]</code> is also available for use if required.
@@ -109,6 +112,21 @@ Options and flags can be preceded by, followed by, or interspaced with positiona
 <p>
 You can use the standard <code>--</code> switch for turning off option-parsing. All arguments following a <code>--</code> will be treated as positional arguments, even if they begin with a single or double dash.
 </p>
+<h3 id="quoted-values">
+Quoted Values
+</h3>
+<p>
+Note that you can use quotes to surround argument and option values containing spaces, e.g.
+</p>
+<pre>
+$ my_app &quot;arg 1&quot; &quot;arg 2&quot;
+$ my_app --option &quot;value with spaces&quot;
+$ my_app --option=&quot;value with spaces&quot;
+$ my_app -o=&quot;value with spaces&quot;
+</pre>
+<p>
+This isn't a feature of the library &mdash; the quotes are processed by the shell and the library only sees the resulting string values, including spaces.
+</p>
 <h3 id="commands">
 Commands
 </h3>
@@ -116,13 +134,13 @@ Commands
 This library supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic <code>--help</code> flag and an automatic <code>help &lt;cmd&gt;</code> command, i.e. the commands
 </p>
 <pre>
-$ myapp &lt;cmd&gt; --help
+$ my_app &lt;cmd&gt; --help
 </pre>
 <p>
 and
 </p>
 <pre>
-$ myapp help &lt;cmd&gt;
+$ my_app help &lt;cmd&gt;
 </pre>
 <p>
 are functionally identical and will both print the help text registered with the command.

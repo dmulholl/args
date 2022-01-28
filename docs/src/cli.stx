@@ -26,7 +26,7 @@ Options can be treated as singular or multivalued as circumstances require. Each
 
 For example, in the command below:
 
-    $ myapp --foo 123 --foo 456
+    $ my_app --foo 123 --foo 456
 
 the value of the option `foo` is `456` but the list `[123, 456]` is also available for use if required.
 
@@ -46,15 +46,29 @@ You can use the standard `--` switch for turning off option-parsing. All argumen
 
 
 
+### Quoted Values
+
+Note that you can use quotes to surround argument and option values containing spaces, e.g.
+
+::: code
+    $ my_app "arg 1" "arg 2"
+    $ my_app --option "value with spaces"
+    $ my_app --option="value with spaces"
+    $ my_app -o="value with spaces"
+
+This isn't a feature of the library --- the quotes are processed by the shell and the library only sees the resulting string values, including spaces.
+
+
+
 ### Commands
 
 This library supports git-style command interfaces with arbitrarily-nested commands. Commands have builtin support for an automatic `--help` flag and an automatic `help <cmd>` command, i.e. the commands
 
-    $ myapp <cmd> --help
+    $ my_app <cmd> --help
 
 and
 
-    $ myapp help <cmd>
+    $ my_app help <cmd>
 
 are functionally identical and will both print the help text registered with the command.
 

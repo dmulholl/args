@@ -12,7 +12,7 @@ meta_title: Args &mdash; Command Line Interface
 Options can have an unlimited number of long-form aliases and single-character shortcuts: `--option`, `-o`.
 
 Options can have string, integer, or floating-point values.
-Option values can be separated by either a space, `--opt 123`, or an equals symbol, `--opt=123`. Either syntax can be used with shortcuts: `-o 123`, `-o=123`.
+Option values can be separated by either a space, `--option 123`, or an equals symbol, `--option=123`. Either syntax can be used with shortcuts: `-o 123`, `-o=123`.
 
 Multiple shortcuts can be condensed into a single block, e.g. `-abc foo bar`. Trailing arguments are consumed in sequence as required by the options.
 

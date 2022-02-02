@@ -1241,9 +1241,15 @@ static bool ap_parse_array(ArgParser* parser, int count, char* args[]) {
 }
 
 
-// Parse the application's command line arguments.
+// This function parses the application's command line arguments. It assumes that [argc] and [argv]
+// are the arguments passed to main(), i.e. that the first element in [argv] is the program's name
+// and should be ignored when parsing the actual *arguments*. In some situations [argv] can be
+// empty, i.e. [argc == 0], which can lead to security vulnerabilities if not explicitly handled.
 bool ap_parse(ArgParser* parser, int argc, char* argv[]) {
-    return ap_parse_array(parser, argc - 1, argv + 1);
+    if (argc > 1) {
+        return ap_parse_array(parser, argc - 1, argv + 1);
+    }
+    return !parser->had_memory_error;
 }
 
 

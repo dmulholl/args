@@ -20,12 +20,14 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 [[ `void ap_helptext(ArgParser* parser, char* helptext)` ]]
 
     Supplies a helptext string for the parser; this activates an automatic `--help` flag, also a `-h` shortcut if not registered by another option.
-    (The parser stores a pointer to the helptext string so this string should outlive the parser instance.)
+
+    (The parser stores and manages its own internal copy of the `helptext` string, so `helptext` can be freed immediately after this call if it was dynamically constructed.)
 
 [[ `void ap_version(ArgParser* parser, char* version)` ]]
 
     Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not registered by another option.
-    (The parser stores a pointer to the version string so this string should outlive the parser instance.)
+
+    (The parser stores and manages its own internal copy of the `version` string, so `version` can be freed immediately after this call if it was dynamically constructed.)
 
 [[ `bool ap_parse(ArgParser* parser, int argc, char** argv)` ]]
 

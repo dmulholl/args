@@ -615,8 +615,8 @@ static bool argstream_has_next(ArgStream* stream) {
 
 
 struct ArgParser {
-    const char* helptext;
-    const char* version;
+    char* helptext;
+    char* version;
     Vec* option_vec;
     Map* option_map;
     Vec* command_vec;
@@ -693,6 +693,9 @@ void ap_free(ArgParser* parser) {
         return;
     }
 
+    free(parser->helptext);
+    free(parser->version);
+
     if (parser->option_map) {
         map_free(parser->option_map);
     }
@@ -724,12 +727,28 @@ void ap_free(ArgParser* parser) {
 
 
 void ap_helptext(ArgParser* parser, const char* helptext) {
-    parser->helptext = helptext;
+    free(parser->helptext);
+    parser->helptext = NULL;
+
+    if (helptext) {
+        parser->helptext = str_dup(helptext);
+        if (!parser->helptext) {
+            parser->had_memory_error = true;
+        }
+    }
 }
 
 
 void ap_version(ArgParser* parser, const char* version) {
-    parser->version = version;
+    free(parser->version);
+    parser->version = NULL;
+
+    if (version) {
+        parser->version = str_dup(version);
+        if (!parser->version) {
+            parser->had_memory_error = true;
+        }
+    }
 }
 
 

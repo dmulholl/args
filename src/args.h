@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.6.0
+// Version: 2.7.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -27,10 +27,18 @@ typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser);
 // cannot be allocated for the new parser.
 ArgParser* ap_new();
 
-// Supplying a helptext string activates an automatic --help/-h flag.
+// Specifies a helptext string for the parser. If [helptext] is not NULL, this
+// activates an automatic --help/-h flag. (Either --help or -h can be overridden
+// by explicitly registered flags.) The parser stores and manages its own copy
+// of the [helptext] string so [helptext] can be freed immediately after this
+// call if it was dynamically constructed.
 void ap_helptext(ArgParser* parser, const char* helptext);
 
-// Supplying a version string activates an automatic --version/-v flag.
+// Specifies a version string for the parser. If [version] is not NULL, this
+// activates an automatic --version/-v flag. (Either --version or -v can be
+// overridden by explicitly registered flags.) The parser stores and manages its
+// own copy of the [version] string so [version] can be freed immediately after
+// this call if it was dynamically constructed.
 void ap_version(ArgParser* parser, const char* version);
 
 // If toggled to true, the first positional argument ends option parsing; all

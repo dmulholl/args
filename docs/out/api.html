@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.6.0</p>
+                <p class="version">Version 2.7.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -85,7 +85,9 @@ Returns <code>NULL</code> if memory allocation fails.
 <dd>
 <p>
 Supplies a helptext string for the parser; this activates an automatic <code>--help</code> flag, also a <code>-h</code> shortcut if not registered by another option.
-(The parser stores a pointer to the helptext string so this string should outlive the parser instance.)
+</p>
+<p>
+(The parser stores and manages its own internal copy of the <code>helptext</code> string, so <code>helptext</code> can be freed immediately after this call if it was dynamically constructed.)
 </p>
 </dd>
 </div>
@@ -96,7 +98,9 @@ Supplies a helptext string for the parser; this activates an automatic <code>--h
 <dd>
 <p>
 Supplies a version string for the parser; this activates an automatic <code>--version</code> flag, also a <code>-v</code> shortcut if not registered by another option.
-(The parser stores a pointer to the version string so this string should outlive the parser instance.)
+</p>
+<p>
+(The parser stores and manages its own internal copy of the <code>version</code> string, so <code>version</code> can be freed immediately after this call if it was dynamically constructed.)
 </p>
 </dd>
 </div>

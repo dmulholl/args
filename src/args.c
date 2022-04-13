@@ -726,6 +726,17 @@ void ap_free(ArgParser* parser) {
 }
 
 
+static void ap_set_memory_error_flag(ArgParser* parser) {
+    parser->had_memory_error = true;
+
+    ArgParser* parent = parser->parent;
+    while (parent) {
+        parent->had_memory_error = true;
+        parent = parent->parent;
+    }
+}
+
+
 void ap_helptext(ArgParser* parser, const char* helptext) {
     free(parser->helptext);
     parser->helptext = NULL;
@@ -733,7 +744,7 @@ void ap_helptext(ArgParser* parser, const char* helptext) {
     if (helptext) {
         parser->helptext = str_dup(helptext);
         if (!parser->helptext) {
-            parser->had_memory_error = true;
+            ap_set_memory_error_flag(parser);
         }
     }
 }
@@ -746,7 +757,7 @@ void ap_version(ArgParser* parser, const char* version) {
     if (version) {
         parser->version = str_dup(version);
         if (!parser->version) {
-            parser->had_memory_error = true;
+            ap_set_memory_error_flag(parser);
         }
     }
 }
@@ -754,17 +765,6 @@ void ap_version(ArgParser* parser, const char* version) {
 
 void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable) {
     parser->first_positional_arg_ends_options = enable;
-}
-
-
-static void ap_set_memory_error_flag(ArgParser* parser) {
-    parser->had_memory_error = true;
-
-    ArgParser* parent = parser->parent;
-    while (parent) {
-        parent->had_memory_error = true;
-        parent = parent->parent;
-    }
 }
 
 

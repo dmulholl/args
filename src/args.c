@@ -737,7 +737,7 @@ static void ap_set_memory_error_flag(ArgParser* parser) {
 }
 
 
-void ap_helptext(ArgParser* parser, const char* helptext) {
+void ap_set_helptext(ArgParser* parser, const char* helptext) {
     free(parser->helptext);
     parser->helptext = NULL;
 
@@ -750,7 +750,12 @@ void ap_helptext(ArgParser* parser, const char* helptext) {
 }
 
 
-void ap_version(ArgParser* parser, const char* version) {
+char* ap_get_helptext(ArgParser* parser) {
+    return parser->helptext;
+}
+
+
+void ap_set_version(ArgParser* parser, const char* version) {
     free(parser->version);
     parser->version = NULL;
 
@@ -760,6 +765,11 @@ void ap_version(ArgParser* parser, const char* version) {
             ap_set_memory_error_flag(parser);
         }
     }
+}
+
+
+char* ap_get_version(ArgParser* parser) {
+    return parser->version;
 }
 
 
@@ -1054,12 +1064,6 @@ void ap_enable_help_command(ArgParser* parser, bool enable) {
 }
 
 
-// Deprecated.
-void ap_cmd_help(ArgParser* parser, bool enable) {
-    parser->enable_help_command = enable;
-}
-
-
 /* --------------------------- */
 /* ArgParser: parse arguments. */
 /* --------------------------- */
@@ -1313,4 +1317,24 @@ void ap_print(ArgParser* parser) {
     } else {
         puts("  [none]");
     }
+}
+
+
+/* --------------------- */
+/* Deprecated functions. */
+/* --------------------- */
+
+
+void ap_cmd_help(ArgParser* parser, bool enable) {
+    ap_enable_help_command(parser, enable);
+}
+
+
+void ap_helptext(ArgParser* parser, const char* helptext) {
+    ap_set_helptext(parser, helptext);
+}
+
+
+void ap_version(ArgParser* parser, const char* version) {
+    ap_set_version(parser, version);
 }

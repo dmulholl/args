@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.7.1
+// Version: 2.8.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -32,23 +32,31 @@ ArgParser* ap_new();
 // by explicitly registered flags.) The parser stores and manages its own copy
 // of the [helptext] string so [helptext] can be freed immediately after this
 // call if it was dynamically constructed.
-void ap_helptext(ArgParser* parser, const char* helptext);
+void ap_set_helptext(ArgParser* parser, const char* helptext);
+
+// Returns a pointer to the parser's helptext string.
+char* ap_get_helptext(ArgParser* parser);
 
 // Specifies a version string for the parser. If [version] is not NULL, this
 // activates an automatic --version/-v flag. (Either --version or -v can be
 // overridden by explicitly registered flags.) The parser stores and manages its
 // own copy of the [version] string so [version] can be freed immediately after
 // this call if it was dynamically constructed.
-void ap_version(ArgParser* parser, const char* version);
+void ap_set_version(ArgParser* parser, const char* version);
+
+// Returns a pointer to the parser's version string.
+char* ap_get_version(ArgParser* parser);
 
 // If toggled to true, the first positional argument ends option parsing; all
 // subsequent arguments will be treated as positionals. Defaults to false.
 void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
 
 // Parses the application's command line arguments. The parameters are assumed
-// to be argc and argv as supplied to main(). Returns true if the arguments
-// were successfully parsed. Returns false if parsing failed because of a
-// memory allocation error.
+// to be [argc] and [argv] as supplied to main(), i.e. the first element of the
+// array is assumed to be the binary name and is therefore ignored. Returns true
+// if the arguments were successfully parsed. Returns false if parsing failed
+// due to a memory allocation error. (This memory allocation error may have
+// occured during set-up rather than during parsing.)
 bool ap_parse(ArgParser* parser, int argc, char** argv);
 
 // Frees the memory associated with the parser and any subparsers.
@@ -171,7 +179,7 @@ ArgParser* ap_cmd_parser(ArgParser* parser);
 void ap_enable_help_command(ArgParser* parser, bool enable);
 
 // -----------------------------------------------------------------------------
-// Debugging Utilities.
+// Debugging utilities.
 // -----------------------------------------------------------------------------
 
 // Dump a parser instance for debugging.
@@ -186,5 +194,11 @@ bool ap_had_memory_error(ArgParser* parser);
 
 // Replaced by ap_enable_help_command().
 void ap_cmd_help(ArgParser* parser, bool enable);
+
+// Replaced by ap_set_helptext().
+void ap_helptext(ArgParser* parser, const char* helptext);
+
+// Replaced by ap_set_version().
+void ap_version(ArgParser* parser, const char* version);
 
 #endif

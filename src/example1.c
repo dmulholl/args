@@ -10,8 +10,8 @@ int main(int argc, char** argv) {
     }
 
     // Register the program's helptext and version number.
-    ap_helptext(parser, "Usage: example...");
-    ap_version(parser, "1.0");
+    ap_set_helptext(parser, "Usage: example...");
+    ap_set_version(parser, "1.0");
 
     // Register a flag and a string-valued option.
     ap_flag(parser, "foo f");

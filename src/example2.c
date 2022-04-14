@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
     }
 
     // Register the program's helptext and version number.
-    ap_helptext(parser, "Usage: example...");
-    ap_version(parser, "1.0");
+    ap_set_helptext(parser, "Usage: example...");
+    ap_set_version(parser, "1.0");
 
     // Register a command, "boo".
     ArgParser* cmd_parser = ap_cmd(parser, "boo");
@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     }
 
     // The command can have its own helptext, flags, and options.
-    ap_helptext(cmd_parser, "Usage: example boo...");
+    ap_set_helptext(cmd_parser, "Usage: example boo...");
     ap_flag(cmd_parser, "foo f");
     ap_str_opt(cmd_parser, "bar b", "default");
 

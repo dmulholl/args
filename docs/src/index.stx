@@ -3,7 +3,7 @@ title: Home
 meta_title: Args &mdash; an argument-parsing library for C
 ---
 
-**Args** is an easy-to-use C library for parsing command line arguments.
+**Args** is a C library for parsing command line arguments, designed for ease of use.
 
 
 

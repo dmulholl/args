@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.7.0</p>
+                <p class="version">Version 2.8.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -119,10 +119,10 @@ Quoted Values
 Note that you can use quotes to surround argument and option values containing spaces, e.g.
 </p>
 <pre>
-$ my_app &quot;arg 1&quot; &quot;arg 2&quot;
-$ my_app --option &quot;value with spaces&quot;
-$ my_app --option=&quot;value with spaces&quot;
-$ my_app -o=&quot;value with spaces&quot;
+$ my_app "arg 1" "arg 2"
+$ my_app --option "value with spaces"
+$ my_app --option="value with spaces"
+$ my_app -o="value with spaces"
 </pre>
 <p>
 This isn't a feature of the library &mdash; the quotes are processed by the shell and the library only sees the resulting string values, including spaces.

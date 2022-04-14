@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.7.0</p>
+                <p class="version">Version 2.8.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -47,7 +47,13 @@
 <a href="#setup">Setup</a>
 </li>
 <li>
-<a href="#flags-and-options">Flags and Options</a>
+<a href="#teardown">Teardown</a>
+</li>
+<li>
+<a href="#parsing-arguments">Parsing Arguments</a>
+</li>
+<li>
+<a href="#specifying-flags-and-options">Specifying Flags and Options</a>
 </li>
 <li>
 <a href="#retrieving-values">Retrieving Values</a>
@@ -80,11 +86,11 @@ Returns <code>NULL</code> if memory allocation fails.
 </div>
 <div>
 <dt>
-<code>void ap_helptext(ArgParser* parser, char* helptext)</code>
+<code>void ap_set_helptext(ArgParser* parser, char* helptext)</code>
 </dt>
 <dd>
 <p>
-Supplies a helptext string for the parser; this activates an automatic <code>--help</code> flag, also a <code>-h</code> shortcut if not registered by another option.
+Supplies a helptext string for the parser; this activates an automatic <code>--help</code> flag, also a <code>-h</code> shortcut if not explicitly registered by another option.
 </p>
 <p>
 (The parser stores and manages its own internal copy of the <code>helptext</code> string, so <code>helptext</code> can be freed immediately after this call if it was dynamically constructed.)
@@ -93,11 +99,21 @@ Supplies a helptext string for the parser; this activates an automatic <code>--h
 </div>
 <div>
 <dt>
-<code>void ap_version(ArgParser* parser, char* version)</code>
+<code>char* ap_get_helptext(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
-Supplies a version string for the parser; this activates an automatic <code>--version</code> flag, also a <code>-v</code> shortcut if not registered by another option.
+Returns a pointer to the parser's helptext string.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_set_version(ArgParser* parser, char* version)</code>
+</dt>
+<dd>
+<p>
+Supplies a version string for the parser; this activates an automatic <code>--version</code> flag, also a <code>-v</code> shortcut if not explicitly registered by another option.
 </p>
 <p>
 (The parser stores and manages its own internal copy of the <code>version</code> string, so <code>version</code> can be freed immediately after this call if it was dynamically constructed.)
@@ -106,17 +122,19 @@ Supplies a version string for the parser; this activates an automatic <code>--ve
 </div>
 <div>
 <dt>
-<code>bool ap_parse(ArgParser* parser, int argc, char** argv)</code>
+<code>char* ap_get_version(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
-Parses the program's command line arguments.
-The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>.
-Returns <code>true</code> if the arguments were parsed successfully,
-or <code>false</code> if parsing failed due to a memory allocation error.
+Returns a pointer to the parser's version string.
 </p>
 </dd>
 </div>
+</dl>
+<h3 id="teardown">
+Teardown
+</h3>
+<dl>
 <div>
 <dt>
 <code>void ap_free(ArgParser* parser)</code>
@@ -124,13 +142,39 @@ or <code>false</code> if parsing failed due to a memory allocation error.
 <dd>
 <p>
 Frees the memory occupied by an <code>ArgParser</code> instance.
-(This function should only be called on the root parser instance &mdash; it will automatically free the memory occupied by any associated command parsers.)
+</p>
+<p>
+(This function should only be called on the root parser instance &mdash; it will automatically free the memory occupied by any command parsers registered on the root parser.)
 </p>
 </dd>
 </div>
 </dl>
-<h3 id="flags-and-options">
-Flags and Options
+<h3 id="parsing-arguments">
+Parsing Arguments
+</h3>
+<dl>
+<div>
+<dt>
+<code>bool ap_parse(ArgParser* parser, int argc, char** argv)</code>
+</dt>
+<dd>
+<p>
+Parses the program's command line arguments.
+</p>
+<p>
+The arguments are assumed to be <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>,
+i.e. the first element in <code>argv</code> is assumed to be the binary name and
+will be ignored.
+</p>
+<p>
+Returns <code>true</code> if the arguments were parsed successfully,
+or <code>false</code> if parsing failed due to a memory allocation error.
+</p>
+</dd>
+</div>
+</dl>
+<h3 id="specifying-flags-and-options">
+Specifying Flags and Options
 </h3>
 <dl>
 <div>

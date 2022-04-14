@@ -13,8 +13,8 @@ First we need to create an `ArgParser` instance:
     #include "args.h"
 
     ArgParser* parser = ap_new();
-    ap_helptext(parser, "Usage: mp3cat...");
-    ap_version(parser, "1.0");
+    ap_set_helptext(parser, "Usage: mp3cat...");
+    ap_set_version(parser, "1.0");
 
 Supplying a helptext string for the parser activates an automatic `--help/-h` flag; similarly, supplying a version string activates an automatic `--version/-v` flag.
 

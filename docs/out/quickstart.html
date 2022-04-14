@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.7.0</p>
+                <p class="version">Version 2.8.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -54,8 +54,8 @@ First we need to create an <code>ArgParser</code> instance:
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;args.h&quot;</span><span class="cp"></span>
 
 <span class="n">ArgParser</span><span class="o">*</span><span class="w"> </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_new</span><span class="p">();</span><span class="w"></span>
-<span class="n">ap_helptext</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Usage: mp3cat...&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">ap_version</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1.0&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">ap_set_helptext</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Usage: mp3cat...&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">ap_set_version</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1.0&quot;</span><span class="p">);</span><span class="w"></span>
 </pre>
 <p>
 Supplying a helptext string for the parser activates an automatic <code>--help/-h</code> flag; similarly, supplying a version string activates an automatic <code>--version/-v</code> flag.

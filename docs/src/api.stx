@@ -17,33 +17,54 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     Initializes a new `ArgParser` instance.
     Returns `NULL` if memory allocation fails.
 
-[[ `void ap_helptext(ArgParser* parser, char* helptext)` ]]
+[[ `void ap_set_helptext(ArgParser* parser, char* helptext)` ]]
 
-    Supplies a helptext string for the parser; this activates an automatic `--help` flag, also a `-h` shortcut if not registered by another option.
+    Supplies a helptext string for the parser; this activates an automatic `--help` flag, also a `-h` shortcut if not explicitly registered by another option.
 
     (The parser stores and manages its own internal copy of the `helptext` string, so `helptext` can be freed immediately after this call if it was dynamically constructed.)
 
-[[ `void ap_version(ArgParser* parser, char* version)` ]]
+[[ `char* ap_get_helptext(ArgParser* parser)` ]]
 
-    Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not registered by another option.
+    Returns a pointer to the parser's helptext string.
+
+[[ `void ap_set_version(ArgParser* parser, char* version)` ]]
+
+    Supplies a version string for the parser; this activates an automatic `--version` flag, also a `-v` shortcut if not explicitly registered by another option.
 
     (The parser stores and manages its own internal copy of the `version` string, so `version` can be freed immediately after this call if it was dynamically constructed.)
 
-[[ `bool ap_parse(ArgParser* parser, int argc, char** argv)` ]]
+[[ `char* ap_get_version(ArgParser* parser)` ]]
 
-    Parses the program's command line arguments.
-    The arguments are assumed to be `argc` and `argv` as supplied to `main()`.
-    Returns `true` if the arguments were parsed successfully,
-    or `false` if parsing failed due to a memory allocation error.
+    Returns a pointer to the parser's version string.
+
+
+
+### Teardown
 
 [[ `void ap_free(ArgParser* parser)` ]]
 
     Frees the memory occupied by an `ArgParser` instance.
-    (This function should only be called on the root parser instance --- it will automatically free the memory occupied by any associated command parsers.)
+
+    (This function should only be called on the root parser instance --- it will automatically free the memory occupied by any command parsers registered on the root parser.)
 
 
 
-### Flags and Options
+### Parsing Arguments
+
+[[ `bool ap_parse(ArgParser* parser, int argc, char** argv)` ]]
+
+    Parses the program's command line arguments.
+
+    The arguments are assumed to be `argc` and `argv` as supplied to `main()`,
+    i.e. the first element in `argv` is assumed to be the binary name and
+    will be ignored.
+
+    Returns `true` if the arguments were parsed successfully,
+    or `false` if parsing failed due to a memory allocation error.
+
+
+
+### Specifying Flags and Options
 
 [[ `void ap_flag(ArgParser* parser, char* name)` ]]
 

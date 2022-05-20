@@ -117,9 +117,12 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `char** ap_str_values(ArgParser* parser, char* name)` ]]
 
     Returns the specified option's list of values as a freshly-allocated array of string pointers.
-    This array's memory is not affected by calls to `ap_free()`.
     Each pointer in the array points to the appropriate value in the array of strings supplied to the `ap_parse()` function.
     The size of the array is given by `ap_count()`.
+
+    The returned array's memory is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `int ap_int_value(ArgParser* parser, char* name)` ]]
@@ -134,8 +137,11 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `int* ap_int_values(ArgParser* parser, char* name)` ]]
 
     Returns the specified option's list of values as a freshly-allocated array of integers.
-    This array's memory is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count()`.
+
+    The returned array's memory is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `double ap_dbl_value(ArgParser* parser, char* name)` ]]
@@ -150,8 +156,11 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `double* ap_dbl_values(ArgParser* parser, char* name)` ]]
 
     Returns the specified option's list of values as a freshly-allocated array of doubles.
-    This array's memory is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count()`.
+
+    The returned array's memory is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 
@@ -174,25 +183,36 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `char** ap_args(ArgParser* parser)` ]]
 
     Returns the positional arguments as a freshly-allocated array of string pointers.
-    The memory occupied by this array is not affected by calls to `ap_free()`.
     Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the `ap_parse()` function.
     The size of the array is given by `ap_count_args()`.
+
+    The memory occupied by the returned array is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `int* ap_args_as_ints(ArgParser* parser)` ]]
 
     Attempts to parse and return the positional arguments as a freshly-allocated array of integers.
-    Exits with an error message on failure.
-    The memory occupied by this array is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count_args()`.
+
+    Exits with an error message if the arguments cannot be parsed as integers.
+
+    The memory occupied by the returned array is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 [[ `double* ap_args_as_doubles(ArgParser* parser)` ]]
 
     Attempts to parse and return the positional arguments as a freshly-allocated array of doubles.
-    Exits with an error message on failure.
-    The memory occupied by this array is not affected by calls to `ap_free()`.
     The size of the array is given by `ap_count_args()`.
+
+    Exits with an error message if the arguments cannot be parsed as doubles.
+
+    The memory occupied by the returned array is not affected by calls to `ap_free()`.
+    The array should be freed after use by the caller using `free()`.
+
     Returns `NULL` if memory cannot be allocated for the array.
 
 

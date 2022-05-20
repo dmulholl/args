@@ -282,9 +282,14 @@ The number of values is given by <code>ap_count()</code>.
 <dd>
 <p>
 Returns the specified option's list of values as a freshly-allocated array of string pointers.
-This array's memory is not affected by calls to <code>ap_free()</code>.
 Each pointer in the array points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
 The size of the array is given by <code>ap_count()</code>.
+</p>
+<p>
+The returned array's memory is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
@@ -317,8 +322,13 @@ The number of values is given by <code>ap_count()</code>.
 <dd>
 <p>
 Returns the specified option's list of values as a freshly-allocated array of integers.
-This array's memory is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count()</code>.
+</p>
+<p>
+The returned array's memory is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
@@ -351,8 +361,13 @@ The number of values is given by <code>ap_count()</code>.
 <dd>
 <p>
 Returns the specified option's list of values as a freshly-allocated array of doubles.
-This array's memory is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count()</code>.
+</p>
+<p>
+The returned array's memory is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
@@ -400,9 +415,14 @@ The pointer points to the appropriate string value in the array of strings origi
 <dd>
 <p>
 Returns the positional arguments as a freshly-allocated array of string pointers.
-The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 Each pointer in the array points to the appropriate string value in the array of strings originally supplied to the <code>ap_parse()</code> function.
 The size of the array is given by <code>ap_count_args()</code>.
+</p>
+<p>
+The memory occupied by the returned array is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
@@ -414,9 +434,16 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 <dd>
 <p>
 Attempts to parse and return the positional arguments as a freshly-allocated array of integers.
-Exits with an error message on failure.
-The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count_args()</code>.
+</p>
+<p>
+Exits with an error message if the arguments cannot be parsed as integers.
+</p>
+<p>
+The memory occupied by the returned array is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>
@@ -428,9 +455,16 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 <dd>
 <p>
 Attempts to parse and return the positional arguments as a freshly-allocated array of doubles.
-Exits with an error message on failure.
-The memory occupied by this array is not affected by calls to <code>ap_free()</code>.
 The size of the array is given by <code>ap_count_args()</code>.
+</p>
+<p>
+Exits with an error message if the arguments cannot be parsed as doubles.
+</p>
+<p>
+The memory occupied by the returned array is not affected by calls to <code>ap_free()</code>.
+The array should be freed after use by the caller using <code>free()</code>.
+</p>
+<p>
 Returns <code>NULL</code> if memory cannot be allocated for the array.
 </p>
 </dd>

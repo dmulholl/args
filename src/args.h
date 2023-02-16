@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.8.0
+// Version: 2.9.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -51,12 +51,15 @@ char* ap_get_version(ArgParser* parser);
 // subsequent arguments will be treated as positionals. Defaults to false.
 void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
 
-// Parses the application's command line arguments. The parameters are assumed
-// to be [argc] and [argv] as supplied to main(), i.e. the first element of the
-// array is assumed to be the binary name and is therefore ignored. Returns true
-// if the arguments were successfully parsed. Returns false if parsing failed
-// due to a memory allocation error. (This memory allocation error may have
-// occured during set-up rather than during parsing.)
+// Parses the application's command line arguments.
+// - Exits with an error message if the arguments are invalid.
+// - The parameters are assumed to be [argc] and [argv] as supplied to main(),
+//   i.e. the first element of the array is assumed to be the binary name and
+//   is therefore ignored.
+// - Returns true if the arguments were successfully parsed.
+// - Returns false if parsing failed due to a memory allocation error. (This
+//   memory allocation error may have occured during set-up rather than during
+//   parsing.)
 bool ap_parse(ArgParser* parser, int argc, char** argv);
 
 // Frees the memory associated with the parser and any subparsers.

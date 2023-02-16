@@ -4,4 +4,4 @@
 
 title = "Args"
 tagline = "An argument-parsing library for C."
-version = "Version 2.8.0"
+version = "Version 2.9.0"

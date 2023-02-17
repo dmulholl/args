@@ -16,7 +16,7 @@
 /* ------------------ */
 
 
-// Prints a message to stderr and exits with a non-zero error code.
+// Prints a message to stderr and exits with a non-zero status code.
 static void exit_with_error(const char* format_string, ...) {
     fprintf(stderr, "Error: ");
 
@@ -1253,13 +1253,19 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
 }
 
 
-// Parse an array of string arguments.
-static bool ap_parse_array(ArgParser* parser, int count, char* args[]) {
+// Parse an array of string arguments. We assume that [argc] and [argv] are the arguments passed to
+// main(), i.e. we ignore the first element in the array. In some situations [argv] can be empty,
+// i.e. [argc == 0], which can lead to security vulnerabilities if not explicitly handled.
+bool ap_parse(ArgParser* parser, int argc, char** argv) {
     if (parser->had_memory_error) {
         return false;
     }
 
-    ArgStream *stream = argstream_new(count, args);
+    if (argc == 0) {
+        return true;
+    }
+
+    ArgStream* stream = argstream_new(argc - 1 , argv + 1);
     if (!stream) {
         return false;
     }
@@ -1267,18 +1273,6 @@ static bool ap_parse_array(ArgParser* parser, int count, char* args[]) {
     ap_parse_stream(parser, stream);
     argstream_free(stream);
 
-    return !parser->had_memory_error;
-}
-
-
-// This function parses the application's command line arguments. It assumes that [argc] and [argv]
-// are the arguments passed to main(), i.e. that the first element in [argv] is the program's name
-// and should be ignored when parsing the actual *arguments*. In some situations [argv] can be
-// empty, i.e. [argc == 0], which can lead to security vulnerabilities if not explicitly handled.
-bool ap_parse(ArgParser* parser, int argc, char* argv[]) {
-    if (argc > 1) {
-        return ap_parse_array(parser, argc - 1, argv + 1);
-    }
     return !parser->had_memory_error;
 }
 

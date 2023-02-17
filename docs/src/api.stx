@@ -53,7 +53,7 @@ This library is written in portable C99. The header exports an `ArgParser` type 
 
 [[ `bool ap_parse(ArgParser* parser, int argc, char** argv)` ]]
 
-    Parses an array of arguments.
+    Parses an array of string arguments.
     Exits with an error message and a non-zero status code if the arguments are invalid.
 
     The arguments are assumed to be `argc` and `argv` as supplied to `main()`,

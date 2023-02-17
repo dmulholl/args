@@ -1170,10 +1170,8 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         return;
     }
 
-    ArgParser* cmd_parser;
-    bool is_first_arg = true;
-
     while (argstream_has_next(stream)) {
+        ArgParser* cmd_parser;
         char* arg = argstream_next(stream);
 
         // If we encounter a '--' argument, turn off option-parsing.
@@ -1208,7 +1206,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         }
 
         // Is the argument a registered command?
-        else if (is_first_arg && map_get(parser->command_map, arg, (void**)&cmd_parser)) {
+        else if (parser->positional_args->count == 0 && map_get(parser->command_map, arg, (void**)&cmd_parser)) {
             parser->cmd_name = arg;
             parser->cmd_parser = cmd_parser;
             ap_parse_stream(cmd_parser, stream);
@@ -1218,7 +1216,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         }
 
         // Is the argument the automatic 'help' command?
-        else if (is_first_arg && parser->enable_help_command && strcmp(arg, "help") == 0) {
+        else if (parser->positional_args->count == 0 && parser->enable_help_command && strcmp(arg, "help") == 0) {
             if (argstream_has_next(stream)) {
                 char* name = argstream_next(stream);
                 if (map_get(parser->command_map, name, (void**)&cmd_parser)) {
@@ -1230,7 +1228,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
                     exit_with_error("'%s' is not a recognised command", name);
                 }
             } else {
-                exit_with_error("the help command requires an argument");
+                exit_with_error("the 'help' command requires an argument");
             }
         }
 
@@ -1247,8 +1245,6 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
                 }
             }
         }
-
-        is_first_arg = false;
     }
 }
 

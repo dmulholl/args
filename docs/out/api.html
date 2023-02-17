@@ -531,7 +531,7 @@ Returns the command name if the parser has found a command, otherwise <code>NULL
 </dt>
 <dd>
 <p>
-Returns the command's parser instance if the parser has found a command, otherwise <code>NULL</code>.
+Returns the command's <code>ArgParser</code> instance if the parser has found a command, otherwise <code>NULL</code>.
 </p>
 </dd>
 </div>
@@ -545,6 +545,16 @@ This boolean switch toggles support for an automatic <code>help</code> command w
 prints subcommand helptext. The value defaults to <code>false</code> but gets toggled
 automatically to true whenever a command is registered. You can use this
 function to disable the feature if required.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>ArgParser* ap_parent(ArgParser* parser)</code>
+</dt>
+<dd>
+<p>
+Returns the parser's parent <code>ArgParser</code> instance if <code>parser</code> is a command parser, or <code>NULL</code> if <code>parser</code> is the root parser.
 </p>
 </dd>
 </div>

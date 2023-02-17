@@ -242,7 +242,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `ArgParser* ap_cmd_parser(ArgParser* parser)` ]]
 
-    Returns the command's parser instance if the parser has found a command, otherwise `NULL`.
+    Returns the command's `ArgParser` instance if the parser has found a command, otherwise `NULL`.
 
 [[ `void ap_enable_help_command(ArgParser* parser, bool enable)` ]]
 
@@ -250,3 +250,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     prints subcommand helptext. The value defaults to `false` but gets toggled
     automatically to true whenever a command is registered. You can use this
     function to disable the feature if required.
+
+[[ `ArgParser* ap_parent(ArgParser* parser)` ]]
+
+    Returns the parser's parent `ArgParser` instance if `parser` is a command parser, or `NULL` if `parser` is the root parser.

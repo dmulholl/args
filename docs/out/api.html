@@ -159,7 +159,7 @@ Parsing Arguments
 </dt>
 <dd>
 <p>
-Parses the program's command line arguments.
+Parses an array of arguments.
 Exits with an error message and a non-zero status code if the arguments are invalid.
 </p>
 <p>
@@ -168,8 +168,7 @@ i.e. the first element in <code>argv</code> is assumed to be the binary name and
 will be ignored.
 </p>
 <p>
-Returns <code>true</code> if the arguments were parsed successfully,
-or <code>false</code> if parsing failed due to a memory allocation error.
+Returns <code>true</code> on success, or <code>false</code> if parsing failed because memory could not be allocated for the parsed arguments.
 </p>
 </dd>
 </div>

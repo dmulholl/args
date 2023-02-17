@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 2.9.1
+// Version: 2.10.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -178,6 +178,10 @@ ArgParser* ap_cmd_parser(ArgParser* parser);
 // automatically to true whenever a command is registered. You can use this
 // function to disable the feature if required.
 void ap_enable_help_command(ArgParser* parser, bool enable);
+
+// Returns the parser's parent parser if it's a command parser, or NULL if it's
+// the root parser.
+ArgParser* ap_parent(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
 // Debugging utilities.

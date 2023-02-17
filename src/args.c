@@ -1018,7 +1018,6 @@ double* ap_args_as_doubles(ArgParser* parser) {
 /* -------------------- */
 
 
-// Register a new command.
 ArgParser* ap_cmd(ArgParser* parser, const char* name) {
     ArgParser* cmd_parser = ap_new();
     if (!cmd_parser) {
@@ -1041,33 +1040,33 @@ ArgParser* ap_cmd(ArgParser* parser, const char* name) {
 }
 
 
-// Register a callback function for a command.
 void ap_callback(ArgParser* parser, ap_callback_t function) {
     parser->callback = function;
 }
 
 
-// Returns true if the parser has found a command.
 bool ap_has_cmd(ArgParser* parser) {
     return parser->cmd_name != NULL;
 }
 
 
-// Returns the command name, if the parser has found a command.
 char* ap_cmd_name(ArgParser* parser) {
     return parser->cmd_name;
 }
 
 
-// Returns the command's parser instance, if the parser has found a command.
 ArgParser* ap_cmd_parser(ArgParser* parser) {
     return parser->cmd_parser;
 }
 
 
-// Toggles support for the automatic 'help' command.
 void ap_enable_help_command(ArgParser* parser, bool enable) {
     parser->enable_help_command = enable;
+}
+
+
+ArgParser* ap_parent(ArgParser* parser) {
+    return parser->parent;
 }
 
 

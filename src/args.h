@@ -52,12 +52,14 @@ char* ap_get_version(ArgParser* parser);
 void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
 
 // Parses an array of string arguments.
-// - Exits with an error message an a non-zero status code if the arguments are invalid.
+// - Exits with an error message and a non-zero status code if the arguments are
+//   invalid.
 // - The parameters are assumed to be [argc] and [argv] as supplied to main(),
 //   i.e. the first element of the array is assumed to be the binary name and
 //   is therefore ignored.
 // - Returns true if the arguments were successfully parsed.
-// - Returns false if parsing failed because sufficient memory could not be allocated.
+// - Returns false if parsing failed because sufficient memory could not be
+//   allocated.
 bool ap_parse(ArgParser* parser, int argc, char** argv);
 
 // Frees the memory associated with the parser and any subparsers.

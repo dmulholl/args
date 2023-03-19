@@ -60,7 +60,7 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     i.e. the first element in `argv` is assumed to be the binary name and
     will be ignored.
 
-    Returns `true` on success, or `false` if sufficient memory could not be allocated.
+    Returns `true` on success, or `false` if memory-allocation failed.
 
 
 
@@ -223,7 +223,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 
 
-### Commands
+### Command Setup
 
 [[ `typedef int (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser)` ]]
 
@@ -242,6 +242,17 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     Registers a callback function on a command parser.
     If the command is found, this function will be called and passed the command's name and `ArgParser` instance.
 
+[[ `void ap_enable_help_command(ArgParser* parent_parser, bool enable)` ]]
+
+    This boolean switch toggles support for an automatic `help` command that
+    prints subcommand helptext. The value defaults to `false` but gets toggled
+    automatically to true whenever a command is registered. You can use this
+    function to disable the feature if required.
+
+
+
+### Command Inspection
+
 [[ `bool ap_found_cmd(ArgParser* parent_parser)` ]]
 
     Returns true if `parent_parser` has found a command.
@@ -258,12 +269,9 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
     If `parent_parser` has found a command, and if that command has a callback function, returns the exit code returned by the callback, otherwise `0`.
 
-[[ `void ap_enable_help_command(ArgParser* parent_parser, bool enable)` ]]
 
-    This boolean switch toggles support for an automatic `help` command that
-    prints subcommand helptext. The value defaults to `false` but gets toggled
-    automatically to true whenever a command is registered. You can use this
-    function to disable the feature if required.
+
+### Parent Parsers
 
 [[ `ArgParser* ap_get_parent(ArgParser* parser)` ]]
 

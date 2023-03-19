@@ -62,7 +62,13 @@
 <a href="#positional-arguments">Positional Arguments</a>
 </li>
 <li>
-<a href="#commands">Commands</a>
+<a href="#command-setup">Command Setup</a>
+</li>
+<li>
+<a href="#command-inspection">Command Inspection</a>
+</li>
+<li>
+<a href="#parent-parsers">Parent Parsers</a>
 </li>
 </ul>
 <hr>
@@ -168,7 +174,7 @@ i.e. the first element in <code>argv</code> is assumed to be the binary name and
 will be ignored.
 </p>
 <p>
-Returns <code>true</code> on success, or <code>false</code> if sufficient memory could not be allocated.
+Returns <code>true</code> on success, or <code>false</code> if memory-allocation failed.
 </p>
 </dd>
 </div>
@@ -479,8 +485,8 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 </dd>
 </div>
 </dl>
-<h3 id="commands">
-Commands
+<h3 id="command-setup">
+Command Setup
 </h3>
 <dl>
 <div>
@@ -522,6 +528,24 @@ If the command is found, this function will be called and passed the command's n
 </div>
 <div>
 <dt>
+<code>void ap_enable_help_command(ArgParser* parent_parser, bool enable)</code>
+</dt>
+<dd>
+<p>
+This boolean switch toggles support for an automatic <code>help</code> command that
+prints subcommand helptext. The value defaults to <code>false</code> but gets toggled
+automatically to true whenever a command is registered. You can use this
+function to disable the feature if required.
+</p>
+</dd>
+</div>
+</dl>
+<h3 id="command-inspection">
+Command Inspection
+</h3>
+<dl>
+<div>
+<dt>
 <code>bool ap_found_cmd(ArgParser* parent_parser)</code>
 </dt>
 <dd>
@@ -560,19 +584,11 @@ If <code>parent_parser</code> has found a command, and if that command has a cal
 </p>
 </dd>
 </div>
-<div>
-<dt>
-<code>void ap_enable_help_command(ArgParser* parent_parser, bool enable)</code>
-</dt>
-<dd>
-<p>
-This boolean switch toggles support for an automatic <code>help</code> command that
-prints subcommand helptext. The value defaults to <code>false</code> but gets toggled
-automatically to true whenever a command is registered. You can use this
-function to disable the feature if required.
-</p>
-</dd>
-</div>
+</dl>
+<h3 id="parent-parsers">
+Parent Parsers
+</h3>
+<dl>
 <div>
 <dt>
 <code>ArgParser* ap_get_parent(ArgParser* parser)</code>

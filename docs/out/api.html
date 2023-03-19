@@ -174,7 +174,8 @@ i.e. the first element in <code>argv</code> is assumed to be the binary name and
 will be ignored.
 </p>
 <p>
-Returns <code>true</code> on success, or <code>false</code> if memory-allocation failed.
+Returns <code>true</code> on success, or <code>false</code> if an attempt to allocate memory failed.
+(You can safely call <code>ap_free()</code> on the parser even if the return value is <code>false</code>.)
 </p>
 </dd>
 </div>

@@ -60,7 +60,8 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     i.e. the first element in `argv` is assumed to be the binary name and
     will be ignored.
 
-    Returns `true` on success, or `false` if memory-allocation failed.
+    Returns `true` on success, or `false` if an attempt to allocate memory failed.
+    (You can safely call `ap_free()` on the parser even if the return value is `false`.)
 
 
 

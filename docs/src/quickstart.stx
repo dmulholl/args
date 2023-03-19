@@ -3,7 +3,7 @@ title: Quickstart Tutorial
 meta_title: Args &mdash; Quickstart Tutorial
 ---
 
-Imagine we're building a utility for joining MP3 files, something like [MP3cat](https://github.com/dmulholl/mp3cat).
+Imagine we're building a utility for joining MP3 files.
 We want the user to supply the file names as a list of command line arguments.
 We also want to support an `--out/-o` option so the user can specify an output filename and a `--quiet/-q` flag for turning down the program's verbosity.
 
@@ -12,7 +12,7 @@ First we need to create an `ArgParser` instance:
 ::: code c
     #include "args.h"
 
-    ArgParser* parser = ap_new();
+    ArgParser* parser = ap_new_parser();
     ap_set_helptext(parser, "Usage: mp3cat...");
     ap_set_version(parser, "1.0");
 
@@ -21,8 +21,8 @@ Supplying a helptext string for the parser activates an automatic `--help/-h` fl
 Now we can register our options and flags:
 
 ::: code c
-    ap_str_opt(parser, "out o", "default.mp3");
-    ap_flag(parser, "quiet q");
+    ap_add_str_opt(parser, "out o", "default.mp3");
+    ap_add_flag(parser, "quiet q");
 
 That's it, we're done specifying our interface. Now we can parse the program's command line arguments, passing in `argc` and `argv` as supplied to `main()`:
 
@@ -39,13 +39,13 @@ This will exit with a suitable error message for the user if anything goes wrong
 And determine our output filepath:
 
 ::: code c
-    char* outpath = ap_str_value(parser, "out");
+    char* path = ap_get_str_value(parser, "out");
 
-The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways:
+The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways, e.g
 
 ::: code c
     for (int i = 0; i < ap_count_args(parser); i++) {
-        char* filename = ap_arg(parser, i);
+        char* filename = ap_get_arg_at_index(parser, i);
         do_stuff();
     }
 

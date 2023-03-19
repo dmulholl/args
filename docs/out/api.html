@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.10.0</p>
+                <p class="version">Version 3.0.0-dev</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -75,7 +75,7 @@ Setup
 <dl>
 <div>
 <dt>
-<code>ArgParser* ap_new()</code>
+<code>ArgParser* ap_new_parser()</code>
 </dt>
 <dd>
 <p>
@@ -179,7 +179,7 @@ Specifying Flags and Options
 <dl>
 <div>
 <dt>
-<code>void ap_flag(ArgParser* parser, char* name)</code>
+<code>void ap_add_flag(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -190,7 +190,7 @@ The <code>name</code> parameter accepts an unlimited number of space-separated a
 </div>
 <div>
 <dt>
-<code>void ap_str_opt(ArgParser* parser, char* name, char* fallback)</code>
+<code>void ap_add_str_opt(ArgParser* parser, char* name, char* fallback)</code>
 </dt>
 <dd>
 <p>
@@ -202,7 +202,7 @@ The <code>fallback</code> parameter specifies the option's default value.
 </div>
 <div>
 <dt>
-<code>void ap_int_opt(ArgParser* parser, char* name, int fallback)</code>
+<code>void ap_add_int_opt(ArgParser* parser, char* name, int fallback)</code>
 </dt>
 <dd>
 <p>
@@ -214,7 +214,7 @@ The <code>fallback</code> parameter specifies the option's default value.
 </div>
 <div>
 <dt>
-<code>void ap_dbl_opt(ArgParser* parser, char* name, double fallback)</code>
+<code>void ap_add_dbl_opt(ArgParser* parser, char* name, double fallback)</code>
 </dt>
 <dd>
 <p>
@@ -254,7 +254,7 @@ Returns the number of times the specified flag or option was found.
 </div>
 <div>
 <dt>
-<code>char* ap_str_value(ArgParser* parser, char* name)</code>
+<code>char* ap_get_str_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -265,7 +265,7 @@ The pointer points to the appropriate value in the array of strings supplied to 
 </div>
 <div>
 <dt>
-<code>char* ap_str_value_at_index(ArgParser* parser, char* name, int index)</code>
+<code>char* ap_get_str_value_at_index(ArgParser* parser, char* name, int index)</code>
 </dt>
 <dd>
 <p>
@@ -277,7 +277,7 @@ The number of values is given by <code>ap_count()</code>.
 </div>
 <div>
 <dt>
-<code>char** ap_str_values(ArgParser* parser, char* name)</code>
+<code>char** ap_get_str_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -296,7 +296,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 </div>
 <div>
 <dt>
-<code>int ap_int_value(ArgParser* parser, char* name)</code>
+<code>int ap_get_int_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -306,7 +306,7 @@ Returns the value of the specified integer-valued option.
 </div>
 <div>
 <dt>
-<code>int ap_int_value_at_index(ArgParser* parser, char* name, int index)</code>
+<code>int ap_get_int_value_at_index(ArgParser* parser, char* name, int index)</code>
 </dt>
 <dd>
 <p>
@@ -317,7 +317,7 @@ The number of values is given by <code>ap_count()</code>.
 </div>
 <div>
 <dt>
-<code>int* ap_int_values(ArgParser* parser, char* name)</code>
+<code>int* ap_get_int_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -335,7 +335,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 </div>
 <div>
 <dt>
-<code>double ap_dbl_value(ArgParser* parser, char* name)</code>
+<code>double ap_get_dbl_value(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -345,7 +345,7 @@ Returns the value of the specified double-valued option.
 </div>
 <div>
 <dt>
-<code>double ap_dbl_value_at_index(ArgParser* parser, char* name, int index)</code>
+<code>double ap_get_dbl_value_at_index(ArgParser* parser, char* name, int index)</code>
 </dt>
 <dd>
 <p>
@@ -356,7 +356,7 @@ The number of values is given by <code>ap_count()</code>.
 </div>
 <div>
 <dt>
-<code>double* ap_dbl_values(ArgParser* parser, char* name)</code>
+<code>double* ap_get_dbl_values(ArgParser* parser, char* name)</code>
 </dt>
 <dd>
 <p>
@@ -399,7 +399,7 @@ Returns the number of positional arguments.
 </div>
 <div>
 <dt>
-<code>char* ap_arg(ArgParser* parser, int index)</code>
+<code>char* ap_get_arg_at_index(ArgParser* parser, int index)</code>
 </dt>
 <dd>
 <p>
@@ -410,7 +410,7 @@ The pointer points to the appropriate string value in the array of strings origi
 </div>
 <div>
 <dt>
-<code>char** ap_args(ArgParser* parser)</code>
+<code>char** ap_get_args(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -429,7 +429,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 </div>
 <div>
 <dt>
-<code>int* ap_args_as_ints(ArgParser* parser)</code>
+<code>int* ap_get_args_as_ints(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -450,7 +450,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 </div>
 <div>
 <dt>
-<code>double* ap_args_as_doubles(ArgParser* parser)</code>
+<code>double* ap_get_args_as_doubles(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>
@@ -476,72 +476,88 @@ Commands
 <dl>
 <div>
 <dt>
-<code>typedef void (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser)</code>
+<code>typedef int (*ap_callback_t)(char* cmd_name, ArgParser* cmd_parser)</code>
 </dt>
 <dd>
 <p>
-A callback function for a command should accept two arguments &mdash; the command's name and the command's <code>ArgParser</code> instance. It should return <code>void</code>.
+A callback function for a command should accept two arguments &mdash; the command's name and the command's <code>ArgParser</code> instance. It should return an integer status code.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_cmd(ArgParser* parser, char* name)</code>
+<code>ArgParser* ap_new_cmd(ArgParser* parent_parser, char* name)</code>
 </dt>
 <dd>
 <p>
-Registers a new command. Returns the <code>ArgParser</code> instance for the command. The <code>name</code> parameter accepts an unlimited number of space-separated aliases for the command.
-Returns <code>NULL</code> if sufficient memory cannot be allocated for the new parser instance.
+Registers a new command. Returns a new <code>ArgParser</code> instance for the command.
+</p>
+<p>
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases for the command.
+</p>
+<p>
+Returns <code>NULL</code> if sufficient memory cannot be allocated for the new <code>ArgParser</code> instance.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>void ap_callback(ArgParser* parser, ap_callback_t function)</code>
+<code>void ap_set_cmd_callback(ArgParser* cmd_parser, ap_callback_t cmd_callback)</code>
 </dt>
 <dd>
 <p>
-Registers an optional callback function on a command parser. If the command is found, this function will be called and passed the command's name and <code>ArgParser</code> instance.
+Registers a callback function on a command parser.
+If the command is found, this function will be called and passed the command's name and <code>ArgParser</code> instance.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>bool ap_has_cmd(ArgParser* parser)</code>
+<code>bool ap_found_cmd(ArgParser* parent_parser)</code>
 </dt>
 <dd>
 <p>
-Returns true if the parser has found a command.
+Returns true if <code>parent_parser</code> has found a command.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>char* ap_cmd_name(ArgParser* parser)</code>
+<code>char* ap_get_cmd_name(ArgParser* parent_parser)</code>
 </dt>
 <dd>
 <p>
-Returns the command name if the parser has found a command, otherwise <code>NULL</code>.
+If <code>parent_parser</code> has found a command, returns its name, otherwise <code>NULL</code>.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_cmd_parser(ArgParser* parser)</code>
+<code>ArgParser* ap_get_cmd_parser(ArgParser* parent_parser)</code>
 </dt>
 <dd>
 <p>
-Returns the command's <code>ArgParser</code> instance if the parser has found a command, otherwise <code>NULL</code>.
+If <code>parent_parser</code> has found a command, returns its <code>ArgParser</code> instance, otherwise <code>NULL</code>.
 </p>
 </dd>
 </div>
 <div>
 <dt>
-<code>void ap_enable_help_command(ArgParser* parser, bool enable)</code>
+<code>int ap_get_cmd_exit_code(ArgParser* parent_parser)</code>
 </dt>
 <dd>
 <p>
-This boolean switch toggles support for an automatic <code>help</code> command which
+If <code>parent_parser</code> has found a command, and if that command has a callback function, returns the exit code returned by the callback, otherwise <code>0</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_enable_help_command(ArgParser* parent_parser, bool enable)</code>
+</dt>
+<dd>
+<p>
+This boolean switch toggles support for an automatic <code>help</code> command that
 prints subcommand helptext. The value defaults to <code>false</code> but gets toggled
 automatically to true whenever a command is registered. You can use this
 function to disable the feature if required.
@@ -554,7 +570,7 @@ function to disable the feature if required.
 </dt>
 <dd>
 <p>
-Returns the parser's parent <code>ArgParser</code> instance if <code>parser</code> is a command parser, or <code>NULL</code> if <code>parser</code> is the root parser.
+If <code>parser</code> has a parent &mdash; i.e. if <code>parser</code> is a command parser &mdash; returns its parent, otherwise <code>NULL</code>.
 </p>
 </dd>
 </div>

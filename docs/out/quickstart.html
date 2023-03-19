@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 2.10.0</p>
+                <p class="version">Version 3.0.0-dev</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -43,7 +43,7 @@
                 <hr>
             </header>
             <p>
-Imagine we're building a utility for joining MP3 files, something like <a href="https://github.com/dmulholl/mp3cat">MP3cat</a>.
+Imagine we're building a utility for joining MP3 files.
 We want the user to supply the file names as a list of command line arguments.
 We also want to support an <code>--out/-o</code> option so the user can specify an output filename and a <code>--quiet/-q</code> flag for turning down the program's verbosity.
 </p>
@@ -53,7 +53,7 @@ First we need to create an <code>ArgParser</code> instance:
 <pre class="lang-c pygments" data-lang="c">
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;args.h&quot;</span><span class="cp"></span>
 
-<span class="n">ArgParser</span><span class="o">*</span><span class="w"> </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_new</span><span class="p">();</span><span class="w"></span>
+<span class="n">ArgParser</span><span class="o">*</span><span class="w"> </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_new_parser</span><span class="p">();</span><span class="w"></span>
 <span class="n">ap_set_helptext</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Usage: mp3cat...&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="n">ap_set_version</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1.0&quot;</span><span class="p">);</span><span class="w"></span>
 </pre>
@@ -64,8 +64,8 @@ Supplying a helptext string for the parser activates an automatic <code>--help/-
 Now we can register our options and flags:
 </p>
 <pre class="lang-c pygments" data-lang="c">
-<span class="n">ap_str_opt</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;out o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;default.mp3&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">ap_flag</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;quiet q&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">ap_add_str_opt</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;out o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;default.mp3&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">ap_add_flag</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;quiet q&quot;</span><span class="p">);</span><span class="w"></span>
 </pre>
 <p>
 That's it, we're done specifying our interface. Now we can parse the program's command line arguments, passing in <code>argc</code> and <code>argv</code> as supplied to <code>main()</code>:
@@ -85,14 +85,14 @@ This will exit with a suitable error message for the user if anything goes wrong
 And determine our output filepath:
 </p>
 <pre class="lang-c pygments" data-lang="c">
-<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">outpath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_str_value</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;out&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_get_str_value</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;out&quot;</span><span class="p">);</span><span class="w"></span>
 </pre>
 <p>
-The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways:
+The input filenames will be collected by the parser into a list of positional arguments which we can access in various ways, e.g
 </p>
 <pre class="lang-c pygments" data-lang="c">
 <span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ap_count_args</span><span class="p">(</span><span class="n">parser</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_arg</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap_get_arg_at_index</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="n">do_stuff</span><span class="p">();</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre>

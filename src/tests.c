@@ -14,8 +14,8 @@
 // -----------------------------------------------------------------------------
 
 void test_flag_empty() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 1, (char *[]){""});
     assert(ap_found(parser, "foo") == false);
     assert(ap_count(parser, "foo") == 0);
@@ -24,8 +24,8 @@ void test_flag_empty() {
 }
 
 void test_flag_missing() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_found(parser, "foo") == false);
     assert(ap_count(parser, "foo") == 0);
@@ -34,8 +34,8 @@ void test_flag_missing() {
 }
 
 void test_flag_long() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "--foo"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
@@ -44,8 +44,8 @@ void test_flag_long() {
 }
 
 void test_flag_short() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "-f"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
@@ -54,8 +54,8 @@ void test_flag_short() {
 }
 
 void test_flag_condensed() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "-fff"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 3);
@@ -64,8 +64,8 @@ void test_flag_condensed() {
 }
 
 void test_flag_multi() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "foo f");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
     ap_parse(parser, 4, (char *[]){"", "-fff", "--foo", "-f"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 5);
@@ -78,59 +78,59 @@ void test_flag_multi() {
 // -----------------------------------------------------------------------------
 
 void test_str_opt_default() {
-    ArgParser *parser = ap_new();
-    ap_str_opt(parser, "foo f", "default");
+    ArgParser *parser = ap_new_parser();
+    ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_found(parser, "foo") == false);
     assert(ap_count(parser, "foo") == 0);
-    assert(strcmp(ap_str_value(parser, "foo"), "default") == 0);
+    assert(strcmp(ap_get_str_value(parser, "foo"), "default") == 0);
     ap_free(parser);
     printf(".");
 }
 
 void test_str_opt_long() {
-    ArgParser *parser = ap_new();
-    ap_str_opt(parser, "foo f", "default");
+    ArgParser *parser = ap_new_parser();
+    ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "--foo", "bar"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(strcmp(ap_str_value(parser, "foo"), "bar") == 0);
+    assert(strcmp(ap_get_str_value(parser, "foo"), "bar") == 0);
     ap_free(parser);
     printf(".");
 }
 
 void test_str_opt_short() {
-    ArgParser *parser = ap_new();
-    ap_str_opt(parser, "foo f", "default");
+    ArgParser *parser = ap_new_parser();
+    ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "-f", "bar"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(strcmp(ap_str_value(parser, "foo"), "bar") == 0);
+    assert(strcmp(ap_get_str_value(parser, "foo"), "bar") == 0);
     ap_free(parser);
     printf(".");
 }
 
 void test_str_opt_condensed() {
-    ArgParser *parser = ap_new();
-    ap_str_opt(parser, "foo f", "default");
+    ArgParser *parser = ap_new_parser();
+    ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 4, (char *[]){"", "-ff", "bar", "baz"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 2);
-    assert(strcmp(ap_str_value(parser, "foo"), "baz") == 0);
+    assert(strcmp(ap_get_str_value(parser, "foo"), "baz") == 0);
     ap_free(parser);
     printf(".");
 }
 
 void test_str_opt_multi() {
-    ArgParser *parser = ap_new();
-    ap_str_opt(parser, "foo f", "default");
+    ArgParser *parser = ap_new_parser();
+    ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 6, (char *[]){"", "-ff", "bar", "baz", "--foo", "bam"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 3);
-    assert(strcmp(ap_str_value(parser, "foo"), "bam") == 0);
-    assert(strcmp(ap_str_value_at_index(parser, "foo", 0), "bar") == 0);
-    assert(strcmp(ap_str_value_at_index(parser, "foo", 1), "baz") == 0);
-    assert(strcmp(ap_str_value_at_index(parser, "foo", 2), "bam") == 0);
+    assert(strcmp(ap_get_str_value(parser, "foo"), "bam") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "foo", 0), "bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "foo", 1), "baz") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "foo", 2), "bam") == 0);
     ap_free(parser);
     printf(".");
 }
@@ -140,48 +140,48 @@ void test_str_opt_multi() {
 // -----------------------------------------------------------------------------
 
 void test_int_opt_default() {
-    ArgParser *parser = ap_new();
-    ap_int_opt(parser, "foo f", 123);
+    ArgParser *parser = ap_new_parser();
+    ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_found(parser, "foo") == false);
     assert(ap_count(parser, "foo") == 0);
-    assert(ap_int_value(parser, "foo") == 123);
+    assert(ap_get_int_value(parser, "foo") == 123);
     ap_free(parser);
     printf(".");
 }
 
 void test_int_opt_long() {
-    ArgParser *parser = ap_new();
-    ap_int_opt(parser, "foo f", 123);
+    ArgParser *parser = ap_new_parser();
+    ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "--foo", "456"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(ap_int_value(parser, "foo") == 456);
+    assert(ap_get_int_value(parser, "foo") == 456);
     ap_free(parser);
     printf(".");
 }
 
 void test_int_opt_short() {
-    ArgParser *parser = ap_new();
-    ap_int_opt(parser, "foo f", 123);
+    ArgParser *parser = ap_new_parser();
+    ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "-f", "456"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(ap_int_value(parser, "foo") == 456);
+    assert(ap_get_int_value(parser, "foo") == 456);
     ap_free(parser);
     printf(".");
 }
 
 void test_int_opt_multi() {
-    ArgParser *parser = ap_new();
-    ap_int_opt(parser, "foo f", 999);
+    ArgParser *parser = ap_new_parser();
+    ap_add_int_opt(parser, "foo f", 999);
     ap_parse(parser, 6, (char *[]){"", "-ff", "123", "456", "--foo", "789"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 3);
-    assert(ap_int_value(parser, "foo") == 789);
-    assert(ap_int_value_at_index(parser, "foo", 0) == 123);
-    assert(ap_int_value_at_index(parser, "foo", 1) == 456);
-    assert(ap_int_value_at_index(parser, "foo", 2) == 789);
+    assert(ap_get_int_value(parser, "foo") == 789);
+    assert(ap_get_int_value_at_index(parser, "foo", 0) == 123);
+    assert(ap_get_int_value_at_index(parser, "foo", 1) == 456);
+    assert(ap_get_int_value_at_index(parser, "foo", 2) == 789);
     ap_free(parser);
     printf(".");
 }
@@ -191,48 +191,48 @@ void test_int_opt_multi() {
 // -----------------------------------------------------------------------------
 
 void test_dbl_opt_default() {
-    ArgParser *parser = ap_new();
-    ap_dbl_opt(parser, "foo f", 123.0);
+    ArgParser *parser = ap_new_parser();
+    ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_found(parser, "foo") == false);
     assert(ap_count(parser, "foo") == 0);
-    assert(ap_dbl_value(parser, "foo") == 123.0);
+    assert(ap_get_dbl_value(parser, "foo") == 123.0);
     ap_free(parser);
     printf(".");
 }
 
 void test_dbl_opt_long() {
-    ArgParser *parser = ap_new();
-    ap_dbl_opt(parser, "foo f", 123.0);
+    ArgParser *parser = ap_new_parser();
+    ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "--foo", "456.0"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(ap_dbl_value(parser, "foo") == 456.0);
+    assert(ap_get_dbl_value(parser, "foo") == 456.0);
     ap_free(parser);
     printf(".");
 }
 
 void test_dbl_opt_short() {
-    ArgParser *parser = ap_new();
-    ap_dbl_opt(parser, "foo f", 123.0);
+    ArgParser *parser = ap_new_parser();
+    ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "-f", "456.0"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 1);
-    assert(ap_dbl_value(parser, "foo") == 456.0);
+    assert(ap_get_dbl_value(parser, "foo") == 456.0);
     ap_free(parser);
     printf(".");
 }
 
 void test_dbl_opt_multi() {
-    ArgParser *parser = ap_new();
-    ap_dbl_opt(parser, "foo f", 999.0);
+    ArgParser *parser = ap_new_parser();
+    ap_add_dbl_opt(parser, "foo f", 999.0);
     ap_parse(parser, 6, (char *[]){"", "-ff", "123.0", "456.0", "--foo", "789.0"});
     assert(ap_found(parser, "foo") == true);
     assert(ap_count(parser, "foo") == 3);
-    assert(ap_dbl_value(parser, "foo") == 789.0);
-    assert(ap_dbl_value_at_index(parser, "foo", 0) == 123.0);
-    assert(ap_dbl_value_at_index(parser, "foo", 1) == 456.0);
-    assert(ap_dbl_value_at_index(parser, "foo", 2) == 789.0);
+    assert(ap_get_dbl_value(parser, "foo") == 789.0);
+    assert(ap_get_dbl_value_at_index(parser, "foo", 0) == 123.0);
+    assert(ap_get_dbl_value_at_index(parser, "foo", 1) == 456.0);
+    assert(ap_get_dbl_value_at_index(parser, "foo", 2) == 789.0);
     ap_free(parser);
     printf(".");
 }
@@ -242,30 +242,30 @@ void test_dbl_opt_multi() {
 // -----------------------------------------------------------------------------
 
 void test_pos_args() {
-    ArgParser *parser = ap_new();
+    ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_has_args(parser) == true);
     assert(ap_count_args(parser) == 2);
-    assert(strcmp(ap_arg(parser, 0), "abc") == 0);
-    assert(strcmp(ap_arg(parser, 1), "def") == 0);
+    assert(strcmp(ap_get_arg_at_index(parser, 0), "abc") == 0);
+    assert(strcmp(ap_get_arg_at_index(parser, 1), "def") == 0);
     ap_free(parser);
     printf(".");
 }
 
 void test_pos_args_as_ints() {
-    ArgParser *parser = ap_new();
+    ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "123", "456"});
-    assert(ap_args_as_ints(parser)[0] == 123);
-    assert(ap_args_as_ints(parser)[1] == 456);
+    assert(ap_get_args_as_ints(parser)[0] == 123);
+    assert(ap_get_args_as_ints(parser)[1] == 456);
     ap_free(parser);
     printf(".");
 }
 
 void test_pos_args_as_doubles() {
-    ArgParser *parser = ap_new();
+    ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "123", "456"});
-    assert(ap_args_as_doubles(parser)[0] == 123.0);
-    assert(ap_args_as_doubles(parser)[1] == 456.0);
+    assert(ap_get_args_as_doubles(parser)[0] == 123.0);
+    assert(ap_get_args_as_doubles(parser)[1] == 456.0);
     ap_free(parser);
     printf(".");
 }
@@ -275,7 +275,7 @@ void test_pos_args_as_doubles() {
 // -----------------------------------------------------------------------------
 
 void test_option_parsing_switch() {
-    ArgParser *parser = ap_new();
+    ArgParser *parser = ap_new_parser();
     ap_parse(parser, 5, (char *[]){"", "foo", "--", "--bar", "--baz"});
     assert(ap_count_args(parser) == 3);
     ap_free(parser);
@@ -287,10 +287,10 @@ void test_option_parsing_switch() {
 // -----------------------------------------------------------------------------
 
 void test_command() {
-    ArgParser *parser = ap_new();
-    ArgParser *cmd_parser = ap_cmd(parser, "cmd");
-    ap_flag(cmd_parser, "foo");
-    ap_int_opt(cmd_parser, "bar", 123);
+    ArgParser *parser = ap_new_parser();
+    ArgParser *cmd_parser = ap_new_cmd(parser, "cmd");
+    ap_add_flag(cmd_parser, "foo");
+    ap_add_int_opt(cmd_parser, "bar", 123);
     ap_parse(parser, 7, (char *[]){
         "",
         "cmd",
@@ -298,13 +298,13 @@ void test_command() {
         "--foo",
         "--bar", "456",
     });
-    assert(ap_has_cmd(parser) == true);
-    assert(strcmp(ap_cmd_name(parser), "cmd") == 0);
-    assert(ap_cmd_parser(parser) == cmd_parser);
+    assert(ap_found_cmd(parser) == true);
+    assert(strcmp(ap_get_cmd_name(parser), "cmd") == 0);
+    assert(ap_get_cmd_parser(parser) == cmd_parser);
     assert(ap_has_args(cmd_parser) == true);
     assert(ap_count_args(cmd_parser) == 2);
     assert(ap_found(cmd_parser, "foo") == true);
-    assert(ap_int_value(cmd_parser, "bar") == 456);
+    assert(ap_get_int_value(cmd_parser, "bar") == 456);
     printf(".");
 }
 
@@ -313,27 +313,27 @@ void test_command() {
 // -----------------------------------------------------------------------------
 
 void test_container_resizing() {
-    ArgParser *parser = ap_new();
-    ap_flag(parser, "a alpha");
-    ap_flag(parser, "b beta");
-    ap_flag(parser, "c");
-    ap_flag(parser, "d delta");
-    ap_flag(parser, "e epsilon");
-    ap_flag(parser, "f phi");
-    ap_flag(parser, "g gamma");
-    ap_flag(parser, "h");
-    ap_flag(parser, "i iota");
-    ap_flag(parser, "j");
-    ap_flag(parser, "k kappa");
-    ap_flag(parser, "l lambda");
-    ap_flag(parser, "m mu");
-    ap_flag(parser, "n nu");
-    ap_flag(parser, "o omega");
-    ap_flag(parser, "p pi");
-    ap_flag(parser, "q");
-    ap_flag(parser, "r rho");
-    ap_flag(parser, "s sigma");
-    ap_flag(parser, "t tau");
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "a alpha");
+    ap_add_flag(parser, "b beta");
+    ap_add_flag(parser, "c");
+    ap_add_flag(parser, "d delta");
+    ap_add_flag(parser, "e epsilon");
+    ap_add_flag(parser, "f phi");
+    ap_add_flag(parser, "g gamma");
+    ap_add_flag(parser, "h");
+    ap_add_flag(parser, "i iota");
+    ap_add_flag(parser, "j");
+    ap_add_flag(parser, "k kappa");
+    ap_add_flag(parser, "l lambda");
+    ap_add_flag(parser, "m mu");
+    ap_add_flag(parser, "n nu");
+    ap_add_flag(parser, "o omega");
+    ap_add_flag(parser, "p pi");
+    ap_add_flag(parser, "q");
+    ap_add_flag(parser, "r rho");
+    ap_add_flag(parser, "s sigma");
+    ap_add_flag(parser, "t tau");
     ap_parse(parser, 5, (char *[]){"", "-a", "-b", "-s", "-t"});
     assert(ap_found(parser, "a") == true);
     assert(ap_found(parser, "alpha") == true);
@@ -352,7 +352,7 @@ void test_container_resizing() {
 }
 
 void test_first_arg_ends_options() {
-    ArgParser *parser = ap_new();
+    ArgParser *parser = ap_new_parser();
     ap_first_pos_arg_ends_options(parser, true);
     ap_parse(parser, 4, (char *[]){"", "foo", "--bar", "--baz"});
     assert(ap_count_args(parser) == 3);

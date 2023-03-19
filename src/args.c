@@ -629,7 +629,8 @@ struct ArgParser {
     Vec* command_vec;
     Map* command_map;
     Vec* positional_args;
-    ap_callback_t callback;
+    ap_callback_t cmd_callback;
+    int cmd_callback_exit_code;
     char* cmd_name;
     struct ArgParser* cmd_parser;
     bool enable_help_command;
@@ -639,7 +640,7 @@ struct ArgParser {
 };
 
 
-ArgParser* ap_new() {
+ArgParser* ap_new_parser() {
     ArgParser *parser = malloc(sizeof(ArgParser));
     if (!parser) {
         return NULL;
@@ -647,14 +648,14 @@ ArgParser* ap_new() {
 
     parser->helptext = NULL;
     parser->version = NULL;
-    parser->callback = NULL;
+    parser->cmd_callback = NULL;
+    parser->cmd_callback_exit_code = 0;
     parser->cmd_name = NULL;
     parser->cmd_parser = NULL;
     parser->enable_help_command = false;
     parser->had_memory_error = false;
     parser->parent = NULL;
     parser->first_positional_arg_ends_options = false;
-
     parser->option_vec = NULL;
     parser->option_map = NULL;
     parser->command_vec = NULL;
@@ -814,28 +815,28 @@ static void ap_register_option(ArgParser* parser, const char* name, Option* opt)
 
 
 // Register a new flag.
-void ap_flag(ArgParser *parser, const char* name) {
+void ap_add_flag(ArgParser *parser, const char* name) {
     Option* opt = option_new_flag();
     ap_register_option(parser, name, opt);
 }
 
 
 // Register a new string-valued option.
-void ap_str_opt(ArgParser* parser, const char* name, const char* fallback) {
+void ap_add_str_opt(ArgParser* parser, const char* name, const char* fallback) {
     Option* opt = option_new_str((char*)fallback);
     ap_register_option(parser, name, opt);
 }
 
 
 // Register a new integer-valued option.
-void ap_int_opt(ArgParser* parser, const char* name, int fallback) {
+void ap_add_int_opt(ArgParser* parser, const char* name, int fallback) {
     Option* opt = option_new_int(fallback);
     ap_register_option(parser, name, opt);
 }
 
 
 // Register a new double-valued option.
-void ap_dbl_opt(ArgParser* parser, const char* name, double fallback) {
+void ap_add_dbl_opt(ArgParser* parser, const char* name, double fallback) {
     Option* opt = option_new_double(fallback);
     ap_register_option(parser, name, opt);
 }
@@ -871,42 +872,42 @@ bool ap_found(ArgParser* parser, const char* name) {
 
 
 // Returns the value of the specified string option.
-char* ap_str_value(ArgParser* parser, const char* name) {
+char* ap_get_str_value(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return (char*)option_get_str(opt);
 }
 
 
 // Returns the string value at the specified index.
-char* ap_str_value_at_index(ArgParser* parser, const char* name, int index) {
+char* ap_get_str_value_at_index(ArgParser* parser, const char* name, int index) {
     Option* opt = ap_get_opt(parser, name);
     return opt->values[index].str_val;
 }
 
 
 // Returns the value of the specified integer option.
-int ap_int_value(ArgParser* parser, const char* name) {
+int ap_get_int_value(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return option_get_int(opt);
 }
 
 
 // Returns the integer value at the specified index.
-int ap_int_value_at_index(ArgParser* parser, const char* name, int index) {
+int ap_get_int_value_at_index(ArgParser* parser, const char* name, int index) {
     Option* opt = ap_get_opt(parser, name);
     return opt->values[index].int_val;
 }
 
 
 // Returns the value of the specified floating-point option.
-double ap_dbl_value(ArgParser* parser, const char* name) {
+double ap_get_dbl_value(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return option_get_double(opt);
 }
 
 
 // Returns the floating-point value at the specified index.
-double ap_dbl_value_at_index(ArgParser* parser, const char* name, int index) {
+double ap_get_dbl_value_at_index(ArgParser* parser, const char* name, int index) {
     Option* opt = ap_get_opt(parser, name);
     return opt->values[index].dbl_val;
 }
@@ -915,7 +916,7 @@ double ap_dbl_value_at_index(ArgParser* parser, const char* name, int index) {
 // Returns an option's values as a freshly-allocated array of string pointers.
 // The array's memory is not affected by calls to ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-char** ap_str_values(ArgParser* parser, const char* name) {
+char** ap_get_str_values(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return (char**)option_get_str_list(opt);
 }
@@ -924,7 +925,7 @@ char** ap_str_values(ArgParser* parser, const char* name) {
 // Returns an option's values as a freshly-allocated array of integers. The
 // array's memory is not affected by calls to ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-int* ap_int_values(ArgParser* parser, const char* name) {
+int* ap_get_int_values(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return option_get_int_list(opt);
 }
@@ -933,7 +934,7 @@ int* ap_int_values(ArgParser* parser, const char* name) {
 // Returns an option's values as a freshly-allocated array of doubles. The
 // array's memory is not affected by calls to ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-double* ap_dbl_values(ArgParser* parser, const char* name) {
+double* ap_get_dbl_values(ArgParser* parser, const char* name) {
     Option* opt = ap_get_opt(parser, name);
     return option_get_double_list(opt);
 }
@@ -957,7 +958,7 @@ int ap_count_args(ArgParser* parser) {
 
 
 // Returns the positional argument at the specified index.
-char* ap_arg(ArgParser* parser, int index) {
+char* ap_get_arg_at_index(ArgParser* parser, int index) {
     return (char*)parser->positional_args->entries[index];
 }
 
@@ -966,7 +967,7 @@ char* ap_arg(ArgParser* parser, int index) {
 // pointers. The memory occupied by the returned array is not affected by
 // calls to ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-char** ap_args(ArgParser* parser) {
+char** ap_get_args(ArgParser* parser) {
     int count = ap_count_args(parser);
     char** args = malloc(sizeof(char*) * count);
     if (!args) {
@@ -982,7 +983,7 @@ char** ap_args(ArgParser* parser) {
 // memory occupied by the returned array is not affected by calls to
 // ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-int* ap_args_as_ints(ArgParser* parser) {
+int* ap_get_args_as_ints(ArgParser* parser) {
     int count = ap_count_args(parser);
     int* args = malloc(sizeof(int) * count);
     if (!args) {
@@ -1000,7 +1001,7 @@ int* ap_args_as_ints(ArgParser* parser) {
 // memory occupied by the returned array is not affected by calls to
 // ap_free().
 // Returns NULL if memory cannot be allocated for the array.
-double* ap_args_as_doubles(ArgParser* parser) {
+double* ap_get_args_as_doubles(ArgParser* parser) {
     int count = ap_count_args(parser);
     double *args = malloc(sizeof(double) * count);
     if (!args) {
@@ -1018,18 +1019,18 @@ double* ap_args_as_doubles(ArgParser* parser) {
 /* -------------------- */
 
 
-ArgParser* ap_cmd(ArgParser* parser, const char* name) {
-    ArgParser* cmd_parser = ap_new();
+ArgParser* ap_new_cmd(ArgParser* parent_parser, const char* name) {
+    ArgParser* cmd_parser = ap_new_parser();
     if (!cmd_parser) {
         return NULL;
     }
 
-    if (vec_add(parser->command_vec, cmd_parser)) {
-        if (map_set_splitkey(parser->command_map, name, cmd_parser)) {
-            parser->enable_help_command = true;
+    if (vec_add(parent_parser->command_vec, cmd_parser)) {
+        if (map_set_splitkey(parent_parser->command_map, name, cmd_parser)) {
+            parent_parser->enable_help_command = true;
             return cmd_parser;
         } else {
-            parser->command_vec--;
+            parent_parser->command_vec--;
             ap_free(cmd_parser);
             return NULL;
         }
@@ -1040,32 +1041,37 @@ ArgParser* ap_cmd(ArgParser* parser, const char* name) {
 }
 
 
-void ap_callback(ArgParser* parser, ap_callback_t function) {
-    parser->callback = function;
+void ap_set_cmd_callback(ArgParser* cmd_parser, ap_callback_t cmd_callback) {
+    cmd_parser->cmd_callback = cmd_callback;
 }
 
 
-bool ap_has_cmd(ArgParser* parser) {
-    return parser->cmd_name != NULL;
+bool ap_found_cmd(ArgParser* parent_parser) {
+    return parent_parser->cmd_name != NULL;
 }
 
 
-char* ap_cmd_name(ArgParser* parser) {
-    return parser->cmd_name;
+char* ap_get_cmd_name(ArgParser* parent_parser) {
+    return parent_parser->cmd_name;
 }
 
 
-ArgParser* ap_cmd_parser(ArgParser* parser) {
-    return parser->cmd_parser;
+ArgParser* ap_get_cmd_parser(ArgParser* parent_parser) {
+    return parent_parser->cmd_parser;
 }
 
 
-void ap_enable_help_command(ArgParser* parser, bool enable) {
-    parser->enable_help_command = enable;
+int ap_get_cmd_exit_code(ArgParser* parent_parser) {
+    return parent_parser->cmd_callback_exit_code;
 }
 
 
-ArgParser* ap_parent(ArgParser* parser) {
+void ap_enable_help_command(ArgParser* parent_parser, bool enable) {
+    parent_parser->enable_help_command = enable;
+}
+
+
+ArgParser* ap_get_parent(ArgParser* parser) {
     return parser->parent;
 }
 
@@ -1209,8 +1215,8 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
             parser->cmd_name = arg;
             parser->cmd_parser = cmd_parser;
             ap_parse_stream(cmd_parser, stream);
-            if (cmd_parser->callback && !parser->had_memory_error) {
-                cmd_parser->callback(arg, cmd_parser);
+            if (cmd_parser->cmd_callback && !parser->had_memory_error) {
+                parser->cmd_callback_exit_code = cmd_parser->cmd_callback(arg, cmd_parser);
             }
         }
 
@@ -1301,36 +1307,16 @@ void ap_print(ArgParser* parser) {
     puts("\nArguments:");
     if (parser->positional_args->count > 0) {
         for (int i = 0; i < parser->positional_args->count; i++) {
-            printf("  %s\n", ap_arg(parser, i));
+            printf("  %s\n", ap_get_arg_at_index(parser, i));
         }
     } else {
         puts("  [none]");
     }
 
     puts("\nCommand:");
-    if (ap_has_cmd(parser)) {
-        printf("  %s\n", ap_cmd_name(parser));
+    if (ap_found_cmd(parser)) {
+        printf("  %s\n", ap_get_cmd_name(parser));
     } else {
         puts("  [none]");
     }
-}
-
-
-/* --------------------- */
-/* Deprecated functions. */
-/* --------------------- */
-
-
-void ap_cmd_help(ArgParser* parser, bool enable) {
-    ap_enable_help_command(parser, enable);
-}
-
-
-void ap_helptext(ArgParser* parser, const char* helptext) {
-    ap_set_helptext(parser, helptext);
-}
-
-
-void ap_version(ArgParser* parser, const char* version) {
-    ap_set_version(parser, version);
 }

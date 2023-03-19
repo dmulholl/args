@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv) {
     // Instantiate a new ArgParser instance.
-    ArgParser* parser = ap_new();
+    ArgParser* parser = ap_new_parser();
     if (!parser) {
         exit(1);
     }
@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     ap_set_version(parser, "1.0");
 
     // Register a flag and a string-valued option.
-    ap_flag(parser, "foo f");
-    ap_str_opt(parser, "bar b", "default");
+    ap_add_flag(parser, "foo f");
+    ap_add_str_opt(parser, "bar b", "default");
 
     // Parse the command line arguments.
     if (!ap_parse(parser, argc, argv)) {

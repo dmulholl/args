@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 3.0.0-dev</p>
+                <p class="version">Version 3.0.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -168,7 +168,7 @@ i.e. the first element in <code>argv</code> is assumed to be the binary name and
 will be ignored.
 </p>
 <p>
-Returns <code>true</code> on success, or <code>false</code> if parsing failed because memory could not be allocated for the parsed arguments.
+Returns <code>true</code> on success, or <code>false</code> if sufficient memory could not be allocated.
 </p>
 </dd>
 </div>
@@ -259,7 +259,10 @@ Returns the number of times the specified flag or option was found.
 <dd>
 <p>
 Returns the value of the specified string-valued option.
-The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function or to the <code>fallback</code> string specified when registering the option.
+If multiple values were parsed for the option, this returns the final value.
+</p>
+<p>
+The returned pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function or to the <code>fallback</code> string specified when registering the option.
 </p>
 </dd>
 </div>
@@ -270,7 +273,11 @@ The pointer points to the appropriate value in the array of strings supplied to 
 <dd>
 <p>
 For a string-valued option with multiple values, returns the value at the specified index.
-The pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
+</p>
+<p>
+The returned pointer points to the appropriate value in the array of strings supplied to the <code>ap_parse()</code> function.
+</p>
+<p>
 The number of values is given by <code>ap_count()</code>.
 </p>
 </dd>
@@ -301,6 +308,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 <dd>
 <p>
 Returns the value of the specified integer-valued option.
+If multiple values were parsed for the option, this returns the final value.
 </p>
 </dd>
 </div>
@@ -340,6 +348,7 @@ Returns <code>NULL</code> if memory cannot be allocated for the array.
 <dd>
 <p>
 Returns the value of the specified double-valued option.
+If multiple values were parsed for the option, this returns the final value.
 </p>
 </dd>
 </div>
@@ -490,7 +499,7 @@ A callback function for a command should accept two arguments &mdash; the comman
 </dt>
 <dd>
 <p>
-Registers a new command. Returns a new <code>ArgParser</code> instance for the command.
+Registers a new command. Returns the new <code>ArgParser</code> instance for the command.
 </p>
 <p>
 The <code>name</code> parameter accepts an unlimited number of space-separated aliases for the command.
@@ -566,7 +575,7 @@ function to disable the feature if required.
 </div>
 <div>
 <dt>
-<code>ArgParser* ap_parent(ArgParser* parser)</code>
+<code>ArgParser* ap_get_parent(ArgParser* parser)</code>
 </dt>
 <dd>
 <p>

@@ -60,7 +60,7 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     i.e. the first element in `argv` is assumed to be the binary name and
     will be ignored.
 
-    Returns `true` on success, or `false` if parsing failed because memory could not be allocated for the parsed arguments.
+    Returns `true` on success, or `false` if sufficient memory could not be allocated.
 
 
 
@@ -106,12 +106,16 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `char* ap_get_str_value(ArgParser* parser, char* name)` ]]
 
     Returns the value of the specified string-valued option.
-    The pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function or to the `fallback` string specified when registering the option.
+    If multiple values were parsed for the option, this returns the final value.
+
+    The returned pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function or to the `fallback` string specified when registering the option.
 
 [[ `char* ap_get_str_value_at_index(ArgParser* parser, char* name, int index)` ]]
 
     For a string-valued option with multiple values, returns the value at the specified index.
-    The pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function.
+
+    The returned pointer points to the appropriate value in the array of strings supplied to the `ap_parse()` function.
+
     The number of values is given by `ap_count()`.
 
 [[ `char** ap_get_str_values(ArgParser* parser, char* name)` ]]
@@ -128,6 +132,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `int ap_get_int_value(ArgParser* parser, char* name)` ]]
 
     Returns the value of the specified integer-valued option.
+    If multiple values were parsed for the option, this returns the final value.
 
 [[ `int ap_get_int_value_at_index(ArgParser* parser, char* name, int index)` ]]
 
@@ -147,6 +152,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `double ap_get_dbl_value(ArgParser* parser, char* name)` ]]
 
     Returns the value of the specified double-valued option.
+    If multiple values were parsed for the option, this returns the final value.
 
 [[ `double ap_get_dbl_value_at_index(ArgParser* parser, char* name, int index)` ]]
 
@@ -225,7 +231,7 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 [[ `ArgParser* ap_new_cmd(ArgParser* parent_parser, char* name)` ]]
 
-    Registers a new command. Returns a new `ArgParser` instance for the command.
+    Registers a new command. Returns the new `ArgParser` instance for the command.
 
     The `name` parameter accepts an unlimited number of space-separated aliases for the command.
 
@@ -259,6 +265,6 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
     automatically to true whenever a command is registered. You can use this
     function to disable the feature if required.
 
-[[ `ArgParser* ap_parent(ArgParser* parser)` ]]
+[[ `ArgParser* ap_get_parent(ArgParser* parser)` ]]
 
     If `parser` has a parent --- i.e. if `parser` is a command parser --- returns its parent, otherwise `NULL`.

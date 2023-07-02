@@ -17,7 +17,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 3.0.0</p>
+                <p class="version">Version 3.1.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -69,6 +69,9 @@
 </li>
 <li>
 <a href="#parent-parsers">Parent Parsers</a>
+</li>
+<li>
+<a href="#parsing-modes">Parsing Modes</a>
 </li>
 </ul>
 <hr>
@@ -228,6 +231,20 @@ The <code>fallback</code> parameter specifies the option's default value.
 Registers a new double-valued option.
 The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 The <code>fallback</code> parameter specifies the option's default value.
+</p>
+</dd>
+</div>
+<div>
+<dt>
+<code>void ap_add_greedy_str_opt(ArgParser* parser, char* name)</code>
+</dt>
+<dd>
+<p>
+Registers a new greedy string-valued option.
+A greedy option parses all subsequent arguments as option values, including arguments beginning with <code>-</code> or <code>--</code>.
+</p>
+<p>
+The <code>name</code> parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 </p>
 </dd>
 </div>
@@ -597,6 +614,21 @@ Parent Parsers
 <dd>
 <p>
 If <code>parser</code> has a parent &mdash; i.e. if <code>parser</code> is a command parser &mdash; returns its parent, otherwise <code>NULL</code>.
+</p>
+</dd>
+</div>
+</dl>
+<h3 id="parsing-modes">
+Parsing Modes
+</h3>
+<dl>
+<div>
+<dt>
+<code>void ap_first_pos_arg_ends_option_parsing(ArgParser* parser)</code>
+</dt>
+<dd>
+<p>
+If set, the first positional argument ends option-parsing &mdash; i.e. all subsequent arguments will be teated as positional arguments, even arguments beginning with <code>-</code> or <code>--</code>.
 </p>
 </dd>
 </div>

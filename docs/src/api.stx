@@ -90,6 +90,12 @@ This library is written in portable C99. The header exports an `ArgParser` type 
     The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
     The `fallback` parameter specifies the option's default value.
 
+[[ `void ap_add_greedy_str_opt(ArgParser* parser, char* name)` ]]
+
+    Registers a new greedy string-valued option.
+    A greedy option parses all subsequent arguments as option values, including arguments beginning with `-` or `--`.
+
+    The `name` parameter accepts an unlimited number of space-separated aliases and single-character shortcuts.
 
 
 ### Retrieving Values
@@ -277,3 +283,11 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 [[ `ArgParser* ap_get_parent(ArgParser* parser)` ]]
 
     If `parser` has a parent --- i.e. if `parser` is a command parser --- returns its parent, otherwise `NULL`.
+
+
+
+### Parsing Modes
+
+[[ `void ap_first_pos_arg_ends_option_parsing(ArgParser* parser)` ]]
+
+    If set, the first positional argument ends option-parsing --- i.e. all subsequent arguments will be teated as positional arguments, even arguments beginning with `-` or `--`.

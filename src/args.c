@@ -18,14 +18,14 @@
 
 // Prints a message to stderr and exits with a non-zero status code.
 static void exit_with_error(const char* format_string, ...) {
-    fprintf(stderr, "Error: ");
+    fprintf(stderr, "error: ");
 
     va_list args;
     va_start(args, format_string);
     vfprintf(stderr, format_string, args);
     va_end(args);
 
-    fprintf(stderr, ".\n");
+    fprintf(stderr, "\n");
     exit(1);
 }
 
@@ -364,6 +364,7 @@ typedef struct {
     int capacity;
     OptionValue* values;
     OptionValue fallback;
+    bool is_greedy;
 } Option;
 
 
@@ -416,6 +417,7 @@ static Option* option_new() {
     option->count = 0;
     option->capacity = 0;
     option->values = NULL;
+    option->is_greedy = false;
     return option;
 }
 
@@ -636,7 +638,7 @@ struct ArgParser {
     bool enable_help_command;
     bool had_memory_error;
     struct ArgParser* parent;
-    bool first_positional_arg_ends_options;
+    bool first_pos_arg_ends_option_parsing;
 };
 
 
@@ -655,7 +657,7 @@ ArgParser* ap_new_parser() {
     parser->enable_help_command = false;
     parser->had_memory_error = false;
     parser->parent = NULL;
-    parser->first_positional_arg_ends_options = false;
+    parser->first_pos_arg_ends_option_parsing = false;
     parser->option_vec = NULL;
     parser->option_map = NULL;
     parser->command_vec = NULL;
@@ -781,8 +783,8 @@ char* ap_get_version(ArgParser* parser) {
 }
 
 
-void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable) {
-    parser->first_positional_arg_ends_options = enable;
+void ap_first_pos_arg_ends_option_parsing(ArgParser* parser) {
+    parser->first_pos_arg_ends_option_parsing = true;
 }
 
 
@@ -824,6 +826,16 @@ void ap_add_flag(ArgParser *parser, const char* name) {
 // Register a new string-valued option.
 void ap_add_str_opt(ArgParser* parser, const char* name, const char* fallback) {
     Option* opt = option_new_str((char*)fallback);
+    ap_register_option(parser, name, opt);
+}
+
+
+// Register a new greedy string-valued option.
+void ap_add_greedy_str_opt(ArgParser* parser, const char* name) {
+    Option* opt = option_new_str((char*)"");
+    if (opt) {
+        opt->is_greedy = true;
+    }
     ap_register_option(parser, name, opt);
 }
 
@@ -1082,7 +1094,7 @@ ArgParser* ap_get_parent(ArgParser* parser) {
 
 
 // Parse an option of the form --name=value or -n=value.
-static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const char* arg) {
+static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const char* arg, ArgStream* stream) {
     char* name = str_dup(arg);
     if (!name) {
         ap_set_memory_error_flag(parser);
@@ -1095,8 +1107,12 @@ static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const ch
     Option* option;
     bool found = map_get(parser->option_map, name, (void**)&option);
 
-    if (!found || option->type == OPT_FLAG) {
+    if (!found) {
         exit_with_error("%s%s is not a recognised option name", prefix, name);
+    }
+
+    if (option->type == OPT_FLAG) {
+        exit_with_error("flag %s%s does not accept an argument", prefix, name);
     }
 
     if (strlen(value) == 0) {
@@ -1107,6 +1123,14 @@ static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const ch
         ap_set_memory_error_flag(parser);
     }
 
+    if (option->is_greedy) {
+        while (argstream_has_next(stream)) {
+            if (!option_try_set(option, argstream_next(stream))) {
+                ap_set_memory_error_flag(parser);
+            }
+        }
+    }
+
     free(name);
 }
 
@@ -1114,25 +1138,43 @@ static void ap_handle_equals_opt(ArgParser* parser, const char* prefix, const ch
 // Parse a long-form option, i.e. an option beginning with a double dash.
 static void ap_handle_long_opt(ArgParser* parser, const char* arg, ArgStream* stream) {
     Option* option;
+
     if (map_get(parser->option_map, arg, (void**)&option)) {
         if (option->type == OPT_FLAG) {
             option->count++;
-        } else if (argstream_has_next(stream)) {
+            return;
+        }
+
+        if (argstream_has_next(stream) && option->is_greedy) {
+            while (argstream_has_next(stream)) {
+                if (!option_try_set(option, argstream_next(stream))) {
+                    ap_set_memory_error_flag(parser);
+                }
+            }
+            return;
+        }
+
+        if (argstream_has_next(stream)) {
             if (!option_try_set(option, argstream_next(stream))) {
                 ap_set_memory_error_flag(parser);
             }
-        } else {
-            exit_with_error("missing argument for --%s", arg);
+            return;
         }
-    } else if (strcmp(arg, "help") == 0 && parser->helptext != NULL) {
+
+        exit_with_error("missing argument for --%s", arg);
+    }
+
+    if (strcmp(arg, "help") == 0 && parser->helptext != NULL) {
         puts(parser->helptext);
         exit(0);
-    } else if (strcmp(arg, "version") == 0 && parser->version != NULL) {
+    }
+
+    if (strcmp(arg, "version") == 0 && parser->version != NULL) {
         puts(parser->version);
         exit(0);
-    } else {
-        exit_with_error("--%s is not a recognised flag or option name", arg);
     }
+
+    exit_with_error("--%s is not a recognised flag or option name", arg);
 }
 
 
@@ -1141,30 +1183,49 @@ static void ap_handle_short_opt(ArgParser* parser, const char* arg, ArgStream* s
     for (size_t i = 0; i < strlen(arg); i++) {
         char keystr[] = {arg[i], 0};
         Option* option;
+
         bool found = map_get(parser->option_map, keystr, (void**)&option);
         if (!found) {
             if (arg[i] == 'h' && parser->helptext != NULL) {
                 puts(parser->helptext);
                 exit(0);
-            } else if (arg[i] == 'v' && parser->version != NULL) {
+            }
+            if (arg[i] == 'v' && parser->version != NULL) {
                 puts(parser->version);
                 exit(0);
-            } else if (strlen(arg) > 1) {
-                exit_with_error("'%c' in -%s is not a recognised flag or option name", arg[i], arg);
-            } else {
-                exit_with_error("-%s is not a recognised flag or option name", arg);
             }
-        } else if (option->type == OPT_FLAG) {
+            if (strlen(arg) > 1) {
+                exit_with_error("'%c' in -%s is not a recognised flag or option name", arg[i], arg);
+            }
+            exit_with_error("-%s is not a recognised flag or option name", arg);
+        }
+
+        if (option->type == OPT_FLAG) {
             option->count++;
-        } else if (argstream_has_next(stream)) {
+            continue;
+        }
+
+        if (argstream_has_next(stream) && option->is_greedy) {
+            while (argstream_has_next(stream)) {
+                if (!option_try_set(option, argstream_next(stream))) {
+                    ap_set_memory_error_flag(parser);
+                }
+            }
+            continue;
+        }
+
+        if (argstream_has_next(stream)) {
             if (!option_try_set(option, argstream_next(stream))) {
                 ap_set_memory_error_flag(parser);
             }
-        } else if (strlen(arg) > 1) {
-            exit_with_error("missing argument for '%c' in -%s", arg[i], arg);
-        } else {
-            exit_with_error("missing argument for -%s", arg);
+            continue;
         }
+
+        if (strlen(arg) > 1) {
+            exit_with_error("missing argument for '%c' in -%s", arg[i], arg);
+        }
+
+        exit_with_error("missing argument for -%s", arg);
     }
 }
 
@@ -1191,7 +1252,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
         // Is the argument a long-form option or flag?
         else if (strncmp(arg, "--", 2) == 0) {
             if (strstr(arg, "=") != NULL) {
-                ap_handle_equals_opt(parser, "--", arg + 2);
+                ap_handle_equals_opt(parser, "--", arg + 2, stream);
             } else {
                 ap_handle_long_opt(parser, arg + 2, stream);
             }
@@ -1204,7 +1265,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
                     ap_set_memory_error_flag(parser);
                 }
             } else if (strstr(arg, "=") != NULL) {
-                ap_handle_equals_opt(parser, "-", arg + 1);
+                ap_handle_equals_opt(parser, "-", arg + 1, stream);
             } else {
                 ap_handle_short_opt(parser, arg + 1, stream);
             }
@@ -1242,7 +1303,7 @@ static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
             if (!vec_add(parser->positional_args, arg)) {
                 ap_set_memory_error_flag(parser);
             }
-            if (parser->first_positional_arg_ends_options) {
+            if (parser->first_pos_arg_ends_option_parsing) {
                 while (argstream_has_next(stream)) {
                     if (!vec_add(parser->positional_args, argstream_next(stream))) {
                         ap_set_memory_error_flag(parser);

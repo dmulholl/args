@@ -351,11 +351,79 @@ void test_container_resizing() {
     printf(".");
 }
 
-void test_first_arg_ends_options() {
+void test_first_pos_arg_ends_options() {
     ArgParser *parser = ap_new_parser();
-    ap_first_pos_arg_ends_options(parser, true);
-    ap_parse(parser, 4, (char *[]){"", "foo", "--bar", "--baz"});
-    assert(ap_count_args(parser) == 3);
+    ap_first_pos_arg_ends_option_parsing(parser);
+    ap_parse(parser, 6, (char *[]){"", "arg", "--foo", "-f", "--bar", "-b"});
+    assert(ap_count_args(parser) == 5);
+    ap_free(parser);
+    printf(".");
+}
+
+// -----------------------------------------------------------------------------
+// 9. Greedy options.
+// -----------------------------------------------------------------------------
+
+void test_greedy_str_opt_long() {
+    ArgParser *parser = ap_new_parser();
+    ap_add_greedy_str_opt(parser, "greedy g");
+    ap_parse(parser, 8, (char *[]){"", "--greedy", "foo", "--foo", "-f", "bar", "--bar", "-b"});
+    assert(ap_found(parser, "greedy") == true);
+    assert(ap_count(parser, "greedy") == 6);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 0), "foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 1), "--foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 2), "-f") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 3), "bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 4), "--bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 5), "-b") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_greedy_str_opt_short() {
+    ArgParser *parser = ap_new_parser();
+    ap_add_greedy_str_opt(parser, "greedy g");
+    ap_parse(parser, 8, (char *[]){"", "-g", "foo", "--foo", "-f", "bar", "--bar", "-b"});
+    assert(ap_found(parser, "greedy") == true);
+    assert(ap_count(parser, "greedy") == 6);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 0), "foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 1), "--foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 2), "-f") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 3), "bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 4), "--bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 5), "-b") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_greedy_str_opt_long_equals() {
+    ArgParser *parser = ap_new_parser();
+    ap_add_greedy_str_opt(parser, "greedy g");
+    ap_parse(parser, 7, (char *[]){"", "--greedy=foo", "--foo", "-f", "bar", "--bar", "-b"});
+    assert(ap_found(parser, "greedy") == true);
+    assert(ap_count(parser, "greedy") == 6);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 0), "foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 1), "--foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 2), "-f") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 3), "bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 4), "--bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 5), "-b") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_greedy_str_opt_short_equals() {
+    ArgParser *parser = ap_new_parser();
+    ap_add_greedy_str_opt(parser, "greedy g");
+    ap_parse(parser, 7, (char *[]){"", "-g=foo", "--foo", "-f", "bar", "--bar", "-b"});
+    assert(ap_found(parser, "greedy") == true);
+    assert(ap_count(parser, "greedy") == 6);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 0), "foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 1), "--foo") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 2), "-f") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 3), "bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 4), "--bar") == 0);
+    assert(strcmp(ap_get_str_value_at_index(parser, "greedy", 5), "-b") == 0);
     ap_free(parser);
     printf(".");
 }
@@ -415,7 +483,13 @@ int main() {
 
     printf(" 8 ");
     test_container_resizing();
-    test_first_arg_ends_options();
+    test_first_pos_arg_ends_options();
+
+    printf(" 9 ");
+    test_greedy_str_opt_long();
+    test_greedy_str_opt_short();
+    test_greedy_str_opt_long_equals();
+    test_greedy_str_opt_short_equals();
 
     printf(" [ok]\n");
     line();

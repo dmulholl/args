@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 3.0.0
+// Version: 3.1.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -47,10 +47,6 @@ void ap_set_version(ArgParser* parser, const char* version);
 // Returns a pointer to the parser's version string.
 char* ap_get_version(ArgParser* parser);
 
-// If toggled to true, the first positional argument ends option-parsing; all
-// subsequent arguments will be treated as positionals. Defaults to false.
-void ap_first_pos_arg_ends_options(ArgParser* parser, bool enable);
-
 // Parses an array of string arguments.
 // - Exits with an error message and a non-zero status code if the arguments are
 //   invalid.
@@ -64,6 +60,14 @@ bool ap_parse(ArgParser* parser, int argc, char** argv);
 
 // Frees the memory associated with the parser and any subparsers.
 void ap_free(ArgParser* parser);
+
+// -----------------------------------------------------------------------------
+// Parsing modes.
+// -----------------------------------------------------------------------------
+
+// If set, the first positional argument ends option-parsing; all subsequent
+// arguments will be treated as positionals.
+void ap_first_pos_arg_ends_option_parsing(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
 // Register flags and options.
@@ -80,6 +84,9 @@ void ap_add_int_opt(ArgParser* parser, const char* name, int fallback);
 
 // Registers a new double-valued option.
 void ap_add_dbl_opt(ArgParser* parser, const char* name, double fallback);
+
+// Registers a new greedy string-valued option.
+void ap_add_greedy_str_opt(ArgParser* parser, const char* name);
 
 // -----------------------------------------------------------------------------
 // Inspect flags and options.

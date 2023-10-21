@@ -118,7 +118,7 @@ typedef struct {
 } Vec;
 
 
-static Vec* vec_new() {
+static Vec* vec_new(void) {
     Vec* vec = malloc(sizeof(Vec));
     if (!vec) {
         return NULL;
@@ -179,7 +179,7 @@ typedef struct {
 } Map;
 
 
-static Map* map_new() {
+static Map* map_new(void) {
     Map* map = malloc(sizeof(Map));
     if (!map) {
         return NULL;
@@ -409,7 +409,7 @@ static bool option_try_set(Option* opt, char* arg) {
 }
 
 
-static Option* option_new() {
+static Option* option_new(void) {
     Option *option = malloc(sizeof(Option));
     if (!option) {
         return NULL;
@@ -422,7 +422,7 @@ static Option* option_new() {
 }
 
 
-static Option* option_new_flag() {
+static Option* option_new_flag(void) {
     Option *opt = option_new();
     if (!opt) {
         return NULL;
@@ -642,7 +642,7 @@ struct ArgParser {
 };
 
 
-ArgParser* ap_new_parser() {
+ArgParser* ap_new_parser(void) {
     ArgParser *parser = malloc(sizeof(ArgParser));
     if (!parser) {
         return NULL;

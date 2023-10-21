@@ -13,7 +13,7 @@
 // 1. Flags.
 // -----------------------------------------------------------------------------
 
-void test_flag_empty() {
+void test_flag_empty(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 1, (char *[]){""});
@@ -23,7 +23,7 @@ void test_flag_empty() {
     printf(".");
 }
 
-void test_flag_missing() {
+void test_flag_missing(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
@@ -33,7 +33,7 @@ void test_flag_missing() {
     printf(".");
 }
 
-void test_flag_long() {
+void test_flag_long(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "--foo"});
@@ -43,7 +43,7 @@ void test_flag_long() {
     printf(".");
 }
 
-void test_flag_short() {
+void test_flag_short(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "-f"});
@@ -53,7 +53,7 @@ void test_flag_short() {
     printf(".");
 }
 
-void test_flag_condensed() {
+void test_flag_condensed(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 2, (char *[]){"", "-fff"});
@@ -63,7 +63,7 @@ void test_flag_condensed() {
     printf(".");
 }
 
-void test_flag_multi() {
+void test_flag_multi(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "foo f");
     ap_parse(parser, 4, (char *[]){"", "-fff", "--foo", "-f"});
@@ -77,7 +77,7 @@ void test_flag_multi() {
 // 2. String-valued options.
 // -----------------------------------------------------------------------------
 
-void test_str_opt_default() {
+void test_str_opt_default(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
@@ -88,7 +88,7 @@ void test_str_opt_default() {
     printf(".");
 }
 
-void test_str_opt_long() {
+void test_str_opt_long(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "--foo", "bar"});
@@ -99,7 +99,7 @@ void test_str_opt_long() {
     printf(".");
 }
 
-void test_str_opt_short() {
+void test_str_opt_short(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 3, (char *[]){"", "-f", "bar"});
@@ -110,7 +110,7 @@ void test_str_opt_short() {
     printf(".");
 }
 
-void test_str_opt_condensed() {
+void test_str_opt_condensed(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 4, (char *[]){"", "-ff", "bar", "baz"});
@@ -121,7 +121,7 @@ void test_str_opt_condensed() {
     printf(".");
 }
 
-void test_str_opt_multi() {
+void test_str_opt_multi(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_str_opt(parser, "foo f", "default");
     ap_parse(parser, 6, (char *[]){"", "-ff", "bar", "baz", "--foo", "bam"});
@@ -139,7 +139,7 @@ void test_str_opt_multi() {
 // 3. Integer-valued options.
 // -----------------------------------------------------------------------------
 
-void test_int_opt_default() {
+void test_int_opt_default(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
@@ -150,7 +150,7 @@ void test_int_opt_default() {
     printf(".");
 }
 
-void test_int_opt_long() {
+void test_int_opt_long(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "--foo", "456"});
@@ -161,7 +161,7 @@ void test_int_opt_long() {
     printf(".");
 }
 
-void test_int_opt_short() {
+void test_int_opt_short(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_int_opt(parser, "foo f", 123);
     ap_parse(parser, 3, (char *[]){"", "-f", "456"});
@@ -172,7 +172,7 @@ void test_int_opt_short() {
     printf(".");
 }
 
-void test_int_opt_multi() {
+void test_int_opt_multi(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_int_opt(parser, "foo f", 999);
     ap_parse(parser, 6, (char *[]){"", "-ff", "123", "456", "--foo", "789"});
@@ -190,7 +190,7 @@ void test_int_opt_multi() {
 // 4. Double-valued options.
 // -----------------------------------------------------------------------------
 
-void test_dbl_opt_default() {
+void test_dbl_opt_default(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
@@ -201,7 +201,7 @@ void test_dbl_opt_default() {
     printf(".");
 }
 
-void test_dbl_opt_long() {
+void test_dbl_opt_long(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "--foo", "456.0"});
@@ -212,7 +212,7 @@ void test_dbl_opt_long() {
     printf(".");
 }
 
-void test_dbl_opt_short() {
+void test_dbl_opt_short(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_dbl_opt(parser, "foo f", 123.0);
     ap_parse(parser, 3, (char *[]){"", "-f", "456.0"});
@@ -223,7 +223,7 @@ void test_dbl_opt_short() {
     printf(".");
 }
 
-void test_dbl_opt_multi() {
+void test_dbl_opt_multi(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_dbl_opt(parser, "foo f", 999.0);
     ap_parse(parser, 6, (char *[]){"", "-ff", "123.0", "456.0", "--foo", "789.0"});
@@ -241,7 +241,7 @@ void test_dbl_opt_multi() {
 // 5. Positional arguments.
 // -----------------------------------------------------------------------------
 
-void test_pos_args() {
+void test_pos_args(void) {
     ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "abc", "def"});
     assert(ap_has_args(parser) == true);
@@ -252,7 +252,7 @@ void test_pos_args() {
     printf(".");
 }
 
-void test_pos_args_as_ints() {
+void test_pos_args_as_ints(void) {
     ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "123", "456"});
     assert(ap_get_args_as_ints(parser)[0] == 123);
@@ -261,7 +261,7 @@ void test_pos_args_as_ints() {
     printf(".");
 }
 
-void test_pos_args_as_doubles() {
+void test_pos_args_as_doubles(void) {
     ArgParser *parser = ap_new_parser();
     ap_parse(parser, 3, (char *[]){"", "123", "456"});
     assert(ap_get_args_as_doubles(parser)[0] == 123.0);
@@ -274,7 +274,7 @@ void test_pos_args_as_doubles() {
 // 6. Option parsing switch.
 // -----------------------------------------------------------------------------
 
-void test_option_parsing_switch() {
+void test_option_parsing_switch(void) {
     ArgParser *parser = ap_new_parser();
     ap_parse(parser, 5, (char *[]){"", "foo", "--", "--bar", "--baz"});
     assert(ap_count_args(parser) == 3);
@@ -286,7 +286,7 @@ void test_option_parsing_switch() {
 // 7. Commands.
 // -----------------------------------------------------------------------------
 
-void test_command() {
+void test_command(void) {
     ArgParser *parser = ap_new_parser();
     ArgParser *cmd_parser = ap_new_cmd(parser, "cmd");
     ap_add_flag(cmd_parser, "foo");
@@ -312,7 +312,7 @@ void test_command() {
 // 8. Miscellanea.
 // -----------------------------------------------------------------------------
 
-void test_container_resizing() {
+void test_container_resizing(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_flag(parser, "a alpha");
     ap_add_flag(parser, "b beta");
@@ -351,7 +351,7 @@ void test_container_resizing() {
     printf(".");
 }
 
-void test_first_pos_arg_ends_options() {
+void test_first_pos_arg_ends_options(void) {
     ArgParser *parser = ap_new_parser();
     ap_first_pos_arg_ends_option_parsing(parser);
     ap_parse(parser, 6, (char *[]){"", "arg", "--foo", "-f", "--bar", "-b"});
@@ -364,7 +364,7 @@ void test_first_pos_arg_ends_options() {
 // 9. Greedy options.
 // -----------------------------------------------------------------------------
 
-void test_greedy_str_opt_long() {
+void test_greedy_str_opt_long(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_greedy_str_opt(parser, "greedy g");
     ap_parse(parser, 8, (char *[]){"", "--greedy", "foo", "--foo", "-f", "bar", "--bar", "-b"});
@@ -380,7 +380,7 @@ void test_greedy_str_opt_long() {
     printf(".");
 }
 
-void test_greedy_str_opt_short() {
+void test_greedy_str_opt_short(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_greedy_str_opt(parser, "greedy g");
     ap_parse(parser, 8, (char *[]){"", "-g", "foo", "--foo", "-f", "bar", "--bar", "-b"});
@@ -396,7 +396,7 @@ void test_greedy_str_opt_short() {
     printf(".");
 }
 
-void test_greedy_str_opt_long_equals() {
+void test_greedy_str_opt_long_equals(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_greedy_str_opt(parser, "greedy g");
     ap_parse(parser, 7, (char *[]){"", "--greedy=foo", "--foo", "-f", "bar", "--bar", "-b"});
@@ -412,7 +412,7 @@ void test_greedy_str_opt_long_equals() {
     printf(".");
 }
 
-void test_greedy_str_opt_short_equals() {
+void test_greedy_str_opt_short_equals(void) {
     ArgParser *parser = ap_new_parser();
     ap_add_greedy_str_opt(parser, "greedy g");
     ap_parse(parser, 7, (char *[]){"", "-g=foo", "--foo", "-f", "bar", "--bar", "-b"});
@@ -432,14 +432,14 @@ void test_greedy_str_opt_short_equals() {
 // Test runner.
 // -----------------------------------------------------------------------------
 
-void line() {
+void line(void) {
     for (int i = 0; i < 80; i++) {
         printf("-");
     }
     printf("\n");
 }
 
-int main() {
+int main(void) {
     setbuf(stdout, NULL);
     line();
 

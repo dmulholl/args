@@ -360,6 +360,15 @@ void test_first_pos_arg_ends_options(void) {
     printf(".");
 }
 
+void test_all_args_as_pos_args(void) {
+    ArgParser *parser = ap_new_parser();
+    ap_all_args_as_pos_args(parser);
+    ap_parse(parser, 6, (char *[]){"", "--foo", "-f", "--bar", "-b", "baz"});
+    assert(ap_count_args(parser) == 5);
+    ap_free(parser);
+    printf(".");
+}
+
 // -----------------------------------------------------------------------------
 // 9. Greedy options.
 // -----------------------------------------------------------------------------
@@ -484,6 +493,7 @@ int main(void) {
     printf(" 8 ");
     test_container_resizing();
     test_first_pos_arg_ends_options();
+    test_all_args_as_pos_args();
 
     printf(" 9 ");
     test_greedy_str_opt_long();

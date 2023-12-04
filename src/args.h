@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 3.1.2
+// Version: 3.2.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -68,6 +68,9 @@ void ap_free(ArgParser* parser);
 // If set, the first positional argument ends option-parsing; all subsequent
 // arguments will be treated as positionals.
 void ap_first_pos_arg_ends_option_parsing(ArgParser* parser);
+
+// If set, all arguments will be treated as positionals.
+void ap_all_args_as_pos_args(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
 // Register flags and options.

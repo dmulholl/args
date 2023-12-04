@@ -639,6 +639,7 @@ struct ArgParser {
     bool had_memory_error;
     struct ArgParser* parent;
     bool first_pos_arg_ends_option_parsing;
+    bool all_args_as_pos_args;
 };
 
 
@@ -658,6 +659,7 @@ ArgParser* ap_new_parser(void) {
     parser->had_memory_error = false;
     parser->parent = NULL;
     parser->first_pos_arg_ends_option_parsing = false;
+    parser->all_args_as_pos_args = false;
     parser->option_vec = NULL;
     parser->option_map = NULL;
     parser->command_vec = NULL;
@@ -785,6 +787,11 @@ char* ap_get_version(ArgParser* parser) {
 
 void ap_first_pos_arg_ends_option_parsing(ArgParser* parser) {
     parser->first_pos_arg_ends_option_parsing = true;
+}
+
+
+void ap_all_args_as_pos_args(ArgParser* parser) {
+    parser->all_args_as_pos_args = true;
 }
 
 
@@ -1237,6 +1244,15 @@ static void ap_handle_short_opt(ArgParser* parser, const char* arg, ArgStream* s
 // Parse a stream of string arguments.
 static void ap_parse_stream(ArgParser* parser, ArgStream* stream) {
     if (parser->had_memory_error) {
+        return;
+    }
+
+    if (parser->all_args_as_pos_args) {
+        while (argstream_has_next(stream)) {
+            if (!vec_add(parser->positional_args, argstream_next(stream))) {
+                ap_set_memory_error_flag(parser);
+            }
+        }
         return;
     }
 

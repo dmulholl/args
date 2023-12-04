@@ -4,10 +4,17 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Args &mdash; Command Line Interface</title>
+
+        
+
         <link rel="stylesheet" href="assets/fonts.css">
         <link rel="stylesheet" href="assets/graphite.css">
         <link rel="stylesheet" href="assets/pygments.css">
+
         
+            <script src="assets/code.js"></script>
+        
+
         
     </head>
     <body class="node-cli node">
@@ -17,7 +24,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 3.1.2</p>
+                <p class="version">Version 3.2.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -36,6 +43,7 @@
 </ul>
             </nav>
         </header>
+
         <article class="main">
             <header class="title">
                 <h1>Command Line Interface</h1>
@@ -152,6 +160,7 @@ Negative Numbers
 Some argument-parsing libraries struggle with negative numbers &mdash; for example, they will try to parse <code>-3</code> as a flag or option named <code>3</code>. This library always treats arguments beginning with a dash and a digit as positional arguments or option values, never as flag or option names.
 </p>
         </article>
+
         
     </body>
 </html>

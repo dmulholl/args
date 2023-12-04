@@ -288,6 +288,10 @@ Any of an option's registered aliases or shortcuts can be used for the `name` pa
 
 ### Parsing Modes
 
+[[ `void ap_all_args_as_pos_args(ArgParser* parser)` ]]
+
+    If set, all arguments will be treated as positional arguments, even arguments beginning with `-` or `--`.
+
 [[ `void ap_first_pos_arg_ends_option_parsing(ArgParser* parser)` ]]
 
     If set, the first positional argument ends option-parsing --- i.e. all subsequent arguments will be teated as positional arguments, even arguments beginning with `-` or `--`.

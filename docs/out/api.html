@@ -4,10 +4,17 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Args &mdash; API Reference</title>
+
+        
+
         <link rel="stylesheet" href="assets/fonts.css">
         <link rel="stylesheet" href="assets/graphite.css">
         <link rel="stylesheet" href="assets/pygments.css">
+
         
+            <script src="assets/code.js"></script>
+        
+
         
     </head>
     <body class="node-api node">
@@ -17,7 +24,7 @@
                 <p class="tagline">An argument-parsing library for C.</p>
             
             
-                <p class="version">Version 3.1.2</p>
+                <p class="version">Version 3.2.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -36,6 +43,7 @@
 </ul>
             </nav>
         </header>
+
         <article class="main">
             <header class="title">
                 <h1>API Reference</h1>
@@ -624,6 +632,16 @@ Parsing Modes
 <dl>
 <div>
 <dt>
+<code>void ap_all_args_as_pos_args(ArgParser* parser)</code>
+</dt>
+<dd>
+<p>
+If set, all arguments will be treated as positional arguments, even arguments beginning with <code>-</code> or <code>--</code>.
+</p>
+</dd>
+</div>
+<div>
+<dt>
 <code>void ap_first_pos_arg_ends_option_parsing(ArgParser* parser)</code>
 </dt>
 <dd>
@@ -634,6 +652,7 @@ If set, the first positional argument ends option-parsing &mdash; i.e. all subse
 </div>
 </dl>
         </article>
+
         
     </body>
 </html>

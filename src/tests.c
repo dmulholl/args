@@ -305,6 +305,7 @@ void test_command(void) {
     assert(ap_count_args(cmd_parser) == 2);
     assert(ap_found(cmd_parser, "foo") == true);
     assert(ap_get_int_value(cmd_parser, "bar") == 456);
+    ap_free(parser);
     printf(".");
 }
 
@@ -438,6 +439,54 @@ void test_greedy_str_opt_short_equals(void) {
 }
 
 // -----------------------------------------------------------------------------
+// 10. Zeroth root argument.
+// -----------------------------------------------------------------------------
+
+void test_zeroth_root_arg_on_root_parser_with_no_args(void) {
+    ArgParser *parser = ap_new_parser();
+    ap_parse(parser, 1, (char *[]){"foobar"});
+    assert(strcmp(ap_get_zeroth_root_arg(parser), "foobar") == 0);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_zeroth_root_arg_on_root_parser_with_args(void) {
+    ArgParser *parser = ap_new_parser();
+    ap_add_flag(parser, "foo f");
+    ap_parse(parser, 2, (char *[]){"foobar", "--foo"});
+    assert(strcmp(ap_get_zeroth_root_arg(parser), "foobar") == 0);
+    assert(ap_found(parser, "foo") == true);
+    assert(ap_count(parser, "foo") == 1);
+    ap_free(parser);
+    printf(".");
+}
+
+void test_zeroth_root_arg_on_cmd_parser(void) {
+    ArgParser *parser = ap_new_parser();
+    ArgParser *cmd_parser = ap_new_cmd(parser, "cmd");
+    ap_add_flag(cmd_parser, "foo");
+    ap_add_int_opt(cmd_parser, "bar", 123);
+    ap_parse(parser, 7, (char *[]){
+        "foobar",
+        "cmd",
+        "abc", "def",
+        "--foo",
+        "--bar", "456",
+    });
+    assert(strcmp(ap_get_zeroth_root_arg(parser), "foobar") == 0);
+    assert(strcmp(ap_get_zeroth_root_arg(cmd_parser), "foobar") == 0);
+    assert(ap_found_cmd(parser) == true);
+    assert(strcmp(ap_get_cmd_name(parser), "cmd") == 0);
+    assert(ap_get_cmd_parser(parser) == cmd_parser);
+    assert(ap_has_args(cmd_parser) == true);
+    assert(ap_count_args(cmd_parser) == 2);
+    assert(ap_found(cmd_parser, "foo") == true);
+    assert(ap_get_int_value(cmd_parser, "bar") == 456);
+    ap_free(parser);
+    printf(".");
+}
+
+// -----------------------------------------------------------------------------
 // Test runner.
 // -----------------------------------------------------------------------------
 
@@ -500,6 +549,11 @@ int main(void) {
     test_greedy_str_opt_short();
     test_greedy_str_opt_long_equals();
     test_greedy_str_opt_short_equals();
+
+    printf(" 10 ");
+    test_zeroth_root_arg_on_root_parser_with_no_args();
+    test_zeroth_root_arg_on_root_parser_with_args();
+    test_zeroth_root_arg_on_cmd_parser();
 
     printf(" [ok]\n");
     line();

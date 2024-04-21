@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 // Args: a C99 library for parsing command line arguments.
-// Version: 3.2.0
+// Version: 3.3.0
 // -----------------------------------------------------------------------------
 
 #ifndef args_h
@@ -200,13 +200,18 @@ void ap_enable_help_command(ArgParser* parent_parser, bool enable);
 ArgParser* ap_get_parent(ArgParser* parser);
 
 // -----------------------------------------------------------------------------
-// Debugging utilities.
+// Utilities.
 // -----------------------------------------------------------------------------
 
-// Dump a parser instance for debugging.
+// Dumps a parser instance to stdout for debugging.
 void ap_print(ArgParser* parser);
 
 // Returns true if an attempt to allocate memory failed.
 bool ap_had_memory_error(ArgParser* parser);
+
+// Returns the argument supplied at index-zero to the root parser. Typically
+// this is the filepath of the binary. This function can be called on the root
+// parser or any command sub-parser.
+char* ap_get_zeroth_root_arg(ArgParser* parser);
 
 #endif

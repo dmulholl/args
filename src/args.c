@@ -635,11 +635,13 @@ struct ArgParser {
     int cmd_callback_exit_code;
     char* cmd_name;
     struct ArgParser* cmd_parser;
+    struct ArgParser* root_parser;
     bool enable_help_command;
     bool had_memory_error;
     struct ArgParser* parent;
     bool first_pos_arg_ends_option_parsing;
     bool all_args_as_pos_args;
+    char* zeroth_root_arg;
 };
 
 
@@ -665,6 +667,8 @@ ArgParser* ap_new_parser(void) {
     parser->command_vec = NULL;
     parser->command_map = NULL;
     parser->positional_args = NULL;
+    parser->root_parser = parser;
+    parser->zeroth_root_arg = NULL;
 
     parser->option_vec = vec_new();
     if (!parser->option_vec) {
@@ -1044,6 +1048,8 @@ ArgParser* ap_new_cmd(ArgParser* parent_parser, const char* name) {
         return NULL;
     }
 
+    cmd_parser->root_parser = parent_parser->root_parser;
+
     if (vec_add(parent_parser->command_vec, cmd_parser)) {
         if (map_set_splitkey(parent_parser->command_map, name, cmd_parser)) {
             parent_parser->enable_help_command = true;
@@ -1347,6 +1353,8 @@ bool ap_parse(ArgParser* parser, int argc, char** argv) {
         return true;
     }
 
+    parser->zeroth_root_arg = argv[0];
+
     ArgStream* stream = argstream_new(argc - 1 , argv + 1);
     if (!stream) {
         return false;
@@ -1400,4 +1408,9 @@ void ap_print(ArgParser* parser) {
     } else {
         puts("  [none]");
     }
+}
+
+
+char* ap_get_zeroth_root_arg(ArgParser* parser) {
+    return parser->root_parser->zeroth_root_arg;
 }

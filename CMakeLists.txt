@@ -48,7 +48,7 @@ install(FILES src/args.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 install(EXPORT  ${LIB_NAME}Targets
     FILE        ${LIB_NAME}Targets.cmake
-    NAMESPACE   dmullholl::
+    NAMESPACE   dmulholl::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIB_NAME}
 )
 
